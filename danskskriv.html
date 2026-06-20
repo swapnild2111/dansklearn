@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Skriv — Type Danish Paragraphs</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #161b26;
+    --card: #1c2333;
+    --card-alt: #1a2744;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #7dd3fc;
+    --text: #e8edf5;
+    --text-muted: #8896ae;
+    --text-dim: #4a5568;
+    --success: #4ade80;
+    --danger: #f87171;
+    --radius: 12px;
+    --card-radius: 16px;
+    --header-h: 58px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  /* HEADER */
+  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .stat-pill b { color: var(--accent2); font-weight: 500; }
+  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn:disabled { opacity: 0.55; cursor: not-allowed; }
+  .btn-refresh { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white; }
+  .btn-refresh:hover { opacity: 0.88; color: white; border: none; }
+  .btn-refresh.loading svg { animation: spin 0.9s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* MAIN */
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 980px; margin-left: auto; margin-right: auto; }
+  .intro { padding: 6px 4px 18px; }
+  .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+  .intro p { color: var(--text-muted); font-size: 13px; }
+
+  /* OVERALL PROGRESS */
+  .overall-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 22px; }
+  .overall-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .overall-info b { color: var(--accent2); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+  .overall-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .overall-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width 0.35s ease; }
+
+  /* CARD ROW */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; overflow: hidden; }
+  .card.complete { border-color: var(--success); box-shadow: 0 0 0 1px rgba(74,222,128,0.25); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; }
+  .card-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .card-category { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+  .card-source { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-left: 8px; }
+  .card-head-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card-status { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+  .card-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); transition: background 0.2s; }
+  .card.complete .card-status .dot { background: var(--success); }
+  .card.typing .card-status .dot { background: var(--accent); }
+  .card.error .card-status .dot { background: var(--danger); }
+
+  /* PARAGRAPH (target) */
+  .paragraph {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    line-height: 1.55;
+    color: var(--text);
+    background: var(--card-alt);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    white-space: pre-wrap;
+    word-break: break-word;
+    overflow-wrap: anywhere;
+    user-select: none;
+  }
+  .paragraph .ch { display: inline; }
+  .paragraph .ch { transition: color 0.05s, background 0.05s; }
+  .paragraph .ch.ok { color: var(--success); }
+  .paragraph .ch.bad { color: var(--danger); background: rgba(248,113,113,0.18); border-radius: 2px; }
+  .paragraph .ch.cur { background: rgba(79,142,247,0.25); border-radius: 2px; box-shadow: inset 0 -2px 0 var(--accent); }
+
+  /* TEXTAREA ROW */
+  .input-row { display: flex; gap: 10px; align-items: stretch; }
+  textarea {
+    flex: 1;
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    color: var(--text);
+    padding: 12px 14px;
+    font-family: 'Inter', sans-serif;
+    font-size: 15px;
+    line-height: 1.55;
+    resize: vertical;
+    min-height: 84px;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text-dim); }
+  .card.complete textarea { border-color: var(--success); }
+  .card.error textarea { border-color: var(--danger); }
+
+  .input-side { display: flex; flex-direction: column; gap: 8px; align-items: center; justify-content: flex-start; padding-top: 2px; }
+  .icon-btn {
+    width: 38px; height: 38px;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: 10px;
+    color: var(--text-muted);
+    cursor: pointer;
+    display: flex; align-items: center; justify-content: center;
+    transition: all 0.15s;
+  }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .icon-btn.reset:hover { border-color: var(--danger); color: var(--danger); }
+  .progress-mini {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--accent2);
+    background: rgba(125,211,252,0.12);
+    border: 1px solid rgba(125,211,252,0.25);
+    border-radius: 6px;
+    padding: 2px 0;
+    margin-top: 4px;
+    text-align: center;
+    width: 38px;
+  }
+  .card.complete .progress-mini { color: var(--success); background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); }
+  .card.error .progress-mini { color: var(--danger); background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.3); }
+
+  /* EMPTY / LOADING */
+  .empty { text-align: center; padding: 60px 20px; color: var(--text-muted); }
+  .skeleton-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; }
+  .skeleton-line { height: 14px; background: linear-gradient(90deg, var(--border) 25%, #303a52 50%, var(--border) 75%); background-size: 200% 100%; border-radius: 4px; margin-bottom: 8px; animation: shimmer 1.4s infinite; }
+  .skeleton-line.short { width: 60%; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.danger { border-color: var(--danger); color: var(--danger); }
+
+  /* MODAL */
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 600; padding: 20px; }
+  .modal-backdrop.show { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); max-width: 560px; width: 100%; max-height: 80vh; display: flex; flex-direction: column; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .modal-close { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s; }
+  .modal-close:hover { color: var(--text); background: var(--surface); }
+  .modal-body { padding: 16px 18px; overflow-y: auto; }
+  .modal-section-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .modal-section { margin-bottom: 14px; }
+  .modal-section:last-child { margin-bottom: 0; }
+  .modal-danish { font-family: 'DM Serif Display', serif; font-size: 16px; line-height: 1.5; color: var(--text-muted); padding: 10px 12px; background: var(--card-alt); border: 1px solid var(--border); border-radius: var(--radius); }
+  .modal-english { font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; color: var(--text); padding: 10px 12px; background: var(--card-alt); border: 1px solid var(--border); border-radius: var(--radius); }
+  .modal-english.loading { color: var(--text-muted); font-style: italic; }
+  .modal-english.error { color: var(--danger); border-color: var(--danger); }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 18px 16px; }
+  .modal-btn { padding: 8px 16px; border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.15s; }
+  .modal-btn:hover { color: var(--text); }
+  .modal-btn.primary { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border-color: transparent; color: white; }
+  .modal-btn.primary:hover { opacity: 0.9; color: white; }
+  .modal-text { color: var(--text-muted); font-size: 14px; line-height: 1.55; }
+  .icon-btn.info:hover { border-color: var(--accent2); color: var(--accent2); }
+  .icon-btn.speak:hover { border-color: var(--accent2); color: var(--accent2); }
+  .icon-btn.speak.playing { border-color: var(--accent); color: var(--accent); background: rgba(79,142,247,0.1); }
+
+  @media (max-width: 700px) {
+    .main { padding: 14px; }
+    .stat-pill { display: none; }
+    .paragraph { font-size: 16px; }
+    .header-right .btn:not(.btn-refresh) { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">dansk<span>skriv</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Done <b id="done-count">0</b>/5</div>
+    <div class="stat-pill">Accuracy <b id="accuracy">—</b></div>
+    <button class="btn btn-refresh" id="refresh-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span id="refresh-label">Refresh</span>
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="intro">
+    <h1>Type along in Danish</h1>
+    <p>Read each paragraph and type it exactly into the box. Live colouring shows you when you stray.</p>
+  </div>
+
+  <div class="overall-wrap">
+    <div class="overall-info">
+      <span>Overall accuracy</span>
+      <span><b id="overall-accuracy">0%</b> · <span id="overall-chars">0 / 0 chars</span></span>
+    </div>
+    <div class="overall-track"><div class="overall-fill" id="overall-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="cards"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+<div class="modal-backdrop" id="modal-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-head">
+      <div class="modal-title" id="modal-title">English translation</div>
+      <button class="modal-close" id="modal-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <div class="modal-section">
+        <div class="modal-section-label">Danish</div>
+        <div class="modal-danish" id="modal-danish"></div>
+      </div>
+      <div class="modal-section">
+        <div class="modal-section-label">English</div>
+        <div class="modal-english" id="modal-english"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="modal-backdrop" id="confirm-backdrop">
+  <div class="modal" role="dialog" aria-modal="true" aria-labelledby="confirm-title">
+    <div class="modal-head">
+      <div class="modal-title" id="confirm-title">Load new paragraphs?</div>
+      <button class="modal-close" id="confirm-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-text">This will replace your current paragraphs and clear what you've typed so far. Your progress can't be recovered.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="confirm-cancel">Cancel</button>
+      <button class="modal-btn primary" id="confirm-ok">Load new paragraphs</button>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ─── Categories: 5 cards, one per category, fetched from DR RSS via CORS proxy ─── */
+const CATEGORIES = [
+  { key: 'news',          label: 'News',          source: 'DR Nyheder',    rss: 'https://www.dr.dk/nyheder/service/feeds/allenyheder' },
+  { key: 'politics',      label: 'Politics',      source: 'DR Politik',    rss: 'https://www.dr.dk/nyheder/service/feeds/politik' },
+  { key: 'entertainment', label: 'Entertainment', source: 'DR Kultur',     rss: 'https://www.dr.dk/nyheder/service/feeds/kultur' },
+  { key: 'sports',        label: 'Sports',        source: 'DR Sporten',    rss: 'https://www.dr.dk/nyheder/service/feeds/sporten' },
+  { key: 'technology',    label: 'Technology',    source: 'DR Viden',      rss: 'https://www.dr.dk/nyheder/service/feeds/viden' },
+];
+
+/* rss2json.com fetches and parses the RSS server-side and returns JSON with CORS enabled.
+   Free tier: 10k requests/day, no API key required. */
+const RSS_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
+
+/* ─── Built-in fallback per category (used if a feed or proxy fails) ─── */
+const FALLBACK_BY_CATEGORY = {
+  news:          "I dag er det søndag, og solen skinner over hele Danmark. Mange mennesker går en tur i parken eller cykler langs kysten. Vejret er mildt, og det forventes at fortsætte hele ugen. Politiet melder om en rolig weekend uden større hændelser.",
+  politics:      "Folketinget mødes i dag for at diskutere det nye forslag om klima og energi. Statsministeren holder en tale om regeringens planer for de næste fire år. Oppositionen kræver flere oplysninger og en åben debat. Beslutningen ventes at falde i næste uge.",
+  entertainment: "Den danske film vandt en pris ved en stor international festival i går aftes. Instruktøren takkede sit hold og sin familie i en kort tale. Filmen handler om en ung kvinde, der flytter fra landet til København. Den får premiere i danske biografer næste måned.",
+  sports:        "Det danske fodboldlandshold spillede en vigtig kamp i aftes mod Sverige. Holdet vandt med to mål mod et, og fansene jublede på stadion. Træneren roste spillerne for deres indsats og samarbejde. Den næste kamp finder sted i København om to uger.",
+  technology:    "En ny dansk virksomhed har præsenteret en spændende opfindelse inden for grøn energi. Produktet hjælper husstande med at spare strøm og penge hver måned. Forskere mener, at det kan blive en stor succes både i Danmark og udlandet. Virksomheden ansætter nu flere ingeniører.",
+};
+
+const CARD_COUNT = CATEGORIES.length;
+let paragraphs = [];   // current strings, one per category
+let cardMeta = [];     // [{label, source, fromFallback}]
+let states = [];       // [{typed: string}]
+
+const STORAGE_KEY = 'danskskriv:session:v1';
+const cardsEl = document.getElementById('cards');
+const refreshBtn = document.getElementById('refresh-btn');
+const refreshLabel = document.getElementById('refresh-label');
+
+function saveSession() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      paragraphs,
+      cardMeta,
+      typed: states.map(s => s.typed),
+    }));
+  } catch (_) { /* quota or private mode — ignore */ }
+}
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const data = JSON.parse(raw);
+    if (!Array.isArray(data?.paragraphs) || data.paragraphs.length === 0) return null;
+    if (!Array.isArray(data.typed) || data.typed.length !== data.paragraphs.length) return null;
+    if (!Array.isArray(data.cardMeta) || data.cardMeta.length !== data.paragraphs.length) return null;
+    return data;
+  } catch (_) {
+    return null;
+  }
+}
+const doneCountEl = document.getElementById('done-count');
+const accuracyEl = document.getElementById('accuracy');
+const overallAccEl = document.getElementById('overall-accuracy');
+const overallCharsEl = document.getElementById('overall-chars');
+const overallFillEl = document.getElementById('overall-fill');
+const toastEl = document.getElementById('toast');
+
+function showToast(msg, kind) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { toastEl.className = 'toast'; }, 2400);
+}
+
+function pickRandom(arr, n) {
+  const copy = arr.slice();
+  const out = [];
+  while (out.length < n && copy.length) {
+    out.push(copy.splice(Math.floor(Math.random() * copy.length), 1)[0]);
+  }
+  return out;
+}
+
+/* Strip HTML tags and decode common entities from RSS description fields */
+function stripHtml(html) {
+  if (!html) return '';
+  const doc = new DOMParser().parseFromString(html, 'text/html');
+  return doc.body.textContent || '';
+}
+
+/* Trim text to first 1–3 sentences, ~180–340 chars */
+function trimExtract(text) {
+  if (!text) return null;
+  let t = text.replace(/\s*\([^)]*\)/g, '').replace(/\s+/g, ' ').trim();
+  const sentences = t.match(/[^.!?]+[.!?]+/g);
+  if (!sentences) {
+    // No sentence terminators — just clamp length
+    if (t.length < 60) return null;
+    return t.slice(0, 340).trim();
+  }
+  let out = '';
+  for (const s of sentences) {
+    const trimmedS = s.trim();
+    const candidate = out ? `${out} ${trimmedS}` : trimmedS;
+    if (candidate.length > 340) break;
+    out = candidate;
+    if (out.length >= 180) break;
+  }
+  if (out.length < 100) {
+    out = sentences.map(s => s.trim()).join(' ');
+  }
+  out = out.replace(/\s+/g, ' ').trim();
+  if (out.length < 60) return null;
+  if (out.length > 420) out = out.slice(0, 420).trim();
+  if (/[\[\]{}<>|]/.test(out)) return null;
+  return out;
+}
+
+/* Fetch one DR RSS feed via rss2json (CORS-enabled JSON), return a paragraph built from latest items */
+async function fetchCategoryParagraph(category) {
+  // Cache-buster so Chrome (and the rss2json CDN) don't serve a 30-minute-old response on refresh.
+  const bust = `&_=${Math.floor(performance.now() * 1000)}`;
+  const url = RSS_API + encodeURIComponent(category.rss) + bust;
+  const res = await fetch(url, { cache: 'no-store' });
+  if (!res.ok) throw new Error('http ' + res.status);
+  const data = await res.json();
+  if (data.status !== 'ok' || !Array.isArray(data.items) || data.items.length === 0) {
+    throw new Error('no items');
+  }
+
+  // Pick a random starting item from recent items so refresh varies the content
+  // even when DR's feed itself hasn't changed.
+  const items = data.items.slice();
+  const startIdx = Math.floor(Math.random() * Math.min(items.length, 6));
+  const ordered = items.slice(startIdx).concat(items.slice(0, startIdx));
+
+  // Some DR feeds only have titles. Stitch multiple items together if needed to reach paragraph length.
+  const pieces = [];
+  for (const item of ordered) {
+    const title = stripHtml(item.title || '').trim().replace(/[.!?]+$/, '');
+    const desc  = stripHtml(item.description || item.content || '').trim();
+    const piece = desc ? `${title}. ${desc}` : `${title}.`;
+    if (piece.length > 4) pieces.push(piece);
+    if (pieces.join(' ').length >= 200) break;
+  }
+  const combined = pieces.join(' ').replace(/\s+/g, ' ').trim();
+  const trimmed = trimExtract(combined);
+  if (!trimmed) throw new Error('no usable text');
+  return trimmed;
+}
+
+async function loadParagraphs() {
+  if (refreshBtn.classList.contains('loading')) return;
+  refreshBtn.classList.add('loading');
+  refreshBtn.disabled = true;
+  refreshLabel.textContent = 'Loading…';
+  renderSkeleton();
+
+  const settled = await Promise.allSettled(CATEGORIES.map(fetchCategoryParagraph));
+  const result = [];
+  const meta = [];
+  let liveCount = 0;
+  let fallbackCount = 0;
+
+  CATEGORIES.forEach((cat, i) => {
+    const r = settled[i];
+    if (r.status === 'fulfilled' && r.value) {
+      result.push(r.value);
+      meta.push({ label: cat.label, source: cat.source, fromFallback: false });
+      liveCount++;
+    } else {
+      result.push(FALLBACK_BY_CATEGORY[cat.key]);
+      meta.push({ label: cat.label, source: 'Offline pack', fromFallback: true });
+      fallbackCount++;
+    }
+  });
+
+  if (fallbackCount === 0) {
+    showToast('Loaded latest from DR (Danmarks Radio)', 'success');
+  } else if (liveCount === 0) {
+    showToast('Using offline pack — DR feeds unavailable', 'danger');
+  } else {
+    showToast(`${liveCount} live · ${fallbackCount} from offline pack`, '');
+  }
+
+  paragraphs = result;
+  cardMeta = meta;
+  states = paragraphs.map(() => ({ typed: '' }));
+  saveSession();
+  render();
+
+  refreshBtn.classList.remove('loading');
+  refreshBtn.disabled = false;
+  refreshLabel.textContent = 'Refresh';
+}
+
+function renderSkeleton() {
+  cardsEl.innerHTML = '';
+  for (let i = 0; i < CARD_COUNT; i++) {
+    const sk = document.createElement('div');
+    sk.className = 'skeleton-card';
+    sk.innerHTML = `
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line"></div>
+      <div class="skeleton-line short"></div>
+    `;
+    cardsEl.appendChild(sk);
+  }
+}
+
+function escapeChar(c) {
+  if (c === '<') return '&lt;';
+  if (c === '>') return '&gt;';
+  if (c === '&') return '&amp;';
+  if (c === ' ') return ' '; // keep visible width
+  if (c === '\n') return '↵<br>';
+  return c;
+}
+
+function buildHighlightedHTML(target, typed) {
+  let html = '';
+  const len = target.length;
+  for (let i = 0; i < len; i++) {
+    const tc = target[i];
+    const yc = typed[i];
+    let cls = 'ch';
+    if (i < typed.length) {
+      cls += (yc === tc) ? ' ok' : ' bad';
+    } else if (i === typed.length) {
+      cls += ' cur';
+    }
+    html += `<span class="${cls}">${escapeChar(tc)}</span>`;
+  }
+  return html;
+}
+
+function computeStatus(target, typed) {
+  if (typed.length === 0) return { state: 'idle', correct: 0, errors: 0, complete: false };
+  let correct = 0, errors = 0;
+  const cmpLen = Math.min(target.length, typed.length);
+  for (let i = 0; i < cmpLen; i++) {
+    if (typed[i] === target[i]) correct++;
+    else errors++;
+  }
+  // overflow chars beyond target are also errors
+  if (typed.length > target.length) errors += typed.length - target.length;
+  const complete = (typed === target);
+  let state = 'typing';
+  if (complete) state = 'complete';
+  else if (errors > 0) state = 'error';
+  return { state, correct, errors, complete };
+}
+
+function render() {
+  cardsEl.innerHTML = '';
+  paragraphs.forEach((para, idx) => {
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.dataset.idx = idx;
+    const meta = cardMeta[idx] || { label: '', source: '' };
+    card.innerHTML = `
+      <div class="card-head">
+        <div class="card-head-left">
+          <div class="card-num">Paragraph ${idx + 1}</div>
+          ${meta.label ? `<div class="card-category">${meta.label}</div>` : ''}
+          ${meta.source ? `<div class="card-source">${meta.source}</div>` : ''}
+        </div>
+        <div class="card-status">
+          <span class="dot"></span>
+          <span class="status-label">empty</span>
+        </div>
+      </div>
+      <div class="paragraph" id="para-${idx}"></div>
+      <div class="input-row">
+        <textarea id="ta-${idx}" placeholder="Type the paragraph above…" spellcheck="false" autocomplete="off" autocorrect="off" autocapitalize="off"></textarea>
+        <div class="input-side">
+          <button class="icon-btn info" id="info-${idx}" title="Show English translation">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="16" x2="12" y2="12"/><line x1="12" y1="8" x2="12.01" y2="8"/></svg>
+          </button>
+          <button class="icon-btn speak" id="speak-${idx}" title="Hear it in Danish">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polygon points="11 5 6 9 2 9 2 15 6 15 11 19 11 5"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>
+          </button>
+          <button class="icon-btn reset" id="reset-${idx}" title="Reset this paragraph">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>
+          </button>
+          <div class="progress-mini" id="mini-${idx}">0%</div>
+        </div>
+      </div>
+    `;
+    cardsEl.appendChild(card);
+
+    const ta = card.querySelector(`#ta-${idx}`);
+    ta.value = states[idx].typed || '';
+    ta.addEventListener('input', () => {
+      states[idx].typed = ta.value;
+      updateCard(idx);
+      saveSession();
+    });
+    card.querySelector(`#reset-${idx}`).addEventListener('click', () => {
+      states[idx].typed = '';
+      ta.value = '';
+      ta.focus();
+      updateCard(idx);
+      saveSession();
+    });
+    card.querySelector(`#info-${idx}`).addEventListener('click', () => {
+      openTranslation(idx);
+    });
+    card.querySelector(`#speak-${idx}`).addEventListener('click', () => {
+      toggleSpeak(idx);
+    });
+
+    updateCard(idx);
+  });
+}
+
+function updateCard(idx) {
+  const target = paragraphs[idx];
+  const typed = states[idx].typed;
+  const card = cardsEl.querySelector(`.card[data-idx="${idx}"]`);
+  const paraEl = card.querySelector(`#para-${idx}`);
+  const miniEl = card.querySelector(`#mini-${idx}`);
+  const labelEl = card.querySelector('.status-label');
+
+  paraEl.innerHTML = buildHighlightedHTML(target, typed);
+
+  const { state, correct, errors, complete } = computeStatus(target, typed);
+  card.classList.toggle('complete', state === 'complete');
+  card.classList.toggle('error', state === 'error');
+  card.classList.toggle('typing', state === 'typing');
+
+  const pct = target.length ? Math.round((Math.min(typed.length, target.length) / target.length) * 100) : 0;
+  miniEl.textContent = complete ? '✓' : pct + '%';
+
+  if (state === 'complete') labelEl.textContent = 'matched';
+  else if (state === 'error') labelEl.textContent = `${errors} mistake${errors === 1 ? '' : 's'}`;
+  else if (state === 'typing') labelEl.textContent = `${typed.length}/${target.length}`;
+  else labelEl.textContent = 'empty';
+
+  updateOverall();
+}
+
+function updateOverall() {
+  let totalChars = 0, totalCorrect = 0, totalTyped = 0, done = 0;
+  paragraphs.forEach((para, idx) => {
+    const typed = states[idx].typed;
+    const { correct, complete } = computeStatus(para, typed);
+    totalChars += para.length;
+    totalCorrect += correct;
+    totalTyped += typed.length;
+    if (complete) done++;
+  });
+  doneCountEl.textContent = done;
+  const acc = totalTyped > 0 ? Math.round((totalCorrect / totalTyped) * 100) : 0;
+  accuracyEl.textContent = totalTyped > 0 ? acc + '%' : '—';
+  overallAccEl.textContent = (totalTyped > 0 ? acc : 0) + '%';
+  overallCharsEl.textContent = `${totalCorrect} / ${totalChars} chars`;
+  const fillPct = totalChars > 0 ? (totalCorrect / totalChars) * 100 : 0;
+  overallFillEl.style.width = fillPct + '%';
+}
+
+/* ─── Translation modal ─── */
+const modalBackdrop = document.getElementById('modal-backdrop');
+const modalDanishEl = document.getElementById('modal-danish');
+const modalEnglishEl = document.getElementById('modal-english');
+const modalCloseBtn = document.getElementById('modal-close');
+const translationCache = new Map();
+let currentTranslationToken = 0;
+
+function closeModal() {
+  modalBackdrop.classList.remove('show');
+}
+modalCloseBtn.addEventListener('click', closeModal);
+modalBackdrop.addEventListener('click', (e) => {
+  if (e.target === modalBackdrop) closeModal();
+});
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && modalBackdrop.classList.contains('show')) closeModal();
+});
+
+async function fetchTranslation(text) {
+  const url = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=da|en`;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error('http ' + res.status);
+  const data = await res.json();
+  const translated = data?.responseData?.translatedText;
+  if (!translated) throw new Error('no translation');
+  return translated;
+}
+
+async function openTranslation(idx) {
+  const danish = paragraphs[idx];
+  if (!danish) return;
+  modalDanishEl.textContent = danish;
+  modalEnglishEl.className = 'modal-english loading';
+  modalEnglishEl.textContent = 'Translating…';
+  modalBackdrop.classList.add('show');
+
+  const token = ++currentTranslationToken;
+
+  if (translationCache.has(danish)) {
+    modalEnglishEl.className = 'modal-english';
+    modalEnglishEl.textContent = translationCache.get(danish);
+    return;
+  }
+
+  try {
+    const translated = await fetchTranslation(danish);
+    if (token !== currentTranslationToken) return;
+    translationCache.set(danish, translated);
+    modalEnglishEl.className = 'modal-english';
+    modalEnglishEl.textContent = translated;
+  } catch (err) {
+    if (token !== currentTranslationToken) return;
+    modalEnglishEl.className = 'modal-english error';
+    modalEnglishEl.textContent = 'Could not load translation. Check your connection and try again.';
+  }
+}
+
+/* ─── Danish text-to-speech ─── */
+/* Preferred Danish voices in order. First match wins. Falls back to any da-DK voice. */
+const PREFERRED_DANISH_VOICES = [
+  'Google dansk',      // Chrome — usually highest quality
+  'Sara',              // macOS / iOS — female, native
+  'Magnus',            // macOS / iOS — male, native
+  'Microsoft Helle',   // Windows
+  'Microsoft Helle Online (Natural) - Danish (Denmark)',
+];
+const synth = window.speechSynthesis;
+let danishVoice = null;
+let speakingIdx = -1;
+
+function pickDanishVoice() {
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  for (const name of PREFERRED_DANISH_VOICES) {
+    const match = voices.find(v => v.name === name);
+    if (match) return match;
+  }
+  return voices.find(v => v.lang === 'da-DK') ||
+         voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) ||
+         null;
+}
+if (synth) {
+  danishVoice = pickDanishVoice();
+  synth.addEventListener?.('voiceschanged', () => { danishVoice = pickDanishVoice(); });
+}
+
+function setSpeakingButton(idx, on) {
+  const btn = document.getElementById(`speak-${idx}`);
+  if (btn) btn.classList.toggle('playing', on);
+}
+
+function toggleSpeak(idx) {
+  if (!synth) {
+    showToast('Text-to-speech not supported in this browser', 'danger');
+    return;
+  }
+  if (speakingIdx === idx) {
+    synth.cancel();
+    return;
+  }
+  if (synth.speaking || synth.pending) synth.cancel();
+
+  const text = paragraphs[idx];
+  if (!text) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.lang = 'da-DK';
+  if (danishVoice) utter.voice = danishVoice;
+  utter.rate = 0.75;
+
+  utter.onstart = () => { speakingIdx = idx; setSpeakingButton(idx, true); };
+  utter.onend = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
+  utter.onerror = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
+
+  if (!danishVoice) {
+    showToast('No Danish voice installed — using browser default', '');
+  }
+  synth.speak(utter);
+}
+
+/* ─── Refresh confirmation ─── */
+const confirmBackdrop = document.getElementById('confirm-backdrop');
+const confirmCloseBtn = document.getElementById('confirm-close');
+const confirmCancelBtn = document.getElementById('confirm-cancel');
+const confirmOkBtn = document.getElementById('confirm-ok');
+
+function openConfirm() { confirmBackdrop.classList.add('show'); }
+function closeConfirm() { confirmBackdrop.classList.remove('show'); }
+
+confirmCloseBtn.addEventListener('click', closeConfirm);
+confirmCancelBtn.addEventListener('click', closeConfirm);
+confirmBackdrop.addEventListener('click', (e) => {
+  if (e.target === confirmBackdrop) closeConfirm();
+});
+confirmOkBtn.addEventListener('click', () => {
+  closeConfirm();
+  loadParagraphs();
+});
+
+refreshBtn.addEventListener('click', () => {
+  openConfirm();
+});
+
+document.addEventListener('keydown', (e) => {
+  if (e.key === 'Escape' && confirmBackdrop.classList.contains('show')) closeConfirm();
+});
+
+/* boot — rehydrate from localStorage if we have a saved session, otherwise fetch fresh */
+const saved = loadSession();
+if (saved) {
+  paragraphs = saved.paragraphs;
+  cardMeta = saved.cardMeta;
+  states = saved.typed.map(t => ({ typed: t }));
+  render();
+} else {
+  loadParagraphs();
+}
+</script>
+
+</body>
+</html>

@@ -1,0 +1,2701 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Ord — 1000 Essential Danish Words</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #161b26;
+    --sidebar-bg: #12171f;
+    --card-front: #1c2333;
+    --card-back: #1a2744;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #7dd3fc;
+    --text: #e8edf5;
+    --text-muted: #8896ae;
+    --text-dim: #4a5568;
+    --success: #4ade80;
+    --danger: #f87171;
+    --radius: 12px;
+    --card-radius: 16px;
+    --sidebar-w: 220px;
+    --header-h: 58px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
+
+  /* HEADER */
+  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .stat-pill b { color: var(--accent2); font-weight: 500; }
+  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  .btn-shuffle { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white; }
+  .btn-shuffle:hover { opacity: 0.88; color: white; }
+  .btn-reset { border-color: #3a2020; }
+  .btn-reset:hover { border-color: var(--danger); color: var(--danger); }
+
+  /* SHELL */
+  .shell { display: flex; margin-top: var(--header-h); min-height: calc(100vh - var(--header-h)); }
+
+  /* SIDEBAR */
+  .sidebar { width: var(--sidebar-w); min-width: var(--sidebar-w); background: var(--sidebar-bg); border-right: 1px solid var(--border); position: fixed; top: var(--header-h); left: 0; bottom: 0; overflow-y: auto; padding: 16px 0 40px; z-index: 100; }
+  .sidebar::-webkit-scrollbar { width: 3px; }
+  .sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 4px; }
+  .sidebar-title { font-size: 10px; font-weight: 600; letter-spacing: 1.2px; text-transform: uppercase; color: var(--text-dim); padding: 0 16px 10px; }
+  .cat-item { display: flex; align-items: center; justify-content: space-between; padding: 7px 16px; cursor: pointer; transition: background 0.12s; border-left: 3px solid transparent; gap: 8px; }
+  .cat-item:hover { background: rgba(79,142,247,0.07); }
+  .cat-item.active { background: rgba(79,142,247,0.12); border-left-color: var(--accent); }
+  .cat-icon { font-size: 14px; flex-shrink: 0; }
+  .cat-name { font-size: 12.5px; color: var(--text-muted); flex: 1; }
+  .cat-item.active .cat-name { color: var(--accent2); font-weight: 500; }
+  .cat-count { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); background: var(--surface); border-radius: 8px; padding: 1px 6px; flex-shrink: 0; }
+  .cat-item.active .cat-count { background: rgba(79,142,247,0.2); color: var(--accent); }
+  .cat-divider { height: 1px; background: var(--border); margin: 6px 16px; }
+
+  /* MAIN */
+  .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
+  .topbar { position: sticky; top: var(--header-h); z-index: 90; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 10px; }
+  .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
+  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none; }
+  input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 7px 10px 7px 32px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  input[type="text"]:focus { border-color: var(--accent); }
+  input[type="text"]::placeholder { color: var(--text-dim); }
+
+  /* PROGRESS */
+  .progress-bar-wrap { padding: 8px 24px 0; background: var(--surface); border-bottom: 1px solid var(--border); }
+  .progress-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
+  .progress-track { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
+  .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.35s ease; }
+
+  /* SECTION HEADING */
+  .section-heading { padding: 18px 24px 4px; display: flex; align-items: baseline; gap: 12px; }
+  .section-heading h2 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); font-weight: 400; }
+  .section-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
+
+  /* GRID */
+  .grid-container { padding: 12px 24px 80px; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
+
+  /* FLIP CARD */
+  .card-wrap { perspective: 800px; height: 148px; cursor: pointer; }
+  .card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1); }
+  .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
+  .card-face { position: absolute; width: 100%; height: 100%; border-radius: var(--card-radius); backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 14px; border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s; }
+  .card-wrap:hover .card-face { border-color: #3a4a66; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
+  .card-front { background: var(--card-front); }
+  .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; }
+  .card-wrap.flipped .card-back { border-color: var(--accent); }
+  .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
+  .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
+  .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
+  .adult-speaker-btn { position: absolute; top: 7px; left: 9px; width: 24px; height: 24px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.15s; line-height: 1; }
+  .adult-speaker-btn:hover { border-color: var(--accent); color: var(--accent2); transform: scale(1.1); }
+  .adult-speaker-btn:active { transform: scale(0.92); }
+  .english-word { font-size: 17px; font-weight: 500; color: var(--accent2); text-align: center; }
+  .known-dot { position: absolute; bottom: 9px; right: 11px; width: 16px; height: 16px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #0a2010; opacity: 0; transition: opacity 0.25s; }
+  .card-wrap.known .known-dot { opacity: 1; }
+
+  /* VERB MODE — taller cards with conjugation block on back */
+  body.mode-verbs .card-wrap { height: 200px; }
+  body.mode-verbs .grid-container { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
+  .verb-conj { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 4px; font-size: 12px; width: 100%; padding: 0 4px; margin-top: 6px; }
+  .verb-conj-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; text-align: right; align-self: center; }
+  .verb-conj-form { color: var(--text); font-weight: 500; font-family: 'Inter', sans-serif; font-size: 13px; }
+  .verb-conj-form.aux-er { color: var(--accent2); }
+  .verb-en { font-size: 13px; color: var(--accent2); text-align: center; padding: 10px 6px 4px; border-top: 1px solid rgba(255,255,255,0.08); margin-top: 8px; width: 100%; font-style: italic; }
+  body.mode-verbs .danish-word { font-size: 24px; }
+  body.mode-verbs .card-back { padding: 14px 10px; justify-content: flex-start; }
+  body.mode-verbs .card-back .card-num { display: none; }
+
+  /* MODE TOGGLE */
+  .mode-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px; margin-right: 4px; }
+  .mode-toggle button { background: transparent; border: none; color: var(--text-muted); padding: 5px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; border-radius: 18px; transition: all 0.18s; }
+  .mode-toggle button.active { background: var(--accent); color: #fff; }
+
+  /* ════════════════════════════════════════════════════════════════════
+     KIDS MODE — bright, playful, audio-first UI for ages 5-7
+     ════════════════════════════════════════════════════════════════════ */
+  body.mode-kids { background: linear-gradient(180deg, #fff8e7 0%, #ffe9f0 100%); color: #2d2a4a; }
+  body.mode-kids header { background: rgba(255,255,255,0.92); border-bottom: 2px solid #ffd9a8; }
+  body.mode-kids .logo, body.mode-kids .logo span { color: #ff7a59; }
+  body.mode-kids .stat-pill { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+  body.mode-kids .stat-pill b { color: #ff7a59; }
+  body.mode-kids .btn { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+  body.mode-kids .btn:hover { border-color: #ff7a59; color: #ff7a59; }
+  body.mode-kids .btn-shuffle { background: linear-gradient(135deg, #ff9a7a, #ff7a59); color: #fff; }
+  body.mode-kids .mode-toggle { background: #fff; border-color: #ffd9a8; }
+  body.mode-kids .mode-toggle button { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+  body.mode-kids .mode-toggle button.active { background: #ff7a59; color: #fff; }
+
+  body.mode-kids .sidebar { background: #fff; border-right: 2px solid #ffd9a8; }
+  body.mode-kids .sidebar-title { color: #b8a0c0; }
+  body.mode-kids .cat-name { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 14px; }
+  body.mode-kids .cat-icon { font-size: 22px; }
+  body.mode-kids .cat-item { padding: 10px 16px; }
+  body.mode-kids .cat-item:hover { background: #fff5e9; }
+  body.mode-kids .cat-item.active { background: #fff0e0; border-left-color: #ff7a59; }
+  body.mode-kids .cat-item.active .cat-name { color: #ff7a59; }
+  body.mode-kids .cat-count { background: #fff5e9; color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+  body.mode-kids .cat-item.active .cat-count { background: #ffe0d0; color: #ff7a59; }
+
+  body.mode-kids .topbar { background: rgba(255,255,255,0.85); border-bottom: 2px solid #ffd9a8; }
+  body.mode-kids input[type="text"] { background: #fff; border-color: #ffd9a8; color: #2d2a4a; font-family: 'Fredoka', sans-serif; font-size: 15px; padding: 10px 12px 10px 36px; border-radius: 22px; }
+  body.mode-kids input[type="text"]:focus { border-color: #ff7a59; }
+  body.mode-kids input[type="text"]::placeholder { color: #b8a0c0; }
+  body.mode-kids .search-wrap svg { color: #b8a0c0; }
+
+  body.mode-kids .progress-bar-wrap { background: rgba(255,255,255,0.85); border-bottom: 2px solid #ffd9a8; }
+  body.mode-kids .progress-info { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+  body.mode-kids .progress-track { background: #ffe9d4; height: 8px; border-radius: 8px; }
+  body.mode-kids .progress-fill { background: linear-gradient(90deg, #ff9a7a, #ff7a59); border-radius: 8px; }
+
+  body.mode-kids .section-heading h2 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; font-size: 28px; }
+  body.mode-kids .section-count { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+
+  /* Kid card grid: bigger cards, more space */
+  body.mode-kids .grid-container { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; padding: 16px 24px 80px; }
+  body.mode-kids .card-wrap { height: 220px; perspective: none; }
+  body.mode-kids .card-inner { transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: flat; }
+  body.mode-kids .card-wrap.popping .card-inner { transform: scale(1.08); }
+  body.mode-kids .card-wrap:hover .card-inner { transform: scale(1.04); }
+  body.mode-kids .card-wrap.flipped .card-inner { transform: none; }
+  body.mode-kids .card-face { background: #fff; border-radius: 22px; border: 3px solid #ffd9a8; box-shadow: 0 4px 0 #ffd9a8, 0 8px 20px rgba(255,154,122,0.15); padding: 18px 14px; backface-visibility: visible; position: relative; flex-direction: column; gap: 6px; }
+  body.mode-kids .card-back { display: none; }
+  body.mode-kids .card-wrap:hover .card-face { box-shadow: 0 6px 0 #ffd9a8, 0 12px 28px rgba(255,154,122,0.25); }
+
+  /* Per-category pastel backgrounds */
+  body.mode-kids .card-face.cat-Animals  { background: #e8f8e0; border-color: #a8d995; box-shadow: 0 4px 0 #a8d995, 0 8px 20px rgba(168,217,149,0.15); }
+  body.mode-kids .card-face.cat-Food     { background: #fff0d4; border-color: #ffc97a; box-shadow: 0 4px 0 #ffc97a, 0 8px 20px rgba(255,201,122,0.18); }
+  body.mode-kids .card-face.cat-Colours  { background: #ffe6f2; border-color: #ff9bcc; box-shadow: 0 4px 0 #ff9bcc, 0 8px 20px rgba(255,155,204,0.18); }
+  body.mode-kids .card-face.cat-Numbers  { background: #e0effb; border-color: #88b8e8; box-shadow: 0 4px 0 #88b8e8, 0 8px 20px rgba(136,184,232,0.18); }
+  body.mode-kids .card-face.cat-Body     { background: #ffe5e5; border-color: #ff9999; box-shadow: 0 4px 0 #ff9999, 0 8px 20px rgba(255,153,153,0.18); }
+  body.mode-kids .card-face.cat-Family   { background: #f3e5ff; border-color: #c799f5; box-shadow: 0 4px 0 #c799f5, 0 8px 20px rgba(199,153,245,0.18); }
+  body.mode-kids .card-face.cat-Nature   { background: #e0f5f5; border-color: #7fcaca; box-shadow: 0 4px 0 #7fcaca, 0 8px 20px rgba(127,202,202,0.18); }
+  body.mode-kids .card-face.cat-Home     { background: #fff5e0; border-color: #ffcc70; box-shadow: 0 4px 0 #ffcc70, 0 8px 20px rgba(255,204,112,0.18); }
+  body.mode-kids .card-face.cat-Clothes  { background: #f0e6ff; border-color: #b896f0; box-shadow: 0 4px 0 #b896f0, 0 8px 20px rgba(184,150,240,0.18); }
+  body.mode-kids .card-face.cat-Transport{ background: #e0f0ff; border-color: #7ab8e8; box-shadow: 0 4px 0 #7ab8e8, 0 8px 20px rgba(122,184,232,0.18); }
+  body.mode-kids .card-face.cat-Actions  { background: #fff0f5; border-color: #ff99bb; box-shadow: 0 4px 0 #ff99bb, 0 8px 20px rgba(255,153,187,0.18); }
+  body.mode-kids .card-face.cat-Feelings { background: #fff8d4; border-color: #ffd966; box-shadow: 0 4px 0 #ffd966, 0 8px 20px rgba(255,217,102,0.18); }
+  body.mode-kids .card-face.cat-Greetings{ background: #d4f5e8; border-color: #7accc7; box-shadow: 0 4px 0 #7accc7, 0 8px 20px rgba(122,204,199,0.18); }
+
+  body.mode-kids .kid-emoji { font-size: 70px; line-height: 1; user-select: none; }
+  body.mode-kids .kid-da { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px; color: #2d2a4a; text-align: center; line-height: 1.1; }
+  body.mode-kids .kid-en { font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 14px; color: #6b5b8a; text-align: center; opacity: 0; transition: opacity 0.25s; min-height: 18px; }
+  body.mode-kids .card-wrap.flipped .kid-en { opacity: 1; }
+  body.mode-kids .speaker-btn { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; padding: 0; }
+  body.mode-kids .speaker-btn:hover { transform: scale(1.15); }
+  body.mode-kids .speaker-btn:active { transform: scale(0.92); }
+  body.mode-kids .card-wrap.known .card-face::before { content: "⭐"; position: absolute; top: 8px; left: 10px; font-size: 18px; }
+  body.mode-kids .known-dot { display: none; }
+
+  /* Streak badge — inline in the header, kids mode only */
+  .streak-badge { display: none; }
+  body.mode-kids .streak-badge { display: inline-flex; align-items: center; gap: 5px; background: #fff; border: 2px solid #ffb84d; border-radius: 18px; padding: 4px 11px; font-family: 'Fredoka', sans-serif; font-weight: 700; font-size: 14px; color: #ff7a59; box-shadow: 0 2px 0 #ffb84d; user-select: none; }
+  body.mode-kids .streak-badge.celebrate { animation: streakPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
+  @keyframes streakPop { 0% { transform: scale(1); } 40% { transform: scale(1.35) rotate(-8deg); } 70% { transform: scale(1.1) rotate(4deg); } 100% { transform: scale(1) rotate(0); } }
+
+  /* Confetti */
+  .confetti-piece { position: fixed; width: 10px; height: 14px; pointer-events: none; z-index: 9999; will-change: transform, opacity; }
+  @keyframes confettiFall { 0% { transform: translate3d(0,0,0) rotate(0); opacity: 1; } 100% { transform: translate3d(var(--cx,40px), var(--cy,300px), 0) rotate(720deg); opacity: 0; } }
+
+  /* FAB hidden in kids mode (kids tap cards directly) */
+  body.mode-kids .fab { display: none; }
+
+  /* EMPTY */
+  .empty-state { grid-column: 1/-1; text-align: center; padding: 60px 20px; color: var(--text-muted); }
+
+  /* FAB */
+  .fab { position: fixed; bottom: 24px; right: 28px; background: var(--surface); border: 1px solid var(--border); border-radius: 30px; padding: 9px 18px; font-size: 12px; color: var(--text-muted); cursor: pointer; transition: all 0.2s; box-shadow: 0 6px 28px rgba(0,0,0,0.45); z-index: 300; }
+  .fab:hover { border-color: var(--accent); color: var(--accent); }
+
+  /* MODAL */
+  .modal-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.6); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; pointer-events: none; transition: opacity 0.2s; }
+  .modal-overlay.open { opacity: 1; pointer-events: all; }
+  .modal { background: var(--surface); border: 1px solid var(--border); border-radius: 18px; padding: 28px 32px; max-width: 360px; width: 90%; text-align: center; box-shadow: 0 20px 60px rgba(0,0,0,0.6); transform: scale(0.95); transition: transform 0.2s; }
+  .modal-overlay.open .modal { transform: scale(1); }
+  .modal h3 { font-family: 'DM Serif Display', serif; font-size: 20px; margin-bottom: 10px; }
+  .modal p { font-size: 13px; color: var(--text-muted); margin-bottom: 24px; line-height: 1.5; }
+  .modal-btns { display: flex; gap: 10px; justify-content: center; }
+  .modal-btns button { flex: 1; padding: 9px; border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: 1px solid var(--border); transition: all 0.15s; }
+  .modal-cancel { background: var(--bg); color: var(--text-muted); }
+  .modal-cancel:hover { border-color: var(--accent); color: var(--accent); }
+  .modal-confirm { background: var(--danger); border-color: var(--danger); color: white; font-weight: 500; }
+  .modal-confirm:hover { opacity: 0.85; }
+
+  @media (max-width: 700px) {
+    :root { --sidebar-w: 0px; }
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .grid-container { padding: 10px 12px 80px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
+    .topbar { padding: 10px 12px; }
+    .section-heading { padding: 14px 12px 2px; }
+    .progress-bar-wrap { padding: 6px 12px 0; }
+    .stat-pill { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">dansk<span>ord</span></div>
+  <div class="header-right">
+    <div class="mode-toggle">
+      <button id="mode-words-btn" class="active" onclick="setMode('words')">Words</button>
+      <button id="mode-verbs-btn" onclick="setMode('verbs')">Verbs</button>
+      <button id="mode-kids-btn" onclick="setMode('kids')">🌟 Kids</button>
+    </div>
+    <div class="streak-badge" id="streak-badge"><span>🔥</span><span id="streak-count">0</span></div>
+    <div class="stat-pill">Total <b id="total-count">1000</b></div>
+    <div class="stat-pill">Showing <b id="showing-count">1000</b></div>
+    <div class="stat-pill">Known <b id="known-count">0</b></div>
+    <button class="btn btn-shuffle" onclick="shuffle()">⇄ Shuffle</button>
+    <button class="btn" id="known-filter-btn" onclick="toggleKnownFilter()">★ Known</button>
+    <button class="btn btn-reset" onclick="openResetModal()">↺ Reset</button>
+  </div>
+</header>
+
+<!-- Reset confirmation modal -->
+<div class="modal-overlay" id="resetModal">
+  <div class="modal">
+    <h3>Reset progress?</h3>
+    <p>This will clear all <b id="modal-known-count">0</b> words you've marked as known. This cannot be undone.</p>
+    <div class="modal-btns">
+      <button class="modal-cancel" onclick="closeResetModal()">Cancel</button>
+      <button class="modal-confirm" onclick="confirmReset()">Yes, reset</button>
+    </div>
+  </div>
+</div>
+
+<div class="shell">
+  <aside class="sidebar" id="sidebar">
+    <div class="sidebar-title">Categories</div>
+  </aside>
+  <div class="main">
+    <div class="topbar">
+      <div class="search-wrap">
+        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+          <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+        </svg>
+        <input type="text" id="search" placeholder="Search Danish or English…">
+      </div>
+    </div>
+    <div class="progress-bar-wrap">
+      <div class="progress-info">
+        <span>Overall progress</span>
+        <span id="progress-pct">0%</span>
+      </div>
+      <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width:0%"></div></div>
+    </div>
+    <div class="section-heading">
+      <h2 id="section-title">All Words</h2>
+      <span class="section-count" id="section-count"></span>
+    </div>
+    <div class="grid-container" id="grid"></div>
+  </div>
+</div>
+
+<div class="fab" onclick="flipAll()">↕ Flip all</div>
+
+<script>
+const words = [
+  // ── PRONOUNS (20) ────────────────────────────────────────────────
+  {da:"jeg",en:"I",type:"pron",cat:"Pronouns"},
+  {da:"du",en:"you (sing.)",type:"pron",cat:"Pronouns"},
+  {da:"han",en:"he",type:"pron",cat:"Pronouns"},
+  {da:"hun",en:"she",type:"pron",cat:"Pronouns"},
+  {da:"det",en:"it / that",type:"pron",cat:"Pronouns"},
+  {da:"den",en:"it (common)",type:"pron",cat:"Pronouns"},
+  {da:"vi",en:"we",type:"pron",cat:"Pronouns"},
+  {da:"I",en:"you (plural)",type:"pron",cat:"Pronouns"},
+  {da:"de",en:"they",type:"pron",cat:"Pronouns"},
+  {da:"mig",en:"me",type:"pron",cat:"Pronouns"},
+  {da:"dig",en:"you (obj.)",type:"pron",cat:"Pronouns"},
+  {da:"ham",en:"him",type:"pron",cat:"Pronouns"},
+  {da:"hende",en:"her",type:"pron",cat:"Pronouns"},
+  {da:"dem",en:"them",type:"pron",cat:"Pronouns"},
+  {da:"os",en:"us",type:"pron",cat:"Pronouns"},
+  {da:"min",en:"my / mine",type:"pron",cat:"Pronouns"},
+  {da:"din",en:"your / yours",type:"pron",cat:"Pronouns"},
+  {da:"hans",en:"his",type:"pron",cat:"Pronouns"},
+  {da:"hendes",en:"her / hers",type:"pron",cat:"Pronouns"},
+  {da:"vores",en:"our / ours",type:"pron",cat:"Pronouns"},
+  {da:"deres",en:"their / theirs",type:"pron",cat:"Pronouns"},
+  {da:"sin / sit",en:"his/her own (refl.)",type:"pron",cat:"Pronouns"},
+  {da:"denne",en:"this (common)",type:"pron",cat:"Pronouns"},
+  {da:"dette",en:"this (neuter)",type:"pron",cat:"Pronouns"},
+  {da:"disse",en:"these",type:"pron",cat:"Pronouns"},
+  {da:"selv",en:"self / myself",type:"pron",cat:"Pronouns"},
+  {da:"hinanden",en:"each other",type:"pron",cat:"Pronouns"},
+  {da:"man",en:"one / you (indef.)",type:"pron",cat:"Pronouns"},
+  {da:"enhver",en:"everyone / each",type:"pron",cat:"Pronouns"},
+  {da:"begge",en:"both",type:"pron",cat:"Pronouns"},
+
+  // ── CORE VERBS (70) ──────────────────────────────────────────────
+  {da:"at være",en:"to be",type:"verb",cat:"Core Verbs"},
+  {da:"at have",en:"to have",type:"verb",cat:"Core Verbs"},
+  {da:"at gøre",en:"to do / make",type:"verb",cat:"Core Verbs"},
+  {da:"at sige",en:"to say",type:"verb",cat:"Core Verbs"},
+  {da:"at gå",en:"to go / walk",type:"verb",cat:"Core Verbs"},
+  {da:"at komme",en:"to come",type:"verb",cat:"Core Verbs"},
+  {da:"at se",en:"to see / look",type:"verb",cat:"Core Verbs"},
+  {da:"at vide",en:"to know (fact)",type:"verb",cat:"Core Verbs"},
+  {da:"at tage",en:"to take",type:"verb",cat:"Core Verbs"},
+  {da:"at få",en:"to get / receive",type:"verb",cat:"Core Verbs"},
+  {da:"at ville",en:"to want / will",type:"verb",cat:"Core Verbs"},
+  {da:"at skulle",en:"to shall / must",type:"verb",cat:"Core Verbs"},
+  {da:"at kunne",en:"to be able to",type:"verb",cat:"Core Verbs"},
+  {da:"at synes",en:"to think / seem",type:"verb",cat:"Core Verbs"},
+  {da:"at tænke",en:"to think",type:"verb",cat:"Core Verbs"},
+  {da:"at spørge",en:"to ask",type:"verb",cat:"Core Verbs"},
+  {da:"at svare",en:"to answer",type:"verb",cat:"Core Verbs"},
+  {da:"at blive",en:"to become / stay",type:"verb",cat:"Core Verbs"},
+  {da:"at give",en:"to give",type:"verb",cat:"Core Verbs"},
+  {da:"at bruge",en:"to use",type:"verb",cat:"Core Verbs"},
+  {da:"at arbejde",en:"to work",type:"verb",cat:"Core Verbs"},
+  {da:"at bo",en:"to live / reside",type:"verb",cat:"Core Verbs"},
+  {da:"at spise",en:"to eat",type:"verb",cat:"Core Verbs"},
+  {da:"at drikke",en:"to drink",type:"verb",cat:"Core Verbs"},
+  {da:"at sove",en:"to sleep",type:"verb",cat:"Core Verbs"},
+  {da:"at købe",en:"to buy",type:"verb",cat:"Core Verbs"},
+  {da:"at sælge",en:"to sell",type:"verb",cat:"Core Verbs"},
+  {da:"at læse",en:"to read / study",type:"verb",cat:"Core Verbs"},
+  {da:"at skrive",en:"to write",type:"verb",cat:"Core Verbs"},
+  {da:"at høre",en:"to hear / listen",type:"verb",cat:"Core Verbs"},
+  {da:"at forstå",en:"to understand",type:"verb",cat:"Core Verbs"},
+  {da:"at lære",en:"to learn / teach",type:"verb",cat:"Core Verbs"},
+  {da:"at prøve",en:"to try",type:"verb",cat:"Core Verbs"},
+  {da:"at hjælpe",en:"to help",type:"verb",cat:"Core Verbs"},
+  {da:"at starte",en:"to start",type:"verb",cat:"Core Verbs"},
+  {da:"at stoppe",en:"to stop",type:"verb",cat:"Core Verbs"},
+  {da:"at åbne",en:"to open",type:"verb",cat:"Core Verbs"},
+  {da:"at lukke",en:"to close",type:"verb",cat:"Core Verbs"},
+  {da:"at vente",en:"to wait",type:"verb",cat:"Core Verbs"},
+  {da:"at møde",en:"to meet",type:"verb",cat:"Core Verbs"},
+  {da:"at elske",en:"to love",type:"verb",cat:"Core Verbs"},
+  {da:"at huske",en:"to remember",type:"verb",cat:"Core Verbs"},
+  {da:"at glemme",en:"to forget",type:"verb",cat:"Core Verbs"},
+  {da:"at køre",en:"to drive / ride",type:"verb",cat:"Core Verbs"},
+  {da:"at rejse",en:"to travel",type:"verb",cat:"Core Verbs"},
+  {da:"at betale",en:"to pay",type:"verb",cat:"Core Verbs"},
+  {da:"at kende",en:"to know (person)",type:"verb",cat:"Core Verbs"},
+  {da:"at lade",en:"to let / allow",type:"verb",cat:"Core Verbs"},
+  {da:"at lege",en:"to play (child)",type:"verb",cat:"Core Verbs"},
+  {da:"at spille",en:"to play (game/music)",type:"verb",cat:"Core Verbs"},
+  {da:"at løbe",en:"to run",type:"verb",cat:"Core Verbs"},
+  {da:"at sidde",en:"to sit",type:"verb",cat:"Core Verbs"},
+  {da:"at stå",en:"to stand",type:"verb",cat:"Core Verbs"},
+  {da:"at ligge",en:"to lie (down)",type:"verb",cat:"Core Verbs"},
+  {da:"at finde",en:"to find",type:"verb",cat:"Core Verbs"},
+  {da:"at miste",en:"to lose",type:"verb",cat:"Core Verbs"},
+  {da:"at sende",en:"to send",type:"verb",cat:"Core Verbs"},
+  {da:"at modtage",en:"to receive",type:"verb",cat:"Core Verbs"},
+  {da:"at vise",en:"to show",type:"verb",cat:"Core Verbs"},
+  {da:"at tro",en:"to believe",type:"verb",cat:"Core Verbs"},
+  {da:"at ønske",en:"to wish",type:"verb",cat:"Core Verbs"},
+  {da:"at håbe",en:"to hope",type:"verb",cat:"Core Verbs"},
+  {da:"at føle",en:"to feel",type:"verb",cat:"Core Verbs"},
+  {da:"at tale",en:"to speak / talk",type:"verb",cat:"Core Verbs"},
+  {da:"at fortælle",en:"to tell",type:"verb",cat:"Core Verbs"},
+  {da:"at forklare",en:"to explain",type:"verb",cat:"Core Verbs"},
+  {da:"at beslutte",en:"to decide",type:"verb",cat:"Core Verbs"},
+  {da:"at vælge",en:"to choose",type:"verb",cat:"Core Verbs"},
+  {da:"at ændre",en:"to change",type:"verb",cat:"Core Verbs"},
+  {da:"at flytte",en:"to move",type:"verb",cat:"Core Verbs"},
+  {da:"at bygge",en:"to build",type:"verb",cat:"Core Verbs"},
+  {da:"at bryde",en:"to break",type:"verb",cat:"Core Verbs"},
+  {da:"at bære",en:"to carry / wear",type:"verb",cat:"Core Verbs"},
+  {da:"at slå",en:"to hit / beat",type:"verb",cat:"Core Verbs"},
+  {da:"at trække",en:"to pull / draw",type:"verb",cat:"Core Verbs"},
+  {da:"at skubbe",en:"to push",type:"verb",cat:"Core Verbs"},
+  {da:"at kaste",en:"to throw",type:"verb",cat:"Core Verbs"},
+  {da:"at fange",en:"to catch",type:"verb",cat:"Core Verbs"},
+  {da:"at holde",en:"to hold / keep",type:"verb",cat:"Core Verbs"},
+  {da:"at lægge",en:"to put / lay",type:"verb",cat:"Core Verbs"},
+  {da:"at sætte",en:"to put / set",type:"verb",cat:"Core Verbs"},
+  {da:"at stille",en:"to place / set",type:"verb",cat:"Core Verbs"},
+  {da:"at samle",en:"to collect / gather",type:"verb",cat:"Core Verbs"},
+  {da:"at dele",en:"to share / divide",type:"verb",cat:"Core Verbs"},
+  {da:"at tilbyde",en:"to offer",type:"verb",cat:"Core Verbs"},
+  {da:"at acceptere",en:"to accept",type:"verb",cat:"Core Verbs"},
+  {da:"at afvise",en:"to reject",type:"verb",cat:"Core Verbs"},
+  {da:"at invitere",en:"to invite",type:"verb",cat:"Core Verbs"},
+  {da:"at besøge",en:"to visit",type:"verb",cat:"Core Verbs"},
+
+  // ── NUMBERS (25) ─────────────────────────────────────────────────
+  {da:"nul",en:"zero",type:"num",cat:"Numbers"},
+  {da:"én / et",en:"one",type:"num",cat:"Numbers"},
+  {da:"to",en:"two",type:"num",cat:"Numbers"},
+  {da:"tre",en:"three",type:"num",cat:"Numbers"},
+  {da:"fire",en:"four",type:"num",cat:"Numbers"},
+  {da:"fem",en:"five",type:"num",cat:"Numbers"},
+  {da:"seks",en:"six",type:"num",cat:"Numbers"},
+  {da:"syv",en:"seven",type:"num",cat:"Numbers"},
+  {da:"otte",en:"eight",type:"num",cat:"Numbers"},
+  {da:"ni",en:"nine",type:"num",cat:"Numbers"},
+  {da:"ti",en:"ten",type:"num",cat:"Numbers"},
+  {da:"elleve",en:"eleven",type:"num",cat:"Numbers"},
+  {da:"tolv",en:"twelve",type:"num",cat:"Numbers"},
+  {da:"tretten",en:"thirteen",type:"num",cat:"Numbers"},
+  {da:"fjorten",en:"fourteen",type:"num",cat:"Numbers"},
+  {da:"femten",en:"fifteen",type:"num",cat:"Numbers"},
+  {da:"seksten",en:"sixteen",type:"num",cat:"Numbers"},
+  {da:"sytten",en:"seventeen",type:"num",cat:"Numbers"},
+  {da:"atten",en:"eighteen",type:"num",cat:"Numbers"},
+  {da:"nitten",en:"nineteen",type:"num",cat:"Numbers"},
+  {da:"tyve",en:"twenty",type:"num",cat:"Numbers"},
+  {da:"tredive",en:"thirty",type:"num",cat:"Numbers"},
+  {da:"fyrre",en:"forty",type:"num",cat:"Numbers"},
+  {da:"halvtreds",en:"fifty",type:"num",cat:"Numbers"},
+  {da:"tres",en:"sixty",type:"num",cat:"Numbers"},
+  {da:"halvfjerds",en:"seventy",type:"num",cat:"Numbers"},
+  {da:"firs",en:"eighty",type:"num",cat:"Numbers"},
+  {da:"halvfems",en:"ninety",type:"num",cat:"Numbers"},
+  {da:"hundrede",en:"hundred",type:"num",cat:"Numbers"},
+  {da:"tusind",en:"thousand",type:"num",cat:"Numbers"},
+  {da:"million",en:"million",type:"num",cat:"Numbers"},
+  {da:"første",en:"first",type:"num",cat:"Numbers"},
+  {da:"anden",en:"second",type:"num",cat:"Numbers"},
+  {da:"tredje",en:"third",type:"num",cat:"Numbers"},
+  {da:"sidste",en:"last",type:"num",cat:"Numbers"},
+  {da:"næste",en:"next",type:"num",cat:"Numbers"},
+
+  // ── TIME (35) ────────────────────────────────────────────────────
+  {da:"tid",en:"time",type:"noun",cat:"Time"},
+  {da:"dag",en:"day",type:"noun",cat:"Time"},
+  {da:"nat",en:"night",type:"noun",cat:"Time"},
+  {da:"uge",en:"week",type:"noun",cat:"Time"},
+  {da:"måned",en:"month",type:"noun",cat:"Time"},
+  {da:"år",en:"year",type:"noun",cat:"Time"},
+  {da:"time",en:"hour",type:"noun",cat:"Time"},
+  {da:"minut",en:"minute",type:"noun",cat:"Time"},
+  {da:"sekund",en:"second",type:"noun",cat:"Time"},
+  {da:"morgen",en:"morning / tomorrow",type:"noun",cat:"Time"},
+  {da:"formiddag",en:"late morning",type:"noun",cat:"Time"},
+  {da:"middag",en:"noon",type:"noun",cat:"Time"},
+  {da:"eftermiddag",en:"afternoon",type:"noun",cat:"Time"},
+  {da:"aften",en:"evening",type:"noun",cat:"Time"},
+  {da:"midnat",en:"midnight",type:"noun",cat:"Time"},
+  {da:"i dag",en:"today",type:"adv",cat:"Time"},
+  {da:"i går",en:"yesterday",type:"adv",cat:"Time"},
+  {da:"i morgen",en:"tomorrow",type:"adv",cat:"Time"},
+  {da:"nu",en:"now",type:"adv",cat:"Time"},
+  {da:"snart",en:"soon",type:"adv",cat:"Time"},
+  {da:"allerede",en:"already",type:"adv",cat:"Time"},
+  {da:"endnu",en:"yet / still",type:"adv",cat:"Time"},
+  {da:"ofte",en:"often",type:"adv",cat:"Time"},
+  {da:"altid",en:"always",type:"adv",cat:"Time"},
+  {da:"aldrig",en:"never",type:"adv",cat:"Time"},
+  {da:"nogle gange",en:"sometimes",type:"adv",cat:"Time"},
+  {da:"for nylig",en:"recently",type:"adv",cat:"Time"},
+  {da:"tidligere",en:"earlier / formerly",type:"adv",cat:"Time"},
+  {da:"siden",en:"since / ago",type:"adv",cat:"Time"},
+  {da:"fremtid",en:"future",type:"noun",cat:"Time"},
+  {da:"fortid",en:"past",type:"noun",cat:"Time"},
+  {da:"nutid",en:"present",type:"noun",cat:"Time"},
+  {da:"sæson",en:"season",type:"noun",cat:"Time"},
+  {da:"forår",en:"spring",type:"noun",cat:"Time"},
+  {da:"sommer",en:"summer",type:"noun",cat:"Time"},
+  {da:"efterår",en:"autumn / fall",type:"noun",cat:"Time"},
+  {da:"vinter",en:"winter",type:"noun",cat:"Time"},
+  {da:"århundrede",en:"century",type:"noun",cat:"Time"},
+  {da:"årti",en:"decade",type:"noun",cat:"Time"},
+
+  // ── DAYS & MONTHS (19) ───────────────────────────────────────────
+  {da:"mandag",en:"Monday",type:"noun",cat:"Days & Months"},
+  {da:"tirsdag",en:"Tuesday",type:"noun",cat:"Days & Months"},
+  {da:"onsdag",en:"Wednesday",type:"noun",cat:"Days & Months"},
+  {da:"torsdag",en:"Thursday",type:"noun",cat:"Days & Months"},
+  {da:"fredag",en:"Friday",type:"noun",cat:"Days & Months"},
+  {da:"lørdag",en:"Saturday",type:"noun",cat:"Days & Months"},
+  {da:"søndag",en:"Sunday",type:"noun",cat:"Days & Months"},
+  {da:"januar",en:"January",type:"noun",cat:"Days & Months"},
+  {da:"februar",en:"February",type:"noun",cat:"Days & Months"},
+  {da:"marts",en:"March",type:"noun",cat:"Days & Months"},
+  {da:"april",en:"April",type:"noun",cat:"Days & Months"},
+  {da:"maj",en:"May",type:"noun",cat:"Days & Months"},
+  {da:"juni",en:"June",type:"noun",cat:"Days & Months"},
+  {da:"juli",en:"July",type:"noun",cat:"Days & Months"},
+  {da:"august",en:"August",type:"noun",cat:"Days & Months"},
+  {da:"september",en:"September",type:"noun",cat:"Days & Months"},
+  {da:"oktober",en:"October",type:"noun",cat:"Days & Months"},
+  {da:"november",en:"November",type:"noun",cat:"Days & Months"},
+  {da:"december",en:"December",type:"noun",cat:"Days & Months"},
+
+  // ── PEOPLE & FAMILY (35) ─────────────────────────────────────────
+  {da:"mand",en:"man / husband",type:"noun",cat:"People"},
+  {da:"kvinde",en:"woman",type:"noun",cat:"People"},
+  {da:"barn",en:"child",type:"noun",cat:"People"},
+  {da:"dreng",en:"boy",type:"noun",cat:"People"},
+  {da:"pige",en:"girl",type:"noun",cat:"People"},
+  {da:"baby",en:"baby",type:"noun",cat:"People"},
+  {da:"mor",en:"mother",type:"noun",cat:"People"},
+  {da:"far",en:"father",type:"noun",cat:"People"},
+  {da:"forældre",en:"parents",type:"noun",cat:"People"},
+  {da:"bror",en:"brother",type:"noun",cat:"People"},
+  {da:"søster",en:"sister",type:"noun",cat:"People"},
+  {da:"søn",en:"son",type:"noun",cat:"People"},
+  {da:"datter",en:"daughter",type:"noun",cat:"People"},
+  {da:"bedstefar",en:"grandfather",type:"noun",cat:"People"},
+  {da:"bedstemor",en:"grandmother",type:"noun",cat:"People"},
+  {da:"onkel",en:"uncle",type:"noun",cat:"People"},
+  {da:"tante",en:"aunt",type:"noun",cat:"People"},
+  {da:"fætter",en:"cousin (m)",type:"noun",cat:"People"},
+  {da:"kusine",en:"cousin (f)",type:"noun",cat:"People"},
+  {da:"ven",en:"friend",type:"noun",cat:"People"},
+  {da:"veninde",en:"female friend",type:"noun",cat:"People"},
+  {da:"kæreste",en:"partner / sweetheart",type:"noun",cat:"People"},
+  {da:"nabo",en:"neighbour",type:"noun",cat:"People"},
+  {da:"kollega",en:"colleague",type:"noun",cat:"People"},
+  {da:"chef",en:"boss",type:"noun",cat:"People"},
+  {da:"person",en:"person",type:"noun",cat:"People"},
+  {da:"folk",en:"people",type:"noun",cat:"People"},
+  {da:"borger",en:"citizen",type:"noun",cat:"People"},
+  {da:"fremmed",en:"stranger / foreigner",type:"noun",cat:"People"},
+  {da:"gæst",en:"guest",type:"noun",cat:"People"},
+  {da:"svigermor",en:"mother-in-law",type:"noun",cat:"People"},
+  {da:"svigerfar",en:"father-in-law",type:"noun",cat:"People"},
+  {da:"nevø",en:"nephew",type:"noun",cat:"People"},
+  {da:"niece",en:"niece",type:"noun",cat:"People"},
+  {da:"tvillingebror",en:"twin brother",type:"noun",cat:"People"},
+
+  // ── BODY (30) ────────────────────────────────────────────────────
+  {da:"krop",en:"body",type:"noun",cat:"Body"},
+  {da:"hoved",en:"head",type:"noun",cat:"Body"},
+  {da:"ansigt",en:"face",type:"noun",cat:"Body"},
+  {da:"øje",en:"eye",type:"noun",cat:"Body"},
+  {da:"øre",en:"ear",type:"noun",cat:"Body"},
+  {da:"næse",en:"nose",type:"noun",cat:"Body"},
+  {da:"mund",en:"mouth",type:"noun",cat:"Body"},
+  {da:"tand",en:"tooth",type:"noun",cat:"Body"},
+  {da:"tunge",en:"tongue",type:"noun",cat:"Body"},
+  {da:"hals",en:"throat / neck",type:"noun",cat:"Body"},
+  {da:"skulder",en:"shoulder",type:"noun",cat:"Body"},
+  {da:"arm",en:"arm",type:"noun",cat:"Body"},
+  {da:"hånd",en:"hand",type:"noun",cat:"Body"},
+  {da:"finger",en:"finger",type:"noun",cat:"Body"},
+  {da:"tommel",en:"thumb",type:"noun",cat:"Body"},
+  {da:"ben",en:"leg",type:"noun",cat:"Body"},
+  {da:"knæ",en:"knee",type:"noun",cat:"Body"},
+  {da:"fod",en:"foot",type:"noun",cat:"Body"},
+  {da:"tå",en:"toe",type:"noun",cat:"Body"},
+  {da:"ryg",en:"back",type:"noun",cat:"Body"},
+  {da:"mave",en:"stomach / belly",type:"noun",cat:"Body"},
+  {da:"hjerte",en:"heart",type:"noun",cat:"Body"},
+  {da:"lunge",en:"lung",type:"noun",cat:"Body"},
+  {da:"lever",en:"liver",type:"noun",cat:"Body"},
+  {da:"hjerne",en:"brain",type:"noun",cat:"Body"},
+  {da:"blod",en:"blood",type:"noun",cat:"Body"},
+  {da:"hud",en:"skin",type:"noun",cat:"Body"},
+  {da:"hår",en:"hair",type:"noun",cat:"Body"},
+  {da:"knogle",en:"bone",type:"noun",cat:"Body"},
+  {da:"muskel",en:"muscle",type:"noun",cat:"Body"},
+
+  // ── FOOD & DRINK (45) ────────────────────────────────────────────
+  {da:"mad",en:"food",type:"noun",cat:"Food & Drink"},
+  {da:"brød",en:"bread",type:"noun",cat:"Food & Drink"},
+  {da:"smørrebrød",en:"open sandwich",type:"noun",cat:"Food & Drink"},
+  {da:"rugbrød",en:"rye bread",type:"noun",cat:"Food & Drink"},
+  {da:"kød",en:"meat",type:"noun",cat:"Food & Drink"},
+  {da:"oksekød",en:"beef",type:"noun",cat:"Food & Drink"},
+  {da:"svinekød",en:"pork",type:"noun",cat:"Food & Drink"},
+  {da:"kylling",en:"chicken",type:"noun",cat:"Food & Drink"},
+  {da:"fisk",en:"fish",type:"noun",cat:"Food & Drink"},
+  {da:"laks",en:"salmon",type:"noun",cat:"Food & Drink"},
+  {da:"rejer",en:"shrimp",type:"noun",cat:"Food & Drink"},
+  {da:"grøntsag",en:"vegetable",type:"noun",cat:"Food & Drink"},
+  {da:"gulerod",en:"carrot",type:"noun",cat:"Food & Drink"},
+  {da:"tomat",en:"tomato",type:"noun",cat:"Food & Drink"},
+  {da:"løg",en:"onion",type:"noun",cat:"Food & Drink"},
+  {da:"kartoffel",en:"potato",type:"noun",cat:"Food & Drink"},
+  {da:"frugt",en:"fruit",type:"noun",cat:"Food & Drink"},
+  {da:"æble",en:"apple",type:"noun",cat:"Food & Drink"},
+  {da:"banan",en:"banana",type:"noun",cat:"Food & Drink"},
+  {da:"jordbær",en:"strawberry",type:"noun",cat:"Food & Drink"},
+  {da:"ost",en:"cheese",type:"noun",cat:"Food & Drink"},
+  {da:"smør",en:"butter",type:"noun",cat:"Food & Drink"},
+  {da:"fløde",en:"cream",type:"noun",cat:"Food & Drink"},
+  {da:"mælk",en:"milk",type:"noun",cat:"Food & Drink"},
+  {da:"æg",en:"egg",type:"noun",cat:"Food & Drink"},
+  {da:"sukker",en:"sugar",type:"noun",cat:"Food & Drink"},
+  {da:"salt",en:"salt",type:"noun",cat:"Food & Drink"},
+  {da:"peber",en:"pepper",type:"noun",cat:"Food & Drink"},
+  {da:"olie",en:"oil",type:"noun",cat:"Food & Drink"},
+  {da:"mel",en:"flour",type:"noun",cat:"Food & Drink"},
+  {da:"ris",en:"rice",type:"noun",cat:"Food & Drink"},
+  {da:"pasta",en:"pasta",type:"noun",cat:"Food & Drink"},
+  {da:"suppe",en:"soup",type:"noun",cat:"Food & Drink"},
+  {da:"salat",en:"salad / lettuce",type:"noun",cat:"Food & Drink"},
+  {da:"vand",en:"water",type:"noun",cat:"Food & Drink"},
+  {da:"kaffe",en:"coffee",type:"noun",cat:"Food & Drink"},
+  {da:"te",en:"tea",type:"noun",cat:"Food & Drink"},
+  {da:"øl",en:"beer",type:"noun",cat:"Food & Drink"},
+  {da:"vin",en:"wine",type:"noun",cat:"Food & Drink"},
+  {da:"juice",en:"juice",type:"noun",cat:"Food & Drink"},
+  {da:"morgenmad",en:"breakfast",type:"noun",cat:"Food & Drink"},
+  {da:"frokost",en:"lunch",type:"noun",cat:"Food & Drink"},
+  {da:"aftensmad",en:"dinner",type:"noun",cat:"Food & Drink"},
+  {da:"dessert",en:"dessert",type:"noun",cat:"Food & Drink"},
+  {da:"kage",en:"cake",type:"noun",cat:"Food & Drink"},
+  {da:"chokolade",en:"chocolate",type:"noun",cat:"Food & Drink"},
+  {da:"is",en:"ice cream",type:"noun",cat:"Food & Drink"},
+  {da:"pizza",en:"pizza",type:"noun",cat:"Food & Drink"},
+  {da:"sandwich",en:"sandwich",type:"noun",cat:"Food & Drink"},
+
+  // ── HOME (30) ────────────────────────────────────────────────────
+  {da:"hus",en:"house",type:"noun",cat:"Home"},
+  {da:"lejlighed",en:"apartment",type:"noun",cat:"Home"},
+  {da:"rum",en:"room",type:"noun",cat:"Home"},
+  {da:"stue",en:"living room",type:"noun",cat:"Home"},
+  {da:"køkken",en:"kitchen",type:"noun",cat:"Home"},
+  {da:"soveværelse",en:"bedroom",type:"noun",cat:"Home"},
+  {da:"badeværelse",en:"bathroom",type:"noun",cat:"Home"},
+  {da:"toilet",en:"toilet",type:"noun",cat:"Home"},
+  {da:"entre",en:"hallway / entryway",type:"noun",cat:"Home"},
+  {da:"kælder",en:"basement / cellar",type:"noun",cat:"Home"},
+  {da:"loft",en:"attic / ceiling",type:"noun",cat:"Home"},
+  {da:"terrasse",en:"terrace / patio",type:"noun",cat:"Home"},
+  {da:"have",en:"garden",type:"noun",cat:"Home"},
+  {da:"dør",en:"door",type:"noun",cat:"Home"},
+  {da:"vindue",en:"window",type:"noun",cat:"Home"},
+  {da:"gulv",en:"floor",type:"noun",cat:"Home"},
+  {da:"væg",en:"wall",type:"noun",cat:"Home"},
+  {da:"bord",en:"table",type:"noun",cat:"Home"},
+  {da:"stol",en:"chair",type:"noun",cat:"Home"},
+  {da:"seng",en:"bed",type:"noun",cat:"Home"},
+  {da:"sofa",en:"sofa",type:"noun",cat:"Home"},
+  {da:"hylde",en:"shelf",type:"noun",cat:"Home"},
+  {da:"skab",en:"cupboard / wardrobe",type:"noun",cat:"Home"},
+  {da:"lampe",en:"lamp",type:"noun",cat:"Home"},
+  {da:"nøgle",en:"key",type:"noun",cat:"Home"},
+  {da:"trappe",en:"stairs",type:"noun",cat:"Home"},
+  {da:"elevator",en:"elevator / lift",type:"noun",cat:"Home"},
+  {da:"køleskab",en:"refrigerator",type:"noun",cat:"Home"},
+  {da:"ovn",en:"oven",type:"noun",cat:"Home"},
+  {da:"vaskemaskine",en:"washing machine",type:"noun",cat:"Home"},
+
+  // ── COLOURS (14) ─────────────────────────────────────────────────
+  {da:"farve",en:"colour",type:"noun",cat:"Colours"},
+  {da:"rød",en:"red",type:"adj",cat:"Colours"},
+  {da:"blå",en:"blue",type:"adj",cat:"Colours"},
+  {da:"grøn",en:"green",type:"adj",cat:"Colours"},
+  {da:"gul",en:"yellow",type:"adj",cat:"Colours"},
+  {da:"hvid",en:"white",type:"adj",cat:"Colours"},
+  {da:"sort",en:"black",type:"adj",cat:"Colours"},
+  {da:"grå",en:"grey",type:"adj",cat:"Colours"},
+  {da:"brun",en:"brown",type:"adj",cat:"Colours"},
+  {da:"orange",en:"orange",type:"adj",cat:"Colours"},
+  {da:"lilla",en:"purple",type:"adj",cat:"Colours"},
+  {da:"lyserød",en:"pink",type:"adj",cat:"Colours"},
+  {da:"mørk",en:"dark",type:"adj",cat:"Colours"},
+  {da:"lys",en:"light",type:"adj",cat:"Colours"},
+
+  // ── ADJECTIVES (50) ──────────────────────────────────────────────
+  {da:"god",en:"good",type:"adj",cat:"Adjectives"},
+  {da:"dårlig",en:"bad",type:"adj",cat:"Adjectives"},
+  {da:"stor",en:"big / large",type:"adj",cat:"Adjectives"},
+  {da:"lille",en:"small / little",type:"adj",cat:"Adjectives"},
+  {da:"lang",en:"long / tall",type:"adj",cat:"Adjectives"},
+  {da:"kort",en:"short",type:"adj",cat:"Adjectives"},
+  {da:"bred",en:"wide / broad",type:"adj",cat:"Adjectives"},
+  {da:"smal",en:"narrow",type:"adj",cat:"Adjectives"},
+  {da:"høj",en:"high / tall",type:"adj",cat:"Adjectives"},
+  {da:"lav",en:"low / short",type:"adj",cat:"Adjectives"},
+  {da:"tyk",en:"thick / fat",type:"adj",cat:"Adjectives"},
+  {da:"tynd",en:"thin",type:"adj",cat:"Adjectives"},
+  {da:"ny",en:"new",type:"adj",cat:"Adjectives"},
+  {da:"gammel",en:"old",type:"adj",cat:"Adjectives"},
+  {da:"ung",en:"young",type:"adj",cat:"Adjectives"},
+  {da:"hurtig",en:"fast / quick",type:"adj",cat:"Adjectives"},
+  {da:"langsom",en:"slow",type:"adj",cat:"Adjectives"},
+  {da:"nem",en:"easy",type:"adj",cat:"Adjectives"},
+  {da:"svær",en:"difficult / heavy",type:"adj",cat:"Adjectives"},
+  {da:"smuk",en:"beautiful",type:"adj",cat:"Adjectives"},
+  {da:"grim",en:"ugly",type:"adj",cat:"Adjectives"},
+  {da:"stærk",en:"strong",type:"adj",cat:"Adjectives"},
+  {da:"svag",en:"weak",type:"adj",cat:"Adjectives"},
+  {da:"varm",en:"warm / hot",type:"adj",cat:"Adjectives"},
+  {da:"kold",en:"cold",type:"adj",cat:"Adjectives"},
+  {da:"glad",en:"happy",type:"adj",cat:"Adjectives"},
+  {da:"ked af det",en:"sad",type:"adj",cat:"Adjectives"},
+  {da:"træt",en:"tired",type:"adj",cat:"Adjectives"},
+  {da:"sulten",en:"hungry",type:"adj",cat:"Adjectives"},
+  {da:"tørstig",en:"thirsty",type:"adj",cat:"Adjectives"},
+  {da:"syg",en:"sick / ill",type:"adj",cat:"Adjectives"},
+  {da:"rask",en:"healthy / well",type:"adj",cat:"Adjectives"},
+  {da:"fri",en:"free",type:"adj",cat:"Adjectives"},
+  {da:"travl",en:"busy",type:"adj",cat:"Adjectives"},
+  {da:"rig",en:"rich",type:"adj",cat:"Adjectives"},
+  {da:"fattig",en:"poor",type:"adj",cat:"Adjectives"},
+  {da:"ren",en:"clean",type:"adj",cat:"Adjectives"},
+  {da:"snavset",en:"dirty",type:"adj",cat:"Adjectives"},
+  {da:"fuld",en:"full",type:"adj",cat:"Adjectives"},
+  {da:"tom",en:"empty",type:"adj",cat:"Adjectives"},
+  {da:"hård",en:"hard",type:"adj",cat:"Adjectives"},
+  {da:"blød",en:"soft",type:"adj",cat:"Adjectives"},
+  {da:"flad",en:"flat",type:"adj",cat:"Adjectives"},
+  {da:"rund",en:"round",type:"adj",cat:"Adjectives"},
+  {da:"skarp",en:"sharp",type:"adj",cat:"Adjectives"},
+  {da:"tung",en:"heavy",type:"adj",cat:"Adjectives"},
+  {da:"let",en:"light / easy",type:"adj",cat:"Adjectives"},
+  {da:"åben",en:"open",type:"adj",cat:"Adjectives"},
+  {da:"lukket",en:"closed",type:"adj",cat:"Adjectives"},
+  {da:"levende",en:"alive / lively",type:"adj",cat:"Adjectives"},
+
+  // ── NATURE & WEATHER (35) ────────────────────────────────────────
+  {da:"vejr",en:"weather",type:"noun",cat:"Nature"},
+  {da:"sol",en:"sun",type:"noun",cat:"Nature"},
+  {da:"regn",en:"rain",type:"noun",cat:"Nature"},
+  {da:"sne",en:"snow",type:"noun",cat:"Nature"},
+  {da:"is",en:"ice",type:"noun",cat:"Nature"},
+  {da:"frost",en:"frost",type:"noun",cat:"Nature"},
+  {da:"tåge",en:"fog",type:"noun",cat:"Nature"},
+  {da:"vind",en:"wind",type:"noun",cat:"Nature"},
+  {da:"storm",en:"storm",type:"noun",cat:"Nature"},
+  {da:"sky",en:"cloud",type:"noun",cat:"Nature"},
+  {da:"torden",en:"thunder",type:"noun",cat:"Nature"},
+  {da:"lyn",en:"lightning",type:"noun",cat:"Nature"},
+  {da:"regnbue",en:"rainbow",type:"noun",cat:"Nature"},
+  {da:"hav",en:"sea / ocean",type:"noun",cat:"Nature"},
+  {da:"sø",en:"lake",type:"noun",cat:"Nature"},
+  {da:"å",en:"stream / river",type:"noun",cat:"Nature"},
+  {da:"flod",en:"river",type:"noun",cat:"Nature"},
+  {da:"bjerg",en:"mountain",type:"noun",cat:"Nature"},
+  {da:"dal",en:"valley",type:"noun",cat:"Nature"},
+  {da:"kyst",en:"coast",type:"noun",cat:"Nature"},
+  {da:"ø",en:"island",type:"noun",cat:"Nature"},
+  {da:"skov",en:"forest / wood",type:"noun",cat:"Nature"},
+  {da:"mark",en:"field",type:"noun",cat:"Nature"},
+  {da:"strand",en:"beach",type:"noun",cat:"Nature"},
+  {da:"blomst",en:"flower",type:"noun",cat:"Nature"},
+  {da:"træ",en:"tree",type:"noun",cat:"Nature"},
+  {da:"græs",en:"grass",type:"noun",cat:"Nature"},
+  {da:"jord",en:"earth / soil",type:"noun",cat:"Nature"},
+  {da:"luft",en:"air",type:"noun",cat:"Nature"},
+  {da:"ild",en:"fire",type:"noun",cat:"Nature"},
+  {da:"sten",en:"stone / rock",type:"noun",cat:"Nature"},
+  {da:"sand",en:"sand",type:"noun",cat:"Nature"},
+  {da:"busk",en:"bush / shrub",type:"noun",cat:"Nature"},
+  {da:"løv",en:"leaves / foliage",type:"noun",cat:"Nature"},
+  {da:"natur",en:"nature",type:"noun",cat:"Nature"},
+
+  // ── ANIMALS (25) ─────────────────────────────────────────────────
+  {da:"dyr",en:"animal",type:"noun",cat:"Animals"},
+  {da:"hund",en:"dog",type:"noun",cat:"Animals"},
+  {da:"kat",en:"cat",type:"noun",cat:"Animals"},
+  {da:"hest",en:"horse",type:"noun",cat:"Animals"},
+  {da:"ko",en:"cow",type:"noun",cat:"Animals"},
+  {da:"gris",en:"pig",type:"noun",cat:"Animals"},
+  {da:"får",en:"sheep",type:"noun",cat:"Animals"},
+  {da:"ged",en:"goat",type:"noun",cat:"Animals"},
+  {da:"høne",en:"hen / chicken",type:"noun",cat:"Animals"},
+  {da:"and",en:"duck",type:"noun",cat:"Animals"},
+  {da:"fugl",en:"bird",type:"noun",cat:"Animals"},
+  {da:"fisk",en:"fish",type:"noun",cat:"Animals"},
+  {da:"mus",en:"mouse",type:"noun",cat:"Animals"},
+  {da:"rotte",en:"rat",type:"noun",cat:"Animals"},
+  {da:"kanin",en:"rabbit",type:"noun",cat:"Animals"},
+  {da:"bjørn",en:"bear",type:"noun",cat:"Animals"},
+  {da:"ulv",en:"wolf",type:"noun",cat:"Animals"},
+  {da:"ræv",en:"fox",type:"noun",cat:"Animals"},
+  {da:"hjort",en:"deer",type:"noun",cat:"Animals"},
+  {da:"løve",en:"lion",type:"noun",cat:"Animals"},
+  {da:"elefant",en:"elephant",type:"noun",cat:"Animals"},
+  {da:"slange",en:"snake",type:"noun",cat:"Animals"},
+  {da:"bi",en:"bee",type:"noun",cat:"Animals"},
+  {da:"sommerfugl",en:"butterfly",type:"noun",cat:"Animals"},
+  {da:"insekt",en:"insect",type:"noun",cat:"Animals"},
+
+  // ── TRANSPORT (25) ───────────────────────────────────────────────
+  {da:"bil",en:"car",type:"noun",cat:"Transport"},
+  {da:"bus",en:"bus",type:"noun",cat:"Transport"},
+  {da:"tog",en:"train",type:"noun",cat:"Transport"},
+  {da:"fly",en:"airplane",type:"noun",cat:"Transport"},
+  {da:"cykel",en:"bicycle",type:"noun",cat:"Transport"},
+  {da:"motorcykel",en:"motorcycle",type:"noun",cat:"Transport"},
+  {da:"båd",en:"boat",type:"noun",cat:"Transport"},
+  {da:"skib",en:"ship",type:"noun",cat:"Transport"},
+  {da:"metro",en:"metro / subway",type:"noun",cat:"Transport"},
+  {da:"taxa",en:"taxi",type:"noun",cat:"Transport"},
+  {da:"ambulance",en:"ambulance",type:"noun",cat:"Transport"},
+  {da:"lastbil",en:"truck",type:"noun",cat:"Transport"},
+  {da:"vej",en:"road / way",type:"noun",cat:"Transport"},
+  {da:"gade",en:"street",type:"noun",cat:"Transport"},
+  {da:"fortov",en:"pavement / sidewalk",type:"noun",cat:"Transport"},
+  {da:"bro",en:"bridge",type:"noun",cat:"Transport"},
+  {da:"tunnel",en:"tunnel",type:"noun",cat:"Transport"},
+  {da:"lufthavn",en:"airport",type:"noun",cat:"Transport"},
+  {da:"station",en:"station",type:"noun",cat:"Transport"},
+  {da:"havn",en:"harbour / port",type:"noun",cat:"Transport"},
+  {da:"benzin",en:"petrol / gasoline",type:"noun",cat:"Transport"},
+  {da:"parkering",en:"parking",type:"noun",cat:"Transport"},
+  {da:"trafik",en:"traffic",type:"noun",cat:"Transport"},
+  {da:"fart",en:"speed",type:"noun",cat:"Transport"},
+  {da:"billet",en:"ticket",type:"noun",cat:"Transport"},
+
+  // ── PLACES (30) ──────────────────────────────────────────────────
+  {da:"by",en:"city / town",type:"noun",cat:"Places"},
+  {da:"land",en:"country / land",type:"noun",cat:"Places"},
+  {da:"verden",en:"world",type:"noun",cat:"Places"},
+  {da:"butik",en:"shop / store",type:"noun",cat:"Places"},
+  {da:"supermarked",en:"supermarket",type:"noun",cat:"Places"},
+  {da:"restaurant",en:"restaurant",type:"noun",cat:"Places"},
+  {da:"café",en:"café",type:"noun",cat:"Places"},
+  {da:"bar",en:"bar",type:"noun",cat:"Places"},
+  {da:"skole",en:"school",type:"noun",cat:"Places"},
+  {da:"universitet",en:"university",type:"noun",cat:"Places"},
+  {da:"hospital",en:"hospital",type:"noun",cat:"Places"},
+  {da:"bibliotek",en:"library",type:"noun",cat:"Places"},
+  {da:"bank",en:"bank",type:"noun",cat:"Places"},
+  {da:"hotel",en:"hotel",type:"noun",cat:"Places"},
+  {da:"park",en:"park",type:"noun",cat:"Places"},
+  {da:"kirke",en:"church",type:"noun",cat:"Places"},
+  {da:"apotek",en:"pharmacy",type:"noun",cat:"Places"},
+  {da:"posthus",en:"post office",type:"noun",cat:"Places"},
+  {da:"museum",en:"museum",type:"noun",cat:"Places"},
+  {da:"biograf",en:"cinema",type:"noun",cat:"Places"},
+  {da:"teater",en:"theatre",type:"noun",cat:"Places"},
+  {da:"stadion",en:"stadium",type:"noun",cat:"Places"},
+  {da:"zoo",en:"zoo",type:"noun",cat:"Places"},
+  {da:"rådhus",en:"town hall",type:"noun",cat:"Places"},
+  {da:"politistation",en:"police station",type:"noun",cat:"Places"},
+  {da:"fængsel",en:"prison",type:"noun",cat:"Places"},
+  {da:"ambassade",en:"embassy",type:"noun",cat:"Places"},
+  {da:"marked",en:"market",type:"noun",cat:"Places"},
+  {da:"torv",en:"square / market place",type:"noun",cat:"Places"},
+  {da:"centrum",en:"city centre",type:"noun",cat:"Places"},
+
+  // ── CLOTHES (20) ─────────────────────────────────────────────────
+  {da:"tøj",en:"clothes",type:"noun",cat:"Clothes"},
+  {da:"trøje",en:"sweater / jumper",type:"noun",cat:"Clothes"},
+  {da:"jakke",en:"jacket",type:"noun",cat:"Clothes"},
+  {da:"frakke",en:"coat",type:"noun",cat:"Clothes"},
+  {da:"bukser",en:"trousers",type:"noun",cat:"Clothes"},
+  {da:"jeans",en:"jeans",type:"noun",cat:"Clothes"},
+  {da:"shorts",en:"shorts",type:"noun",cat:"Clothes"},
+  {da:"nederdel",en:"skirt",type:"noun",cat:"Clothes"},
+  {da:"kjole",en:"dress",type:"noun",cat:"Clothes"},
+  {da:"skjorte",en:"shirt",type:"noun",cat:"Clothes"},
+  {da:"t-shirt",en:"t-shirt",type:"noun",cat:"Clothes"},
+  {da:"sko",en:"shoe",type:"noun",cat:"Clothes"},
+  {da:"støvle",en:"boot",type:"noun",cat:"Clothes"},
+  {da:"sandal",en:"sandal",type:"noun",cat:"Clothes"},
+  {da:"hat",en:"hat",type:"noun",cat:"Clothes"},
+  {da:"hue",en:"beanie / woolly hat",type:"noun",cat:"Clothes"},
+  {da:"tørklæde",en:"scarf",type:"noun",cat:"Clothes"},
+  {da:"handske",en:"glove",type:"noun",cat:"Clothes"},
+  {da:"bælte",en:"belt",type:"noun",cat:"Clothes"},
+  {da:"undertøj",en:"underwear",type:"noun",cat:"Clothes"},
+
+  // ── WORK & SCHOOL (35) ───────────────────────────────────────────
+  {da:"arbejde",en:"work / job",type:"noun",cat:"Work & School"},
+  {da:"job",en:"job",type:"noun",cat:"Work & School"},
+  {da:"karriere",en:"career",type:"noun",cat:"Work & School"},
+  {da:"kontor",en:"office",type:"noun",cat:"Work & School"},
+  {da:"møde",en:"meeting",type:"noun",cat:"Work & School"},
+  {da:"projekt",en:"project",type:"noun",cat:"Work & School"},
+  {da:"opgave",en:"task / assignment",type:"noun",cat:"Work & School"},
+  {da:"rapport",en:"report",type:"noun",cat:"Work & School"},
+  {da:"præsentation",en:"presentation",type:"noun",cat:"Work & School"},
+  {da:"kontrakt",en:"contract",type:"noun",cat:"Work & School"},
+  {da:"løn",en:"salary / wage",type:"noun",cat:"Work & School"},
+  {da:"computer",en:"computer",type:"noun",cat:"Work & School"},
+  {da:"telefon",en:"phone",type:"noun",cat:"Work & School"},
+  {da:"e-mail",en:"email",type:"noun",cat:"Work & School"},
+  {da:"klasse",en:"class",type:"noun",cat:"Work & School"},
+  {da:"lektion",en:"lesson",type:"noun",cat:"Work & School"},
+  {da:"eksamen",en:"exam",type:"noun",cat:"Work & School"},
+  {da:"karakter",en:"grade",type:"noun",cat:"Work & School"},
+  {da:"lærer",en:"teacher",type:"noun",cat:"Work & School"},
+  {da:"professor",en:"professor",type:"noun",cat:"Work & School"},
+  {da:"elev",en:"pupil / student",type:"noun",cat:"Work & School"},
+  {da:"studerende",en:"university student",type:"noun",cat:"Work & School"},
+  {da:"bog",en:"book",type:"noun",cat:"Work & School"},
+  {da:"pen",en:"pen",type:"noun",cat:"Work & School"},
+  {da:"papir",en:"paper",type:"noun",cat:"Work & School"},
+  {da:"tavle",en:"blackboard",type:"noun",cat:"Work & School"},
+  {da:"lektier",en:"homework",type:"noun",cat:"Work & School"},
+  {da:"uddannelse",en:"education",type:"noun",cat:"Work & School"},
+  {da:"certifikat",en:"certificate",type:"noun",cat:"Work & School"},
+  {da:"ansøgning",en:"application",type:"noun",cat:"Work & School"},
+  {da:"interview",en:"interview",type:"noun",cat:"Work & School"},
+  {da:"virksomhed",en:"company / business",type:"noun",cat:"Work & School"},
+  {da:"industri",en:"industry",type:"noun",cat:"Work & School"},
+  {da:"marked",en:"market",type:"noun",cat:"Work & School"},
+  {da:"økonomi",en:"economy / economics",type:"noun",cat:"Work & School"},
+
+  // ── HEALTH (25) ──────────────────────────────────────────────────
+  {da:"sundhed",en:"health",type:"noun",cat:"Health"},
+  {da:"sygdom",en:"illness / disease",type:"noun",cat:"Health"},
+  {da:"smerte",en:"pain",type:"noun",cat:"Health"},
+  {da:"feber",en:"fever",type:"noun",cat:"Health"},
+  {da:"hoste",en:"cough",type:"noun",cat:"Health"},
+  {da:"forkølelse",en:"cold",type:"noun",cat:"Health"},
+  {da:"influenza",en:"flu",type:"noun",cat:"Health"},
+  {da:"allergi",en:"allergy",type:"noun",cat:"Health"},
+  {da:"læge",en:"doctor",type:"noun",cat:"Health"},
+  {da:"sygeplejerske",en:"nurse",type:"noun",cat:"Health"},
+  {da:"tandlæge",en:"dentist",type:"noun",cat:"Health"},
+  {da:"medicin",en:"medicine",type:"noun",cat:"Health"},
+  {da:"tablet",en:"tablet / pill",type:"noun",cat:"Health"},
+  {da:"recept",en:"prescription",type:"noun",cat:"Health"},
+  {da:"operation",en:"operation",type:"noun",cat:"Health"},
+  {da:"vaccination",en:"vaccination",type:"noun",cat:"Health"},
+  {da:"blodtryk",en:"blood pressure",type:"noun",cat:"Health"},
+  {da:"sukkersyge",en:"diabetes",type:"noun",cat:"Health"},
+  {da:"hjerteanfald",en:"heart attack",type:"noun",cat:"Health"},
+  {da:"brækkede",en:"broken",type:"adj",cat:"Health"},
+  {da:"sår",en:"wound / sore",type:"noun",cat:"Health"},
+  {da:"plaster",en:"plaster / bandage",type:"noun",cat:"Health"},
+  {da:"forbinding",en:"dressing / bandage",type:"noun",cat:"Health"},
+  {da:"blodgruppe",en:"blood type",type:"noun",cat:"Health"},
+  {da:"stress",en:"stress",type:"noun",cat:"Health"},
+
+  // ── EMOTIONS (20) ────────────────────────────────────────────────
+  {da:"følelse",en:"feeling",type:"noun",cat:"Emotions"},
+  {da:"lykke",en:"happiness",type:"noun",cat:"Emotions"},
+  {da:"sorg",en:"grief / sorrow",type:"noun",cat:"Emotions"},
+  {da:"vrede",en:"anger",type:"noun",cat:"Emotions"},
+  {da:"frygt",en:"fear",type:"noun",cat:"Emotions"},
+  {da:"kærlighed",en:"love",type:"noun",cat:"Emotions"},
+  {da:"had",en:"hate",type:"noun",cat:"Emotions"},
+  {da:"håb",en:"hope",type:"noun",cat:"Emotions"},
+  {da:"overraskelse",en:"surprise",type:"noun",cat:"Emotions"},
+  {da:"skam",en:"shame",type:"noun",cat:"Emotions"},
+  {da:"stolthed",en:"pride",type:"noun",cat:"Emotions"},
+  {da:"jalousi",en:"jealousy",type:"noun",cat:"Emotions"},
+  {da:"ensomhed",en:"loneliness",type:"noun",cat:"Emotions"},
+  {da:"ro",en:"calm / peace",type:"noun",cat:"Emotions"},
+  {da:"spænding",en:"excitement / tension",type:"noun",cat:"Emotions"},
+  {da:"tilfredshed",en:"satisfaction",type:"noun",cat:"Emotions"},
+  {da:"skuffelse",en:"disappointment",type:"noun",cat:"Emotions"},
+  {da:"misundelse",en:"envy",type:"noun",cat:"Emotions"},
+  {da:"nysgerrighed",en:"curiosity",type:"noun",cat:"Emotions"},
+  {da:"taknemmelighed",en:"gratitude",type:"noun",cat:"Emotions"},
+
+  // ── COMMON WORDS (45) ────────────────────────────────────────────
+  {da:"og",en:"and",type:"conj",cat:"Common Words"},
+  {da:"eller",en:"or",type:"conj",cat:"Common Words"},
+  {da:"men",en:"but",type:"conj",cat:"Common Words"},
+  {da:"fordi",en:"because",type:"conj",cat:"Common Words"},
+  {da:"hvis",en:"if",type:"conj",cat:"Common Words"},
+  {da:"når",en:"when / whenever",type:"conj",cat:"Common Words"},
+  {da:"at",en:"that / to",type:"conj",cat:"Common Words"},
+  {da:"som",en:"as / who / that",type:"conj",cat:"Common Words"},
+  {da:"selvom",en:"even though",type:"conj",cat:"Common Words"},
+  {da:"mens",en:"while",type:"conj",cat:"Common Words"},
+  {da:"ikke",en:"not",type:"adv",cat:"Common Words"},
+  {da:"også",en:"also / too",type:"adv",cat:"Common Words"},
+  {da:"bare",en:"just / only",type:"adv",cat:"Common Words"},
+  {da:"meget",en:"very / much",type:"adv",cat:"Common Words"},
+  {da:"lidt",en:"a little",type:"adv",cat:"Common Words"},
+  {da:"mere",en:"more",type:"adv",cat:"Common Words"},
+  {da:"mindre",en:"less / fewer",type:"adv",cat:"Common Words"},
+  {da:"alle",en:"all / everyone",type:"pron",cat:"Common Words"},
+  {da:"ingen",en:"none / nobody",type:"pron",cat:"Common Words"},
+  {da:"noget",en:"something",type:"pron",cat:"Common Words"},
+  {da:"nogen",en:"someone / any",type:"pron",cat:"Common Words"},
+  {da:"her",en:"here",type:"adv",cat:"Common Words"},
+  {da:"der",en:"there",type:"adv",cat:"Common Words"},
+  {da:"hvor",en:"where",type:"adv",cat:"Common Words"},
+  {da:"hvad",en:"what",type:"pron",cat:"Common Words"},
+  {da:"hvem",en:"who",type:"pron",cat:"Common Words"},
+  {da:"hvordan",en:"how",type:"adv",cat:"Common Words"},
+  {da:"hvorfor",en:"why",type:"adv",cat:"Common Words"},
+  {da:"hvornår",en:"when",type:"adv",cat:"Common Words"},
+  {da:"ja",en:"yes",type:"part",cat:"Common Words"},
+  {da:"nej",en:"no",type:"part",cat:"Common Words"},
+  {da:"måske",en:"maybe / perhaps",type:"adv",cat:"Common Words"},
+  {da:"selvfølgelig",en:"of course",type:"adv",cat:"Common Words"},
+  {da:"desværre",en:"unfortunately",type:"adv",cat:"Common Words"},
+  {da:"heldigvis",en:"fortunately",type:"adv",cat:"Common Words"},
+  {da:"egentlig",en:"actually / really",type:"adv",cat:"Common Words"},
+  {da:"faktisk",en:"in fact / actually",type:"adv",cat:"Common Words"},
+  {da:"helt",en:"completely / quite",type:"adv",cat:"Common Words"},
+  {da:"næsten",en:"almost",type:"adv",cat:"Common Words"},
+  {da:"kun",en:"only / just",type:"adv",cat:"Common Words"},
+  {da:"alligevel",en:"anyway / still",type:"adv",cat:"Common Words"},
+  {da:"ellers",en:"otherwise",type:"adv",cat:"Common Words"},
+  {da:"selvom",en:"although",type:"conj",cat:"Common Words"},
+  {da:"derefter",en:"afterwards / then",type:"adv",cat:"Common Words"},
+  {da:"derfor",en:"therefore / so",type:"adv",cat:"Common Words"},
+
+  // ── PREPOSITIONS (20) ────────────────────────────────────────────
+  {da:"i",en:"in",type:"prep",cat:"Prepositions"},
+  {da:"på",en:"on / at",type:"prep",cat:"Prepositions"},
+  {da:"til",en:"to / for",type:"prep",cat:"Prepositions"},
+  {da:"fra",en:"from",type:"prep",cat:"Prepositions"},
+  {da:"med",en:"with",type:"prep",cat:"Prepositions"},
+  {da:"uden",en:"without",type:"prep",cat:"Prepositions"},
+  {da:"over",en:"over / above",type:"prep",cat:"Prepositions"},
+  {da:"under",en:"under / below",type:"prep",cat:"Prepositions"},
+  {da:"ved",en:"by / near / at",type:"prep",cat:"Prepositions"},
+  {da:"mellem",en:"between",type:"prep",cat:"Prepositions"},
+  {da:"bag",en:"behind",type:"prep",cat:"Prepositions"},
+  {da:"foran",en:"in front of",type:"prep",cat:"Prepositions"},
+  {da:"inden",en:"within / inside",type:"prep",cat:"Prepositions"},
+  {da:"uden for",en:"outside",type:"prep",cat:"Prepositions"},
+  {da:"mod",en:"towards / against",type:"prep",cat:"Prepositions"},
+  {da:"efter",en:"after / for",type:"prep",cat:"Prepositions"},
+  {da:"om",en:"about / around",type:"prep",cat:"Prepositions"},
+  {da:"af",en:"of / by",type:"prep",cat:"Prepositions"},
+  {da:"langs",en:"along",type:"prep",cat:"Prepositions"},
+  {da:"gennem",en:"through",type:"prep",cat:"Prepositions"},
+
+  // ── PHRASES & GREETINGS (25) ─────────────────────────────────────
+  {da:"hej",en:"hi / hello",type:"phrase",cat:"Phrases"},
+  {da:"godmorgen",en:"good morning",type:"phrase",cat:"Phrases"},
+  {da:"goddag",en:"good day",type:"phrase",cat:"Phrases"},
+  {da:"godaften",en:"good evening",type:"phrase",cat:"Phrases"},
+  {da:"godnat",en:"good night",type:"phrase",cat:"Phrases"},
+  {da:"farvel",en:"goodbye",type:"phrase",cat:"Phrases"},
+  {da:"hej hej",en:"bye bye",type:"phrase",cat:"Phrases"},
+  {da:"tak",en:"thank you",type:"phrase",cat:"Phrases"},
+  {da:"mange tak",en:"thank you very much",type:"phrase",cat:"Phrases"},
+  {da:"værsgo",en:"here you go / please",type:"phrase",cat:"Phrases"},
+  {da:"undskyld",en:"excuse me / sorry",type:"phrase",cat:"Phrases"},
+  {da:"det er okay",en:"that's okay",type:"phrase",cat:"Phrases"},
+  {da:"hvad hedder du?",en:"what's your name?",type:"phrase",cat:"Phrases"},
+  {da:"jeg hedder…",en:"my name is…",type:"phrase",cat:"Phrases"},
+  {da:"hvordan har du det?",en:"how are you?",type:"phrase",cat:"Phrases"},
+  {da:"godt, tak",en:"fine, thanks",type:"phrase",cat:"Phrases"},
+  {da:"skål",en:"cheers!",type:"phrase",cat:"Phrases"},
+  {da:"tillykke",en:"congratulations",type:"phrase",cat:"Phrases"},
+  {da:"held og lykke",en:"good luck",type:"phrase",cat:"Phrases"},
+  {da:"på gensyn",en:"see you again",type:"phrase",cat:"Phrases"},
+  {da:"velbekomme",en:"enjoy your meal",type:"phrase",cat:"Phrases"},
+  {da:"det ved jeg ikke",en:"I don't know",type:"phrase",cat:"Phrases"},
+  {da:"kan du hjælpe mig?",en:"can you help me?",type:"phrase",cat:"Phrases"},
+  {da:"forstår du?",en:"do you understand?",type:"phrase",cat:"Phrases"},
+  {da:"jeg forstår ikke",en:"I don't understand",type:"phrase",cat:"Phrases"},
+
+  // ── SHOPPING & MONEY (20) ────────────────────────────────────────
+  {da:"penge",en:"money",type:"noun",cat:"Shopping"},
+  {da:"krone",en:"krone (DKK)",type:"noun",cat:"Shopping"},
+  {da:"pris",en:"price",type:"noun",cat:"Shopping"},
+  {da:"rabat",en:"discount",type:"noun",cat:"Shopping"},
+  {da:"tilbud",en:"offer / deal",type:"noun",cat:"Shopping"},
+  {da:"kvittering",en:"receipt",type:"noun",cat:"Shopping"},
+  {da:"regning",en:"bill",type:"noun",cat:"Shopping"},
+  {da:"kort",en:"card",type:"noun",cat:"Shopping"},
+  {da:"kontant",en:"cash",type:"noun",cat:"Shopping"},
+  {da:"valuta",en:"currency",type:"noun",cat:"Shopping"},
+  {da:"gratis",en:"free / no charge",type:"adj",cat:"Shopping"},
+  {da:"dyr",en:"expensive",type:"adj",cat:"Shopping"},
+  {da:"billig",en:"cheap",type:"adj",cat:"Shopping"},
+  {da:"kasseapparat",en:"cash register",type:"noun",cat:"Shopping"},
+  {da:"indkøbskurv",en:"shopping basket",type:"noun",cat:"Shopping"},
+  {da:"indkøbsvogn",en:"shopping trolley",type:"noun",cat:"Shopping"},
+  {da:"pose",en:"bag",type:"noun",cat:"Shopping"},
+  {da:"størrelse",en:"size",type:"noun",cat:"Shopping"},
+  {da:"mærke",en:"brand",type:"noun",cat:"Shopping"},
+  {da:"skat",en:"tax",type:"noun",cat:"Shopping"},
+
+  // ── TECHNOLOGY (20) ──────────────────────────────────────────────
+  {da:"internet",en:"internet",type:"noun",cat:"Technology"},
+  {da:"hjemmeside",en:"website",type:"noun",cat:"Technology"},
+  {da:"app",en:"app",type:"noun",cat:"Technology"},
+  {da:"kodeord",en:"password",type:"noun",cat:"Technology"},
+  {da:"skærm",en:"screen",type:"noun",cat:"Technology"},
+  {da:"tastatur",en:"keyboard",type:"noun",cat:"Technology"},
+  {da:"mus",en:"mouse (computer)",type:"noun",cat:"Technology"},
+  {da:"printer",en:"printer",type:"noun",cat:"Technology"},
+  {da:"software",en:"software",type:"noun",cat:"Technology"},
+  {da:"netværk",en:"network",type:"noun",cat:"Technology"},
+  {da:"smartphone",en:"smartphone",type:"noun",cat:"Technology"},
+  {da:"opladning",en:"charging",type:"noun",cat:"Technology"},
+  {da:"batteri",en:"battery",type:"noun",cat:"Technology"},
+  {da:"bluetooth",en:"Bluetooth",type:"noun",cat:"Technology"},
+  {da:"wifi",en:"Wi-Fi",type:"noun",cat:"Technology"},
+  {da:"data",en:"data",type:"noun",cat:"Technology"},
+  {da:"sky-tjeneste",en:"cloud service",type:"noun",cat:"Technology"},
+  {da:"sociale medier",en:"social media",type:"noun",cat:"Technology"},
+  {da:"video",en:"video",type:"noun",cat:"Technology"},
+  {da:"kamera",en:"camera",type:"noun",cat:"Technology"},
+
+  // ── SOCIETY & POLITICS (25) ──────────────────────────────────────
+  {da:"samfund",en:"society",type:"noun",cat:"Society"},
+  {da:"regering",en:"government",type:"noun",cat:"Society"},
+  {da:"politik",en:"politics / policy",type:"noun",cat:"Society"},
+  {da:"parti",en:"(political) party",type:"noun",cat:"Society"},
+  {da:"valg",en:"election",type:"noun",cat:"Society"},
+  {da:"lov",en:"law",type:"noun",cat:"Society"},
+  {da:"ret",en:"right / justice",type:"noun",cat:"Society"},
+  {da:"pligt",en:"duty / obligation",type:"noun",cat:"Society"},
+  {da:"frihed",en:"freedom",type:"noun",cat:"Society"},
+  {da:"demokrati",en:"democracy",type:"noun",cat:"Society"},
+  {da:"minister",en:"minister",type:"noun",cat:"Society"},
+  {da:"politi",en:"police",type:"noun",cat:"Society"},
+  {da:"militær",en:"military",type:"noun",cat:"Society"},
+  {da:"krig",en:"war",type:"noun",cat:"Society"},
+  {da:"fred",en:"peace",type:"noun",cat:"Society"},
+  {da:"flygtning",en:"refugee",type:"noun",cat:"Society"},
+  {da:"integration",en:"integration",type:"noun",cat:"Society"},
+  {da:"indvandrer",en:"immigrant",type:"noun",cat:"Society"},
+  {da:"kultur",en:"culture",type:"noun",cat:"Society"},
+  {da:"tradition",en:"tradition",type:"noun",cat:"Society"},
+  {da:"religion",en:"religion",type:"noun",cat:"Society"},
+  {da:"kirke",en:"church",type:"noun",cat:"Society"},
+  {da:"skat",en:"tax",type:"noun",cat:"Society"},
+  {da:"velfærd",en:"welfare",type:"noun",cat:"Society"},
+  {da:"miljø",en:"environment",type:"noun",cat:"Society"},
+
+  // ── ARTS & LEISURE (25) ──────────────────────────────────────────
+  {da:"musik",en:"music",type:"noun",cat:"Arts & Leisure"},
+  {da:"sang",en:"song",type:"noun",cat:"Arts & Leisure"},
+  {da:"koncert",en:"concert",type:"noun",cat:"Arts & Leisure"},
+  {da:"band",en:"band",type:"noun",cat:"Arts & Leisure"},
+  {da:"kunst",en:"art",type:"noun",cat:"Arts & Leisure"},
+  {da:"billede",en:"picture / image",type:"noun",cat:"Arts & Leisure"},
+  {da:"maleri",en:"painting",type:"noun",cat:"Arts & Leisure"},
+  {da:"skulptur",en:"sculpture",type:"noun",cat:"Arts & Leisure"},
+  {da:"film",en:"film / movie",type:"noun",cat:"Arts & Leisure"},
+  {da:"serie",en:"TV series",type:"noun",cat:"Arts & Leisure"},
+  {da:"bog",en:"book",type:"noun",cat:"Arts & Leisure"},
+  {da:"roman",en:"novel",type:"noun",cat:"Arts & Leisure"},
+  {da:"digt",en:"poem",type:"noun",cat:"Arts & Leisure"},
+  {da:"dans",en:"dance",type:"noun",cat:"Arts & Leisure"},
+  {da:"sport",en:"sport",type:"noun",cat:"Arts & Leisure"},
+  {da:"fodbold",en:"football / soccer",type:"noun",cat:"Arts & Leisure"},
+  {da:"svømning",en:"swimming",type:"noun",cat:"Arts & Leisure"},
+  {da:"løb",en:"running",type:"noun",cat:"Arts & Leisure"},
+  {da:"cykling",en:"cycling",type:"noun",cat:"Arts & Leisure"},
+  {da:"hobby",en:"hobby",type:"noun",cat:"Arts & Leisure"},
+  {da:"ferie",en:"holiday / vacation",type:"noun",cat:"Arts & Leisure"},
+  {da:"fest",en:"party",type:"noun",cat:"Arts & Leisure"},
+  {da:"spil",en:"game",type:"noun",cat:"Arts & Leisure"},
+  {da:"leg",en:"play / game",type:"noun",cat:"Arts & Leisure"},
+  {da:"teater",en:"theatre",type:"noun",cat:"Arts & Leisure"},
+
+  // ── ABSTRACT & MISC (60) ─────────────────────────────────────────
+  {da:"ting",en:"thing",type:"noun",cat:"Abstract & Misc"},
+  {da:"del",en:"part",type:"noun",cat:"Abstract & Misc"},
+  {da:"side",en:"side / page",type:"noun",cat:"Abstract & Misc"},
+  {da:"punkt",en:"point / period",type:"noun",cat:"Abstract & Misc"},
+  {da:"nummer",en:"number",type:"noun",cat:"Abstract & Misc"},
+  {da:"navn",en:"name",type:"noun",cat:"Abstract & Misc"},
+  {da:"ord",en:"word",type:"noun",cat:"Abstract & Misc"},
+  {da:"sætning",en:"sentence",type:"noun",cat:"Abstract & Misc"},
+  {da:"sprog",en:"language",type:"noun",cat:"Abstract & Misc"},
+  {da:"spørgsmål",en:"question",type:"noun",cat:"Abstract & Misc"},
+  {da:"svar",en:"answer",type:"noun",cat:"Abstract & Misc"},
+  {da:"problem",en:"problem",type:"noun",cat:"Abstract & Misc"},
+  {da:"løsning",en:"solution",type:"noun",cat:"Abstract & Misc"},
+  {da:"idé",en:"idea",type:"noun",cat:"Abstract & Misc"},
+  {da:"plan",en:"plan",type:"noun",cat:"Abstract & Misc"},
+  {da:"resultat",en:"result",type:"noun",cat:"Abstract & Misc"},
+  {da:"eksempel",en:"example",type:"noun",cat:"Abstract & Misc"},
+  {da:"form",en:"form / shape",type:"noun",cat:"Abstract & Misc"},
+  {da:"type",en:"type",type:"noun",cat:"Abstract & Misc"},
+  {da:"slags",en:"kind / sort",type:"noun",cat:"Abstract & Misc"},
+  {da:"mål",en:"goal / measure",type:"noun",cat:"Abstract & Misc"},
+  {da:"evne",en:"ability / skill",type:"noun",cat:"Abstract & Misc"},
+  {da:"viden",en:"knowledge",type:"noun",cat:"Abstract & Misc"},
+  {da:"erfaring",en:"experience",type:"noun",cat:"Abstract & Misc"},
+  {da:"information",en:"information",type:"noun",cat:"Abstract & Misc"},
+  {da:"nyhed",en:"news",type:"noun",cat:"Abstract & Misc"},
+  {da:"historie",en:"story / history",type:"noun",cat:"Abstract & Misc"},
+  {da:"sandhed",en:"truth",type:"noun",cat:"Abstract & Misc"},
+  {da:"løgn",en:"lie",type:"noun",cat:"Abstract & Misc"},
+  {da:"mening",en:"meaning / opinion",type:"noun",cat:"Abstract & Misc"},
+  {da:"årsag",en:"reason / cause",type:"noun",cat:"Abstract & Misc"},
+  {da:"konsekvens",en:"consequence",type:"noun",cat:"Abstract & Misc"},
+  {da:"forskel",en:"difference",type:"noun",cat:"Abstract & Misc"},
+  {da:"lighed",en:"similarity / equality",type:"noun",cat:"Abstract & Misc"},
+  {da:"mulighed",en:"possibility / opportunity",type:"noun",cat:"Abstract & Misc"},
+  {da:"risiko",en:"risk",type:"noun",cat:"Abstract & Misc"},
+  {da:"chance",en:"chance",type:"noun",cat:"Abstract & Misc"},
+  {da:"situation",en:"situation",type:"noun",cat:"Abstract & Misc"},
+  {da:"forhold",en:"relationship / condition",type:"noun",cat:"Abstract & Misc"},
+  {da:"system",en:"system",type:"noun",cat:"Abstract & Misc"},
+  {da:"farlig",en:"dangerous",type:"adj",cat:"Abstract & Misc"},
+  {da:"vigtig",en:"important",type:"adj",cat:"Abstract & Misc"},
+  {da:"mulig",en:"possible",type:"adj",cat:"Abstract & Misc"},
+  {da:"umulig",en:"impossible",type:"adj",cat:"Abstract & Misc"},
+  {da:"rigtig",en:"right / correct",type:"adj",cat:"Abstract & Misc"},
+  {da:"forkert",en:"wrong / incorrect",type:"adj",cat:"Abstract & Misc"},
+  {da:"forskellig",en:"different",type:"adj",cat:"Abstract & Misc"},
+  {da:"samme",en:"same",type:"adj",cat:"Abstract & Misc"},
+  {da:"særlig",en:"special",type:"adj",cat:"Abstract & Misc"},
+  {da:"normal",en:"normal",type:"adj",cat:"Abstract & Misc"},
+  {da:"typisk",en:"typical",type:"adj",cat:"Abstract & Misc"},
+  {da:"generel",en:"general",type:"adj",cat:"Abstract & Misc"},
+  {da:"specifik",en:"specific",type:"adj",cat:"Abstract & Misc"},
+  {da:"klar",en:"clear / ready",type:"adj",cat:"Abstract & Misc"},
+  {da:"tydelig",en:"clear / obvious",type:"adj",cat:"Abstract & Misc"},
+  {da:"kompleks",en:"complex",type:"adj",cat:"Abstract & Misc"},
+  {da:"simpel",en:"simple",type:"adj",cat:"Abstract & Misc"},
+  {da:"direkte",en:"direct",type:"adj",cat:"Abstract & Misc"},
+  {da:"indirekte",en:"indirect",type:"adj",cat:"Abstract & Misc"},
+  {da:"officiel",en:"official",type:"adj",cat:"Abstract & Misc"},
+
+  // ── EXTRA WORDS — Pronouns (3) ───────────────────────────────────
+  {da:"jer",en:"you (pl. obj.)",type:"pron",cat:"Pronouns"},
+  {da:"sig",en:"himself / herself / itself",type:"pron",cat:"Pronouns"},
+  {da:"intet",en:"nothing (neuter)",type:"pron",cat:"Pronouns"},
+
+  // ── EXTRA WORDS — Core Verbs (35) ────────────────────────────────
+  {da:"at hente",en:"to fetch / pick up",type:"verb",cat:"Core Verbs"},
+  {da:"at lave",en:"to make / do",type:"verb",cat:"Core Verbs"},
+  {da:"at række",en:"to reach / pass",type:"verb",cat:"Core Verbs"},
+  {da:"at pakke",en:"to pack",type:"verb",cat:"Core Verbs"},
+  {da:"at gemme",en:"to hide / save",type:"verb",cat:"Core Verbs"},
+  {da:"at glæde",en:"to please / delight",type:"verb",cat:"Core Verbs"},
+  {da:"at savne",en:"to miss",type:"verb",cat:"Core Verbs"},
+  {da:"at undgå",en:"to avoid",type:"verb",cat:"Core Verbs"},
+  {da:"at hvile",en:"to rest",type:"verb",cat:"Core Verbs"},
+  {da:"at smile",en:"to smile",type:"verb",cat:"Core Verbs"},
+  {da:"at græde",en:"to cry",type:"verb",cat:"Core Verbs"},
+  {da:"at grine",en:"to laugh",type:"verb",cat:"Core Verbs"},
+  {da:"at synge",en:"to sing",type:"verb",cat:"Core Verbs"},
+  {da:"at danse",en:"to dance",type:"verb",cat:"Core Verbs"},
+  {da:"at tegne",en:"to draw",type:"verb",cat:"Core Verbs"},
+  {da:"at male",en:"to paint",type:"verb",cat:"Core Verbs"},
+  {da:"at ringe",en:"to call (phone)",type:"verb",cat:"Core Verbs"},
+  {da:"at fortsætte",en:"to continue",type:"verb",cat:"Core Verbs"},
+  {da:"at gentage",en:"to repeat",type:"verb",cat:"Core Verbs"},
+  {da:"at undersøge",en:"to investigate",type:"verb",cat:"Core Verbs"},
+  {da:"at undervise",en:"to teach",type:"verb",cat:"Core Verbs"},
+  {da:"at oversætte",en:"to translate",type:"verb",cat:"Core Verbs"},
+  {da:"at fejre",en:"to celebrate",type:"verb",cat:"Core Verbs"},
+  {da:"at klage",en:"to complain",type:"verb",cat:"Core Verbs"},
+  {da:"at takke",en:"to thank",type:"verb",cat:"Core Verbs"},
+  {da:"at undskylde",en:"to apologise",type:"verb",cat:"Core Verbs"},
+  {da:"at flyve",en:"to fly",type:"verb",cat:"Core Verbs"},
+  {da:"at svømme",en:"to swim",type:"verb",cat:"Core Verbs"},
+  {da:"at klatre",en:"to climb",type:"verb",cat:"Core Verbs"},
+  {da:"at hoppe",en:"to jump",type:"verb",cat:"Core Verbs"},
+  {da:"at smage",en:"to taste",type:"verb",cat:"Core Verbs"},
+  {da:"at lugte",en:"to smell",type:"verb",cat:"Core Verbs"},
+  {da:"at vaske",en:"to wash",type:"verb",cat:"Core Verbs"},
+  {da:"at tabe",en:"to lose / drop",type:"verb",cat:"Core Verbs"},
+  {da:"at låne",en:"to borrow / lend",type:"verb",cat:"Core Verbs"},
+  {da:"at klare",en:"to manage / handle",type:"verb",cat:"Core Verbs"},
+  {da:"at kysse",en:"to kiss",type:"verb",cat:"Core Verbs"},
+  {da:"at investere",en:"to invest",type:"verb",cat:"Core Verbs"},
+
+  // ── EXTRA WORDS — Time (4) ───────────────────────────────────────
+  {da:"halv",en:"half",type:"adj",cat:"Time"},
+  {da:"kvart",en:"quarter",type:"noun",cat:"Time"},
+  {da:"kvarter",en:"quarter of an hour",type:"noun",cat:"Time"},
+  {da:"døgn",en:"24-hour day",type:"noun",cat:"Time"},
+
+  // ── EXTRA WORDS — Days & Months (3) ──────────────────────────────
+  {da:"weekend",en:"weekend",type:"noun",cat:"Days & Months"},
+  {da:"helligdag",en:"public holiday",type:"noun",cat:"Days & Months"},
+  {da:"højtid",en:"festival / holiday",type:"noun",cat:"Days & Months"},
+
+  // ── EXTRA WORDS — People & Family (4) ────────────────────────────
+  {da:"familie",en:"family",type:"noun",cat:"People"},
+  {da:"generation",en:"generation",type:"noun",cat:"People"},
+  {da:"ungdom",en:"youth",type:"noun",cat:"People"},
+  {da:"barndom",en:"childhood",type:"noun",cat:"People"},
+
+  // ── EXTRA WORDS — Body (10) ──────────────────────────────────────
+  {da:"albue",en:"elbow",type:"noun",cat:"Body"},
+  {da:"hofte",en:"hip",type:"noun",cat:"Body"},
+  {da:"bryst",en:"chest",type:"noun",cat:"Body"},
+  {da:"hage",en:"chin",type:"noun",cat:"Body"},
+  {da:"pande",en:"forehead",type:"noun",cat:"Body"},
+  {da:"kind",en:"cheek",type:"noun",cat:"Body"},
+  {da:"nakke",en:"neck (back)",type:"noun",cat:"Body"},
+  {da:"læbe",en:"lip",type:"noun",cat:"Body"},
+  {da:"ankel",en:"ankle",type:"noun",cat:"Body"},
+  {da:"hæl",en:"heel",type:"noun",cat:"Body"},
+
+  // ── EXTRA WORDS — Food & Drink (7) ───────────────────────────────
+  {da:"yoghurt",en:"yoghurt",type:"noun",cat:"Food & Drink"},
+  {da:"nudler",en:"noodles",type:"noun",cat:"Food & Drink"},
+  {da:"honning",en:"honey",type:"noun",cat:"Food & Drink"},
+  {da:"marmelade",en:"jam / marmalade",type:"noun",cat:"Food & Drink"},
+  {da:"kiks",en:"biscuit / cracker",type:"noun",cat:"Food & Drink"},
+  {da:"appelsin",en:"orange (fruit)",type:"noun",cat:"Food & Drink"},
+
+  // ── EXTRA WORDS — Home (5) ───────────────────────────────────────
+  {da:"gardin",en:"curtain",type:"noun",cat:"Home"},
+  {da:"tæppe",en:"carpet / blanket",type:"noun",cat:"Home"},
+  {da:"pude",en:"pillow / cushion",type:"noun",cat:"Home"},
+  {da:"skuffe",en:"drawer",type:"noun",cat:"Home"},
+  {da:"knage",en:"hook (for clothes)",type:"noun",cat:"Home"},
+
+  // ── EXTRA WORDS — Colours (5) ────────────────────────────────────
+  {da:"violet",en:"violet",type:"adj",cat:"Colours"},
+  {da:"turkis",en:"turquoise",type:"adj",cat:"Colours"},
+  {da:"beige",en:"beige",type:"adj",cat:"Colours"},
+  {da:"guld",en:"gold",type:"noun",cat:"Colours"},
+  {da:"sølv",en:"silver",type:"noun",cat:"Colours"},
+
+  // ── EXTRA WORDS — Adjectives (10) ────────────────────────────────
+  {da:"modig",en:"brave",type:"adj",cat:"Adjectives"},
+  {da:"genert",en:"shy",type:"adj",cat:"Adjectives"},
+  {da:"ærlig",en:"honest",type:"adj",cat:"Adjectives"},
+  {da:"uærlig",en:"dishonest",type:"adj",cat:"Adjectives"},
+  {da:"generøs",en:"generous",type:"adj",cat:"Adjectives"},
+  {da:"selvisk",en:"selfish",type:"adj",cat:"Adjectives"},
+  {da:"moden",en:"mature / ripe",type:"adj",cat:"Adjectives"},
+  {da:"elegant",en:"elegant",type:"adj",cat:"Adjectives"},
+  {da:"flink",en:"kind / nice",type:"adj",cat:"Adjectives"},
+  {da:"gavmild",en:"generous (open-handed)",type:"adj",cat:"Adjectives"},
+  {da:"nysgerrig",en:"curious",type:"adj",cat:"Adjectives"},
+  {da:"tålmodig",en:"patient",type:"adj",cat:"Adjectives"},
+  {da:"utålmodig",en:"impatient",type:"adj",cat:"Adjectives"},
+  {da:"sløv",en:"dull / sluggish",type:"adj",cat:"Adjectives"},
+
+  // ── EXTRA WORDS — Animals (6) ────────────────────────────────────
+  {da:"egern",en:"squirrel",type:"noun",cat:"Animals"},
+  {da:"flagermus",en:"bat",type:"noun",cat:"Animals"},
+  {da:"firben",en:"lizard",type:"noun",cat:"Animals"},
+  {da:"skildpadde",en:"turtle",type:"noun",cat:"Animals"},
+  {da:"hval",en:"whale",type:"noun",cat:"Animals"},
+  {da:"delfin",en:"dolphin",type:"noun",cat:"Animals"},
+  {da:"elg",en:"moose / elk",type:"noun",cat:"Animals"},
+
+  // ── EXTRA WORDS — Transport (3) ──────────────────────────────────
+  {da:"helikopter",en:"helicopter",type:"noun",cat:"Transport"},
+  {da:"færge",en:"ferry",type:"noun",cat:"Transport"},
+  {da:"hjelm",en:"helmet",type:"noun",cat:"Transport"},
+
+  // ── EXTRA WORDS — Places (4) ─────────────────────────────────────
+  {da:"banegård",en:"train station",type:"noun",cat:"Places"},
+  {da:"busstoppested",en:"bus stop",type:"noun",cat:"Places"},
+  {da:"parkeringsplads",en:"parking lot",type:"noun",cat:"Places"},
+  {da:"brønd",en:"well (water)",type:"noun",cat:"Places"},
+
+  // ── EXTRA WORDS — Clothes (2) ────────────────────────────────────
+  {da:"slips",en:"tie",type:"noun",cat:"Clothes"},
+  {da:"sok",en:"sock",type:"noun",cat:"Clothes"},
+
+  // ── EXTRA WORDS — Work & School (3) ──────────────────────────────
+  {da:"bibliotekar",en:"librarian",type:"noun",cat:"Work & School"},
+  {da:"ekspedient",en:"shop assistant",type:"noun",cat:"Work & School"},
+  {da:"kirurg",en:"surgeon",type:"noun",cat:"Work & School"},
+
+  // ── EXTRA WORDS — Health (3) ─────────────────────────────────────
+  {da:"diabetes",en:"diabetes",type:"noun",cat:"Health"},
+  {da:"vaccine",en:"vaccine",type:"noun",cat:"Health"},
+  {da:"klik",en:"click",type:"noun",cat:"Technology"},
+
+  // ── EXTRA WORDS — Emotions (4) ───────────────────────────────────
+  {da:"forvirret",en:"confused",type:"adj",cat:"Emotions"},
+  {da:"skuffet",en:"disappointed",type:"adj",cat:"Emotions"},
+  {da:"imponeret",en:"impressed",type:"adj",cat:"Emotions"},
+  {da:"chokeret",en:"shocked",type:"adj",cat:"Emotions"},
+
+  // ── EXTRA WORDS — Technology (6) ─────────────────────────────────
+  {da:"adgangskode",en:"password",type:"noun",cat:"Technology"},
+  {da:"download",en:"download",type:"noun",cat:"Technology"},
+  {da:"upload",en:"upload",type:"noun",cat:"Technology"},
+  {da:"fil",en:"file",type:"noun",cat:"Technology"},
+  {da:"mappe",en:"folder",type:"noun",cat:"Technology"},
+  {da:"opdatering",en:"update",type:"noun",cat:"Technology"},
+];
+
+const verbs = [
+  // ── BEING & HAVING ──
+  {da:"at befinde",pres:"befinder",past:"befandt",perf:"har befundet",en:"to be located",cat:"Being & Having"},
+  {da:"at bestå",pres:"består",past:"bestod",perf:"har bestået",en:"to consist",cat:"Being & Having"},
+  {da:"at blive",pres:"bliver",past:"blev",perf:"er blevet",en:"to become",cat:"Being & Having"},
+  {da:"at eje",pres:"ejer",past:"ejede",perf:"har ejet",en:"to own",cat:"Being & Having"},
+  {da:"at eksistere",pres:"eksisterer",past:"eksisterede",perf:"har eksisteret",en:"to exist",cat:"Being & Having"},
+  {da:"at forblive",pres:"forbliver",past:"forblev",perf:"er forblevet",en:"to remain",cat:"Being & Having"},
+  {da:"at foregå",pres:"foregår",past:"foregik",perf:"er foregået",en:"to take place",cat:"Being & Having"},
+  {da:"at forekomme",pres:"forekommer",past:"forekom",perf:"er forekommet",en:"to occur",cat:"Being & Having"},
+  {da:"at få",pres:"får",past:"fik",perf:"har fået",en:"to get",cat:"Being & Having"},
+  {da:"at have",pres:"har",past:"havde",perf:"har haft",en:"to have",cat:"Being & Having"},
+  {da:"at indeholde",pres:"indeholder",past:"indeholdt",perf:"har indeholdt",en:"to contain",cat:"Being & Having"},
+  {da:"at leve",pres:"lever",past:"levede",perf:"har levet",en:"to live",cat:"Being & Having"},
+  {da:"at mangle",pres:"mangler",past:"manglede",perf:"har manglet",en:"to lack",cat:"Being & Having"},
+  {da:"at omfatte",pres:"omfatter",past:"omfattede",perf:"har omfattet",en:"to comprise",cat:"Being & Having"},
+  {da:"at overleve",pres:"overlever",past:"overlevede",perf:"har overlevet",en:"to survive",cat:"Being & Having"},
+  {da:"at rumme",pres:"rummer",past:"rummede",perf:"har rummet",en:"to contain",cat:"Being & Having"},
+  {da:"at tilhøre",pres:"tilhører",past:"tilhørte",perf:"har tilhørt",en:"to belong to",cat:"Being & Having"},
+  {da:"at udgøre",pres:"udgør",past:"udgjorde",perf:"har udgjort",en:"to constitute",cat:"Being & Having"},
+  {da:"at vare",pres:"varer",past:"varede",perf:"har varet",en:"to last",cat:"Being & Having"},
+  {da:"at være",pres:"er",past:"var",perf:"har været",en:"to be",cat:"Being & Having"},
+
+  // ── MODALS & AUXILIARIES ──
+  {da:"at behøve",pres:"behøver",past:"behøvede",perf:"har behøvet",en:"to need",cat:"Modals & Auxiliaries"},
+  {da:"at kunne",pres:"kan",past:"kunne",perf:"har kunnet",en:"to be able to",cat:"Modals & Auxiliaries"},
+  {da:"at måtte",pres:"må",past:"måtte",perf:"har måttet",en:"to have to",cat:"Modals & Auxiliaries"},
+  {da:"at skulle",pres:"skal",past:"skulle",perf:"har skullet",en:"to shall",cat:"Modals & Auxiliaries"},
+  {da:"at turde",pres:"tør",past:"turde",perf:"har turdet",en:"to dare",cat:"Modals & Auxiliaries"},
+  {da:"at ville",pres:"vil",past:"ville",perf:"har villet",en:"to want",cat:"Modals & Auxiliaries"},
+
+  // ── MOVEMENT ──
+  {da:"at ankomme",pres:"ankommer",past:"ankom",perf:"er ankommet",en:"to arrive",cat:"Movement"},
+  {da:"at bevæge sig",pres:"bevæger sig",past:"bevægede sig",perf:"har bevæget sig",en:"to move",cat:"Movement"},
+  {da:"at danse",pres:"danser",past:"dansede",perf:"har danset",en:"to dance",cat:"Movement"},
+  {da:"at drage",pres:"drager",past:"drog",perf:"har draget",en:"to draw",cat:"Movement"},
+  {da:"at dreje",pres:"drejer",past:"drejede",perf:"har drejet",en:"to turn",cat:"Movement"},
+  {da:"at dukke",pres:"dukker op",past:"dukkede op",perf:"er dukket op",en:"to appear / show up",cat:"Movement"},
+  {da:"at falde",pres:"falder",past:"faldt",perf:"er faldet",en:"to fall",cat:"Movement"},
+  {da:"at flygte",pres:"flygter",past:"flygtede",perf:"er flygtet",en:"to flee",cat:"Movement"},
+  {da:"at flytte",pres:"flytter",past:"flyttede",perf:"er flyttet",en:"to move",cat:"Movement"},
+  {da:"at flyve",pres:"flyver",past:"fløj",perf:"har / er fløjet",en:"to fly",cat:"Movement"},
+  {da:"at forlade",pres:"forlader",past:"forlod",perf:"har forladt",en:"to leave",cat:"Movement"},
+  {da:"at følge",pres:"følger",past:"fulgte",perf:"har fulgt",en:"to follow",cat:"Movement"},
+  {da:"at føre",pres:"fører",past:"førte",perf:"har ført",en:"to lead",cat:"Movement"},
+  {da:"at glide",pres:"glider",past:"gled",perf:"er gledet",en:"to slide",cat:"Movement"},
+  {da:"at gå",pres:"går",past:"gik",perf:"har / er gået",en:"to walk",cat:"Movement"},
+  {da:"at hente",pres:"henter",past:"hentede",perf:"har hentet",en:"to fetch",cat:"Movement"},
+  {da:"at hoppe",pres:"hopper",past:"hoppede",perf:"har / er hoppet",en:"to jump",cat:"Movement"},
+  {da:"at komme",pres:"kommer",past:"kom",perf:"er kommet",en:"to come",cat:"Movement"},
+  {da:"at køre",pres:"kører",past:"kørte",perf:"har / er kørt",en:"to drive",cat:"Movement"},
+  {da:"at lande",pres:"lander",past:"landede",perf:"er landet",en:"to land",cat:"Movement"},
+  {da:"at lette",pres:"letter",past:"lettede",perf:"har / er lettet",en:"to take off",cat:"Movement"},
+  {da:"at løbe",pres:"løber",past:"løb",perf:"har / er løbet",en:"to run",cat:"Movement"},
+  {da:"at nå",pres:"når",past:"nåede",perf:"har nået",en:"to reach",cat:"Movement"},
+  {da:"at nærme sig",pres:"nærmer sig",past:"nærmede sig",perf:"har nærmet sig",en:"to approach",cat:"Movement"},
+  {da:"at rejse",pres:"rejser",past:"rejste",perf:"har / er rejst",en:"to travel",cat:"Movement"},
+  {da:"at ride",pres:"rider",past:"red",perf:"har redet",en:"to ride",cat:"Movement"},
+  {da:"at rulle",pres:"ruller",past:"rullede",perf:"har / er rullet",en:"to roll",cat:"Movement"},
+  {da:"at rykke",pres:"rykker",past:"rykkede",perf:"har rykket",en:"to move",cat:"Movement"},
+  {da:"at sejle",pres:"sejler",past:"sejlede",perf:"har sejlet",en:"to sail",cat:"Movement"},
+  {da:"at sprede",pres:"spreder",past:"spredte",perf:"har spredt",en:"to spread",cat:"Movement"},
+  {da:"at springe",pres:"springer",past:"sprang",perf:"er sprunget",en:"to jump",cat:"Movement"},
+  {da:"at standse",pres:"standser",past:"standsede",perf:"har standset",en:"to stop",cat:"Movement"},
+  {da:"at stige",pres:"stiger",past:"steg",perf:"er steget",en:"to rise",cat:"Movement"},
+  {da:"at stoppe",pres:"stopper",past:"stoppede",perf:"har / er stoppet",en:"to stop",cat:"Movement"},
+  {da:"at svinge",pres:"svinger",past:"svingede",perf:"har svinget",en:"to swing",cat:"Movement"},
+  {da:"at synke",pres:"synker",past:"sank",perf:"er sunket",en:"to sink",cat:"Movement"},
+  {da:"at sænke",pres:"sænker",past:"sænkede",perf:"har sænket",en:"to lower",cat:"Movement"},
+  {da:"at træde",pres:"træder",past:"trådte",perf:"har trådt",en:"to step",cat:"Movement"},
+  {da:"at udbrede",pres:"udbreder",past:"udbredte",perf:"har udbredt",en:"to spread",cat:"Movement"},
+  {da:"at undgå",pres:"undgår",past:"undgik",perf:"har undgået",en:"to avoid",cat:"Movement"},
+  {da:"at vende",pres:"vender",past:"vendte",perf:"har vendt",en:"to turn",cat:"Movement"},
+  {da:"at vælte",pres:"vælter",past:"væltede",perf:"har væltet",en:"to overturn",cat:"Movement"},
+
+  // ── COMMUNICATION ──
+  {da:"at advare",pres:"advarer",past:"advarede",perf:"har advaret",en:"to warn",cat:"Communication"},
+  {da:"at afbryde",pres:"afbryder",past:"afbrød",perf:"har afbrudt",en:"to interrupt",cat:"Communication"},
+  {da:"at aflyse",pres:"aflyser",past:"aflyste",perf:"har aflyst",en:"to cancel",cat:"Communication"},
+  {da:"at afvise",pres:"afviser",past:"afviste",perf:"har afvist",en:"to reject",cat:"Communication"},
+  {da:"at anbefale",pres:"anbefaler",past:"anbefalede",perf:"har anbefalet",en:"to recommend",cat:"Communication"},
+  {da:"at anerkende",pres:"anerkender",past:"anerkendte",perf:"har anerkendt",en:"to acknowledge",cat:"Communication"},
+  {da:"at angive",pres:"angiver",past:"angav",perf:"har angivet",en:"to indicate",cat:"Communication"},
+  {da:"at anmelde",pres:"anmelder",past:"anmeldte",perf:"har anmeldt",en:"to report",cat:"Communication"},
+  {da:"at bede",pres:"beder",past:"bad",perf:"har bedt",en:"to ask",cat:"Communication"},
+  {da:"at bekræfte",pres:"bekræfter",past:"bekræftede",perf:"har bekræfted",en:"to confirm",cat:"Communication"},
+  {da:"at beskrive",pres:"beskriver",past:"beskrev",perf:"har beskrevet",en:"to describe",cat:"Communication"},
+  {da:"at betyde",pres:"betyder",past:"betød",perf:"har betydet",en:"to mean",cat:"Communication"},
+  {da:"at bevise",pres:"beviser",past:"beviste",perf:"har bevist",en:"to prove",cat:"Communication"},
+  {da:"at citere",pres:"citerer",past:"citerede",perf:"har citeret",en:"to quote",cat:"Communication"},
+  {da:"at diskutere",pres:"diskuterer",past:"diskuterede",perf:"har diskuteret",en:"to discuss",cat:"Communication"},
+  {da:"at drøfte",pres:"drøfter",past:"drøftede",perf:"har drøftet",en:"to discuss",cat:"Communication"},
+  {da:"at fastholde",pres:"fastholder",past:"fastholdt",perf:"har fastholdt",en:"to maintain",cat:"Communication"},
+  {da:"at fastslå",pres:"fastslår",past:"fastslog",perf:"har fastslået",en:"to establish",cat:"Communication"},
+  {da:"at foreslå",pres:"foreslår",past:"foreslog",perf:"har foreslået",en:"to suggest",cat:"Communication"},
+  {da:"at forhandle",pres:"forhandler",past:"forhandlede",perf:"har forhandlet",en:"to negotiate",cat:"Communication"},
+  {da:"at forklare",pres:"forklarer",past:"forklarede",perf:"har forklaret",en:"to explain",cat:"Communication"},
+  {da:"at forlange",pres:"forlanger",past:"forlangte",perf:"har forlangt",en:"to demand",cat:"Communication"},
+  {da:"at formulere",pres:"formulerer",past:"formulerede",perf:"har formuleret",en:"to formulate",cat:"Communication"},
+  {da:"at fortælle",pres:"fortæller",past:"fortalte",perf:"har fortalt",en:"to tell",cat:"Communication"},
+  {da:"at fremhæve",pres:"fremhæver",past:"fremhævede",perf:"har fremhævet",en:"to emphasize",cat:"Communication"},
+  {da:"at fremlægge",pres:"fremlægger",past:"fremlagde",perf:"har fremlagt",en:"to present",cat:"Communication"},
+  {da:"at fremsætte",pres:"fremsætter",past:"fremsatte",perf:"har fremsat",en:"to put forward",cat:"Communication"},
+  {da:"at gentage",pres:"gentager",past:"gentog",perf:"har gentaget",en:"to repeat",cat:"Communication"},
+  {da:"at godkende",pres:"godkender",past:"godkendte",perf:"har godkendt",en:"to approve",cat:"Communication"},
+  {da:"at hedde",pres:"hedder",past:"hed",perf:"har heddet",en:"to be called",cat:"Communication"},
+  {da:"at henvende sig",pres:"henvender sig",past:"henvendte sig",perf:"har henvendt sig",en:"to approach",cat:"Communication"},
+  {da:"at henvise",pres:"henviser",past:"henviste",perf:"har henvist",en:"to refer",cat:"Communication"},
+  {da:"at hviske",pres:"hvisker",past:"hviskede",perf:"har hvisket",en:"to whisper",cat:"Communication"},
+  {da:"at hævde",pres:"hævder",past:"Hævdede",perf:"har hævdet",en:"to claim",cat:"Communication"},
+  {da:"at indebære",pres:"indebærer",past:"indebar",perf:"har indebåret",en:"to imply",cat:"Communication"},
+  {da:"at indrømme",pres:"indrømmer",past:"indrømmede",perf:"har indrømmet",en:"to admit",cat:"Communication"},
+  {da:"at kalde",pres:"kalder",past:"kaldte",perf:"har kaldt",en:"to call",cat:"Communication"},
+  {da:"at kommentere",pres:"kommenterer",past:"kommenterede",perf:"har kommenteret",en:"to comment",cat:"Communication"},
+  {da:"at konstatere",pres:"konstaterer",past:"konstaterede",perf:"har konstateret",en:"to state",cat:"Communication"},
+  {da:"at kontakte",pres:"kontakter",past:"kontaktede",perf:"har kontaktet",en:"to contact",cat:"Communication"},
+  {da:"at kritisere",pres:"kritiserer",past:"kritiserede",perf:"har kritiseret",en:"to criticize",cat:"Communication"},
+  {da:"at kræve",pres:"kræver",past:"krævede",perf:"har krævet",en:"to require",cat:"Communication"},
+  {da:"at lokke",pres:"lokker",past:"lokkede",perf:"har lokket",en:"to lure",cat:"Communication"},
+  {da:"at love",pres:"lover",past:"lovede",perf:"har lovet",en:"to promise",cat:"Communication"},
+  {da:"at læse",pres:"læser",past:"læste",perf:"har læst",en:"to read",cat:"Communication"},
+  {da:"at meddele",pres:"meddeler",past:"meddelte",perf:"har meddelt",en:"to inform",cat:"Communication"},
+  {da:"at melde",pres:"melder",past:"meldte",perf:"har meldt",en:"to report",cat:"Communication"},
+  {da:"at minde",pres:"minder",past:"mindede",perf:"har mindet",en:"to remind",cat:"Communication"},
+  {da:"at nikke",pres:"nikker",past:"nikkede",perf:"har nikket",en:"to nod",cat:"Communication"},
+  {da:"at notere",pres:"noterer",past:"noterede",perf:"har noteret",en:"to note",cat:"Communication"},
+  {da:"at nægte",pres:"nægter",past:"nægtede",perf:"har nægtet",en:"to refuse",cat:"Communication"},
+  {da:"at offentliggøre",pres:"offentliggør",past:"offentliggjorde",perf:"har offentliggjort",en:"to publish / announce",cat:"Communication"},
+  {da:"at opfordre",pres:"opfordrer",past:"opfordrede",perf:"har opfordret",en:"to urge",cat:"Communication"},
+  {da:"at oplyse",pres:"oplyser",past:"oplyste",perf:"har oplyst",en:"to inform",cat:"Communication"},
+  {da:"at orientere",pres:"orienterer",past:"orienterede",perf:"har orienteret",en:"to inform",cat:"Communication"},
+  {da:"at overbevise",pres:"overbeviser",past:"overbeviste",perf:"har overbevist",en:"to convince",cat:"Communication"},
+  {da:"at pege",pres:"peger",past:"pegede",perf:"har peget",en:"to point",cat:"Communication"},
+  {da:"at præsentere",pres:"præsenterer",past:"præsenterede",perf:"har præsenteret",en:"to present",cat:"Communication"},
+  {da:"at ringe",pres:"ringer",past:"ringede",perf:"har ringet",en:"to call",cat:"Communication"},
+  {da:"at rose",pres:"roser",past:"roste",perf:"har rost",en:"to praise",cat:"Communication"},
+  {da:"at råbe",pres:"råber",past:"råbte",perf:"har råbt",en:"to shout",cat:"Communication"},
+  {da:"at råde",pres:"råder",past:"rådede",perf:"har rådet",en:"to advise",cat:"Communication"},
+  {da:"at sende",pres:"sender",past:"sendte",perf:"har sendt",en:"to send",cat:"Communication"},
+  {da:"at sige",pres:"siger",past:"sagde",perf:"har sagt",en:"to say",cat:"Communication"},
+  {da:"at skrige",pres:"skriger",past:"skreg",perf:"har skreget",en:"to scream",cat:"Communication"},
+  {da:"at skrive",pres:"skriver",past:"skrev",perf:"har skrevet",en:"to write",cat:"Communication"},
+  {da:"at snakke",pres:"snakker",past:"snakkede",perf:"har snakket",en:"to chat",cat:"Communication"},
+  {da:"at spørge",pres:"spørger",past:"spurgte",perf:"har spurgt",en:"to ask",cat:"Communication"},
+  {da:"at stamme",pres:"stammer",past:"stammede",perf:"har stammet",en:"to originate / stutter",cat:"Communication"},
+  {da:"at stemme",pres:"stemmer",past:"stemte",perf:"har stemt",en:"to vote",cat:"Communication"},
+  {da:"at svare",pres:"svarer",past:"svarede",perf:"har svaret",en:"to answer",cat:"Communication"},
+  {da:"at synge",pres:"synger",past:"sang",perf:"har sunget",en:"to sing",cat:"Communication"},
+  {da:"at tale",pres:"taler",past:"talte",perf:"har talt",en:"to speak",cat:"Communication"},
+  {da:"at tillade",pres:"tillader",past:"tillod",perf:"har tilladt",en:"to allow",cat:"Communication"},
+  {da:"at true",pres:"truer",past:"truede",perf:"har truet",en:"to threaten",cat:"Communication"},
+  {da:"at tvinge",pres:"tvinger",past:"tvang",perf:"har tvunget",en:"to force",cat:"Communication"},
+  {da:"at udgive",pres:"udgiver",past:"udgav",perf:"har udgivet",en:"to publish",cat:"Communication"},
+  {da:"at udtale",pres:"udtaler",past:"udtalte",perf:"har udtalt",en:"to pronounce",cat:"Communication"},
+  {da:"at udtrykke",pres:"udtrykker",past:"udtrykte",perf:"har udtrykt",en:"to express",cat:"Communication"},
+  {da:"at vedtage",pres:"vedtager",past:"vedtog",perf:"har vedtaget",en:"to adopt",cat:"Communication"},
+  {da:"at vise",pres:"viser",past:"viste",perf:"har vist",en:"to show",cat:"Communication"},
+
+  // ── COGNITION & PERCEPTION ──
+  {da:"at acceptere",pres:"accepterer",past:"accepterede",perf:"har accepteret",en:"to accept",cat:"Cognition & Perception"},
+  {da:"at afgøre",pres:"afgør",past:"afgjorde",perf:"har afgjort",en:"to decide",cat:"Cognition & Perception"},
+  {da:"at ane",pres:"aner",past:"anede",perf:"har anet",en:"to suspect",cat:"Cognition & Perception"},
+  {da:"at angå",pres:"angår",past:"angik",perf:"har angået",en:"to concern",cat:"Cognition & Perception"},
+  {da:"at anse",pres:"anser",past:"anså",perf:"har anset",en:"to consider",cat:"Cognition & Perception"},
+  {da:"at bemærke",pres:"bemærker",past:"bemærkede",perf:"har bemærket",en:"to notice",cat:"Cognition & Perception"},
+  {da:"at beslutte",pres:"beslutter",past:"besluttede",perf:"har besluttet",en:"to decide",cat:"Cognition & Perception"},
+  {da:"at bestemme",pres:"bestemmer",past:"bestemte",perf:"har bestemt",en:"to determine",cat:"Cognition & Perception"},
+  {da:"at drømme",pres:"drømmer",past:"drømte",perf:"har drømt",en:"to dream",cat:"Cognition & Perception"},
+  {da:"at dømme",pres:"dømmer",past:"dømte",perf:"har dømt",en:"to judge",cat:"Cognition & Perception"},
+  {da:"at erkende",pres:"erkender",past:"erkendte",perf:"har erkendt",en:"to recognize",cat:"Cognition & Perception"},
+  {da:"at fatte",pres:"fatter",past:"fattede",perf:"har fattet",en:"to grasp",cat:"Cognition & Perception"},
+  {da:"at finde",pres:"finder",past:"fandt",perf:"har fundet",en:"to find",cat:"Cognition & Perception"},
+  {da:"at forestille sig",pres:"forestiller sig",past:"forestillede sig",perf:"har forestillet sig",en:"to imagine",cat:"Cognition & Perception"},
+  {da:"at foretrække",pres:"foretrækker",past:"foretrak",perf:"har foretrukket",en:"to prefer",cat:"Cognition & Perception"},
+  {da:"at forstå",pres:"forstår",past:"forstod",perf:"har forstået",en:"to understand",cat:"Cognition & Perception"},
+  {da:"at forudsætte",pres:"forudsætter",past:"forudsatte",perf:"har / er forudsat",en:"to assume / require",cat:"Cognition & Perception"},
+  {da:"at forvente",pres:"forventer",past:"forventede",perf:"har forventet",en:"to expect",cat:"Cognition & Perception"},
+  {da:"at fremgå",pres:"fremgår",past:"fremgik",perf:"er fremgået",en:"to appear (be evident)",cat:"Cognition & Perception"},
+  {da:"at føle",pres:"føler",past:"følte",perf:"har følt",en:"to feel",cat:"Cognition & Perception"},
+  {da:"at gide",pres:"gider",past:"gad",perf:"har gidet",en:"to bother",cat:"Cognition & Perception"},
+  {da:"at glemme",pres:"glemmer",past:"glemte",perf:"har glemt",en:"to forget",cat:"Cognition & Perception"},
+  {da:"at huske",pres:"husker",past:"huskede",perf:"har husket",en:"to remember",cat:"Cognition & Perception"},
+  {da:"at håbe",pres:"håber",past:"håbede",perf:"har håbet",en:"to hope",cat:"Cognition & Perception"},
+  {da:"at høre",pres:"hører",past:"hørte",perf:"har hørt",en:"to hear",cat:"Cognition & Perception"},
+  {da:"at interessere",pres:"interesserer",past:"interesserede",perf:"har interesseret",en:"to interest",cat:"Cognition & Perception"},
+  {da:"at kende",pres:"kender",past:"kendte",perf:"har kendt",en:"to know",cat:"Cognition & Perception"},
+  {da:"at kigge",pres:"kigger",past:"kiggede",perf:"har kigget",en:"to look",cat:"Cognition & Perception"},
+  {da:"at koncentrere",pres:"koncentrerer",past:"koncentrede",perf:"har havde",en:"to concentrate",cat:"Cognition & Perception"},
+  {da:"at ligne",pres:"ligner",past:"lignede",perf:"har lignet",en:"to resemble",cat:"Cognition & Perception"},
+  {da:"at lyde",pres:"lyder",past:"lød",perf:"har lydt",en:"to sound",cat:"Cognition & Perception"},
+  {da:"at lytte",pres:"lytter",past:"lyttede",perf:"har lyttet",en:"to listen",cat:"Cognition & Perception"},
+  {da:"at lære",pres:"lærer",past:"lærte",perf:"har lært",en:"to learn",cat:"Cognition & Perception"},
+  {da:"at løse",pres:"løser",past:"løste",perf:"har løst",en:"to solve",cat:"Cognition & Perception"},
+  {da:"at mene",pres:"mener",past:"mente",perf:"har ment",en:"to mean",cat:"Cognition & Perception"},
+  {da:"at mærke",pres:"mærker",past:"mærkede",perf:"har mærket",en:"to notice",cat:"Cognition & Perception"},
+  {da:"at nøjes",pres:"med",past:"nøjes med nøjedes med",perf:"har nøjedes",en:"to make do / settle",cat:"Cognition & Perception"},
+  {da:"at opdage",pres:"opdager",past:"opdagede",perf:"har opdaget",en:"to discover",cat:"Cognition & Perception"},
+  {da:"at opfatte",pres:"opfatter",past:"opfattede",perf:"har opfattet",en:"to perceive",cat:"Cognition & Perception"},
+  {da:"at opgive",pres:"opgiver",past:"opgav",perf:"har opgivet",en:"to give up",cat:"Cognition & Perception"},
+  {da:"at opleve",pres:"oplever",past:"oplevede",perf:"har oplevet",en:"to experience",cat:"Cognition & Perception"},
+  {da:"at overveje",pres:"overvejer",past:"overvejede",perf:"har overvejet",en:"to consider",cat:"Cognition & Perception"},
+  {da:"at præge",pres:"præger",past:"prægede",perf:"har præget",en:"to characterize",cat:"Cognition & Perception"},
+  {da:"at reagere",pres:"reagerer",past:"reagerede",perf:"har reageret",en:"to react",cat:"Cognition & Perception"},
+  {da:"at risikere",pres:"risikerer",past:"risikerede",perf:"har risikeret",en:"to risk",cat:"Cognition & Perception"},
+  {da:"at sammenligne",pres:"sammenligner",past:"sammenlignede",perf:"har sammenlignet",en:"to compare",cat:"Cognition & Perception"},
+  {da:"at se",pres:"ser",past:"så",perf:"har set",en:"to see",cat:"Cognition & Perception"},
+  {da:"at skyldes",pres:"skyldes",past:"skyldtes",perf:"har skyldtes",en:"to be due to",cat:"Cognition & Perception"},
+  {da:"at smage",pres:"smager",past:"smagte",perf:"har smagt",en:"to taste",cat:"Cognition & Perception"},
+  {da:"at studere",pres:"studerer",past:"studerede",perf:"har studeret",en:"to study",cat:"Cognition & Perception"},
+  {da:"at synes",pres:"synes",past:"syntes",perf:"har syntes",en:"to think",cat:"Cognition & Perception"},
+  {da:"at søge",pres:"søger",past:"søgte",perf:"har søgt",en:"to search",cat:"Cognition & Perception"},
+  {da:"at tro",pres:"tror",past:"troede",perf:"har troet",en:"to believe",cat:"Cognition & Perception"},
+  {da:"at trænge",pres:"trænger",past:"trængte",perf:"har trængt",en:"to need",cat:"Cognition & Perception"},
+  {da:"at tyde",pres:"tyder",past:"tydede",perf:"har tydet",en:"to indicate / interpret",cat:"Cognition & Perception"},
+  {da:"at tælle",pres:"tæller",past:"talte",perf:"har talt",en:"to count",cat:"Cognition & Perception"},
+  {da:"at tænke",pres:"tænker",past:"tænkte",perf:"har tænkt",en:"to think",cat:"Cognition & Perception"},
+  {da:"at uddanne",pres:"uddanner",past:"uddannede",perf:"har uddannet",en:"to educate",cat:"Cognition & Perception"},
+  {da:"at udelukke",pres:"udelukker",past:"udelukkede",perf:"har udelukket",en:"to exclude / rule out",cat:"Cognition & Perception"},
+  {da:"at undersøge",pres:"undersøger",past:"undersøgte",perf:"har undersøgt",en:"to investigate",cat:"Cognition & Perception"},
+  {da:"at vide",pres:"ved",past:"vidste",perf:"har vidst",en:"to know",cat:"Cognition & Perception"},
+  {da:"at vurdere",pres:"vurderer",past:"vurderede",perf:"har vurderet",en:"to assess",cat:"Cognition & Perception"},
+  {da:"at vælge",pres:"vælger",past:"valgte",perf:"har valgt",en:"to choose",cat:"Cognition & Perception"},
+  {da:"at ønske",pres:"ønsker",past:"ønskede",perf:"har ønsket",en:"to wish",cat:"Cognition & Perception"},
+
+  // ── DAILY LIFE ──
+  {da:"at bage",pres:"bager",past:"bagte",perf:"har bagt",en:"to bake",cat:"Daily Life"},
+  {da:"at bo",pres:"bor",past:"boede",perf:"har boet",en:"to live",cat:"Daily Life"},
+  {da:"at drikke",pres:"drikker",past:"drak",perf:"har drukket",en:"to drink",cat:"Daily Life"},
+  {da:"at fodre",pres:"fodrer",past:"fodrede",perf:"har fodret",en:"to feed",cat:"Daily Life"},
+  {da:"at indtage",pres:"indtager",past:"indtog",perf:"har indtaget",en:"to consume",cat:"Daily Life"},
+  {da:"at klæde",pres:"klæder",past:"klædte",perf:"har klædt",en:"to dress",cat:"Daily Life"},
+  {da:"at koge",pres:"koger",past:"kogte",perf:"har kogt",en:"to boil",cat:"Daily Life"},
+  {da:"at lege",pres:"leger",past:"legede",perf:"har leget",en:"to play",cat:"Daily Life"},
+  {da:"at passe",pres:"passer",past:"passede",perf:"har passet",en:"to fit",cat:"Daily Life"},
+  {da:"at pleje",pres:"plejer",past:"plejede",perf:"har plejet",en:"to care for",cat:"Daily Life"},
+  {da:"at pudse",pres:"pudser",past:"pudsede",perf:"har pudset",en:"to polish",cat:"Daily Life"},
+  {da:"at regne",pres:"regner",past:"regnede",perf:"har regnet",en:"to rain",cat:"Daily Life"},
+  {da:"at rense",pres:"renser",past:"rensede",perf:"har renset",en:"to clean",cat:"Daily Life"},
+  {da:"at rydde",pres:"rydder",past:"ryddede",perf:"har ryddet",en:"to clear",cat:"Daily Life"},
+  {da:"at ryge",pres:"ryger",past:"røg",perf:"har røget",en:"to smoke",cat:"Daily Life"},
+  {da:"at servere",pres:"serverer",past:"serverede",perf:"har serveret",en:"to serve",cat:"Daily Life"},
+  {da:"at sove",pres:"sover",past:"sov",perf:"har sovet",en:"to sleep",cat:"Daily Life"},
+  {da:"at spille",pres:"spiller",past:"spillede",perf:"har spillet",en:"to play",cat:"Daily Life"},
+  {da:"at spise",pres:"spiser",past:"spiste",perf:"har spist",en:"to eat",cat:"Daily Life"},
+  {da:"at stege",pres:"steger",past:"stegte",perf:"har stegt",en:"to fry",cat:"Daily Life"},
+  {da:"at tilbringe",pres:"tilbringer",past:"tilbragte",perf:"har tilbragt",en:"to spend",cat:"Daily Life"},
+  {da:"at tørre",pres:"tørrer",past:"tørrede",perf:"har tørret",en:"to dry",cat:"Daily Life"},
+  {da:"at vaccinere",pres:"vaccinerer",past:"vaccinerede",perf:"har vaccineret",en:"to vaccinate",cat:"Daily Life"},
+  {da:"at vaske",pres:"vasker",past:"vaskede",perf:"har vasket",en:"to wash",cat:"Daily Life"},
+  {da:"at vente",pres:"venter",past:"ventede",perf:"har ventet",en:"to wait",cat:"Daily Life"},
+  {da:"at vågne",pres:"vågner",past:"vågnede",perf:"er vågnet",en:"to wake up",cat:"Daily Life"},
+  {da:"at vække",pres:"vækker",past:"vækkede",perf:"har vækket",en:"to wake",cat:"Daily Life"},
+
+  // ── WORK & ACTION ──
+  {da:"at ansætte",pres:"ansætter",past:"ansatte",perf:"har ansat",en:"to hire",cat:"Work & Action"},
+  {da:"at anvende",pres:"anvender",past:"anvendte",perf:"har anvendt",en:"to use",cat:"Work & Action"},
+  {da:"at arbejde",pres:"arbejder",past:"arbejdede",perf:"har arbejdet",en:"to work",cat:"Work & Action"},
+  {da:"at arrangere",pres:"arrangerer",past:"arrangerede",perf:"har arrangeret",en:"to arrange",cat:"Work & Action"},
+  {da:"at begå",pres:"begår",past:"begik",perf:"har begået",en:"to commit",cat:"Work & Action"},
+  {da:"at behandle",pres:"behandler",past:"behandlede",perf:"har behandlet",en:"to treat",cat:"Work & Action"},
+  {da:"at benytte",pres:"benytter",past:"benyttede",perf:"har benyttet",en:"to use",cat:"Work & Action"},
+  {da:"at beskytte",pres:"beskytter",past:"beskyttede",perf:"har beskyttet",en:"to protect",cat:"Work & Action"},
+  {da:"at bevare",pres:"bevarer",past:"bevarede",perf:"har bevaret",en:"to preserve",cat:"Work & Action"},
+  {da:"at bidrage",pres:"bidrager",past:"bidrog",perf:"har bidraget",en:"to contribute",cat:"Work & Action"},
+  {da:"at bruge",pres:"bruger",past:"brugte",perf:"har brugt",en:"to use",cat:"Work & Action"},
+  {da:"at drive",pres:"driver",past:"drev",perf:"har drevet",en:"to operate",cat:"Work & Action"},
+  {da:"at fastsætte",pres:"fastsætter",past:"fastsatte",perf:"har fastsat",en:"to set",cat:"Work & Action"},
+  {da:"at forberede",pres:"forbereder",past:"forberedte",perf:"har forberedt",en:"to prepare",cat:"Work & Action"},
+  {da:"at foretage sig",pres:"foretager sig",past:"foretog sig",perf:"har foretaget sig",en:"to undertake",cat:"Work & Action"},
+  {da:"at forhindre",pres:"forhindrer",past:"forhindrede",perf:"har forhindret",en:"to prevent",cat:"Work & Action"},
+  {da:"at formå",pres:"formår",past:"formåede",perf:"har fomået",en:"to manage",cat:"Work & Action"},
+  {da:"at forsvare",pres:"forsvarer",past:"forsvarede",perf:"har forsvaret",en:"to defend",cat:"Work & Action"},
+  {da:"at forsøge",pres:"forsøger",past:"forsøgte",perf:"har forsøgt",en:"to try",cat:"Work & Action"},
+  {da:"at fungere",pres:"fungerer",past:"fungerede",perf:"har fungeret",en:"to function",cat:"Work & Action"},
+  {da:"at fyre",pres:"fyrer",past:"fyrede",perf:"har fyret",en:"to fire",cat:"Work & Action"},
+  {da:"at gennemføre",pres:"gennemfører",past:"gennemførte",perf:"har gennemført",en:"to carry out",cat:"Work & Action"},
+  {da:"at gennemgå",pres:"gennemgår",past:"gennemgik",perf:"har gennemgået",en:"to go through",cat:"Work & Action"},
+  {da:"at gøre",pres:"gør",past:"gjorde",perf:"har gjort",en:"to do",cat:"Work & Action"},
+  {da:"at handle",pres:"handler",past:"handlede",perf:"har handlet",en:"to act",cat:"Work & Action"},
+  {da:"at herske",pres:"hersker",past:"herskede",perf:"har hersket",en:"to rule",cat:"Work & Action"},
+  {da:"at hindre",pres:"hindrer",past:"hindrede",perf:"har hindret",en:"to hinder",cat:"Work & Action"},
+  {da:"at indgå",pres:"indgår",past:"indgik",perf:"har indgået",en:"to enter into",cat:"Work & Action"},
+  {da:"at indrette",pres:"indretter",past:"indrettede",perf:"har indrettet",en:"to arrange",cat:"Work & Action"},
+  {da:"at indstille",pres:"indstiller",past:"indstillede",perf:"har indstillet",en:"to adjust",cat:"Work & Action"},
+  {da:"at installere",pres:"installerer",past:"installerede",perf:"har installeret",en:"to install",cat:"Work & Action"},
+  {da:"at klare",pres:"klarer",past:"klarede",perf:"har klaret",en:"to manage",cat:"Work & Action"},
+  {da:"at kombinere",pres:"kombinerer",past:"kombinerede",perf:"har kombineret",en:"to combine",cat:"Work & Action"},
+  {da:"at kontrollere",pres:"kontrollerer",past:"kontrollerede",perf:"har kontrolleret",en:"to check",cat:"Work & Action"},
+  {da:"at kæmpe",pres:"kæmper",past:"kæmpede",perf:"har kæmpet",en:"to fight",cat:"Work & Action"},
+  {da:"at lede",pres:"leder",past:"ledte",perf:"har ledt",en:"to lead",cat:"Work & Action"},
+  {da:"at levere",pres:"leverer",past:"leverede",perf:"har leveret",en:"to deliver",cat:"Work & Action"},
+  {da:"at lykkes",pres:"lykkes",past:"lykkedes",perf:"er lykkedes",en:"to succeed",cat:"Work & Action"},
+  {da:"at medvirke",pres:"medvirker",past:"medvirkede",perf:"har medvirket",en:"to participate",cat:"Work & Action"},
+  {da:"at måle",pres:"måler",past:"målte",perf:"har målt",en:"to measure",cat:"Work & Action"},
+  {da:"at operere",pres:"opererer",past:"opererede",perf:"har opereret",en:"to operate",cat:"Work & Action"},
+  {da:"at opfylde",pres:"opfylder",past:"opfyldte",perf:"har opfyldt",en:"to fulfill",cat:"Work & Action"},
+  {da:"at opføre",pres:"opfører",past:"opførte",perf:"har opført",en:"to perform",cat:"Work & Action"},
+  {da:"at opnå",pres:"opnår",past:"opnåede",perf:"har opnået",en:"to achieve",cat:"Work & Action"},
+  {da:"at optage",pres:"optager",past:"optog",perf:"har optaget",en:"to record",cat:"Work & Action"},
+  {da:"at optræde",pres:"optræder",past:"optrådte",perf:"har optrådt",en:"to perform",cat:"Work & Action"},
+  {da:"at overholde",pres:"overholder",past:"overholdt",perf:"har overholdt",en:"to comply with",cat:"Work & Action"},
+  {da:"at overtage",pres:"overtager",past:"overtog",perf:"har overtaget",en:"to take over",cat:"Work & Action"},
+  {da:"at planlægge",pres:"planlægger",past:"planlagde",perf:"har planlagt",en:"to plan",cat:"Work & Action"},
+  {da:"at prøve",pres:"prøver",past:"prøvede",perf:"har prøvet",en:"to try",cat:"Work & Action"},
+  {da:"at redde",pres:"redder",past:"reddede",perf:"har reddet",en:"to save",cat:"Work & Action"},
+  {da:"at registrere",pres:"registrerer",past:"registrerede",perf:"har registreret",en:"to register",cat:"Work & Action"},
+  {da:"at rette",pres:"retter",past:"rettede",perf:"har rettet",en:"to correct",cat:"Work & Action"},
+  {da:"at satse",pres:"satser",past:"satsede",perf:"har satset",en:"to bet",cat:"Work & Action"},
+  {da:"at sikre",pres:"sikrer",past:"sikrede",perf:"har sikret",en:"to ensure",cat:"Work & Action"},
+  {da:"at skaffe",pres:"skaffer",past:"skaffede",perf:"har skaffet",en:"to provide",cat:"Work & Action"},
+  {da:"at straffe",pres:"straffer",past:"straffede",perf:"har straffet",en:"to punish",cat:"Work & Action"},
+  {da:"at styre",pres:"styrer",past:"styrede",perf:"har styret",en:"to control",cat:"Work & Action"},
+  {da:"at udarbejde",pres:"udarbejder",past:"udarbejdede",perf:"har udarbejdet",en:"to develop",cat:"Work & Action"},
+  {da:"at udføre",pres:"udfører",past:"udførte",perf:"har udført",en:"to carry out",cat:"Work & Action"},
+  {da:"at udnytte",pres:"udnytter",past:"udnyttede",perf:"har udnyttet",en:"to exploit",cat:"Work & Action"},
+  {da:"at udstyre",pres:"udstyrer",past:"udstyrede",perf:"har udstyret",en:"to equip",cat:"Work & Action"},
+  {da:"at veje",pres:"vejer",past:"vejede",perf:"har vejet",en:"to weigh",cat:"Work & Action"},
+  {da:"at vinde",pres:"vinder",past:"vandt",perf:"har vundet",en:"to win",cat:"Work & Action"},
+  {da:"at virke",pres:"virker",past:"virkede",perf:"har virket",en:"to work",cat:"Work & Action"},
+  {da:"at yde",pres:"yder",past:"ydede",perf:"har ydet",en:"to provide",cat:"Work & Action"},
+
+  // ── SOCIAL & EMOTION ──
+  {da:"at beklage",pres:"beklager",past:"beklagede",perf:"har beklaget",en:"to regret",cat:"Social & Emotion"},
+  {da:"at besøge",pres:"besøger",past:"besøgte",perf:"har besøgt",en:"to visit",cat:"Social & Emotion"},
+  {da:"at dele",pres:"deler",past:"delte",perf:"har delt",en:"to share",cat:"Social & Emotion"},
+  {da:"at deltage",pres:"deltager",past:"deltog",perf:"har deltaget",en:"to participate",cat:"Social & Emotion"},
+  {da:"at dominere",pres:"dominerer",past:"dominerede",perf:"har domineret",en:"to dominate",cat:"Social & Emotion"},
+  {da:"at elske",pres:"elsker",past:"elskede",perf:"har elsket",en:"to love",cat:"Social & Emotion"},
+  {da:"at fejre",pres:"fejrer",past:"fejrede",perf:"har fejret",en:"to celebrate",cat:"Social & Emotion"},
+  {da:"at forene",pres:"forener",past:"forenede",perf:"har forenet",en:"to unite",cat:"Social & Emotion"},
+  {da:"at fortjene",pres:"fortjener",past:"fortjente",perf:"har fortjent",en:"to deserve",cat:"Social & Emotion"},
+  {da:"at friste",pres:"frister",past:"fristede",perf:"har fristet",en:"to tempt",cat:"Social & Emotion"},
+  {da:"at frygte",pres:"frygter",past:"frygtede",perf:"har frygtet",en:"to fear",cat:"Social & Emotion"},
+  {da:"at genere",pres:"generer",past:"generede",perf:"har generet",en:"to bother",cat:"Social & Emotion"},
+  {da:"at grine",pres:"griner",past:"grinede",perf:"har grinet",en:"to laugh",cat:"Social & Emotion"},
+  {da:"at græde",pres:"græder",past:"græd",perf:"har grædt",en:"to cry",cat:"Social & Emotion"},
+  {da:"at hade",pres:"hader",past:"hadede",perf:"har hadet",en:"to hate",cat:"Social & Emotion"},
+  {da:"at hilse",pres:"hilser",past:"hilste",perf:"har hilst",en:"to greet",cat:"Social & Emotion"},
+  {da:"at hjælpe",pres:"hjælper",past:"hjalp",perf:"har hjulpet",en:"to help",cat:"Social & Emotion"},
+  {da:"at inddrage",pres:"inddrager",past:"inddrog",perf:"har inddraget",en:"to involve",cat:"Social & Emotion"},
+  {da:"at inspirere",pres:"inspirerer",past:"inspirerede",perf:"har inspireret",en:"to inspire",cat:"Social & Emotion"},
+  {da:"at invitere",pres:"inviterer",past:"inviterede",perf:"har inviteret",en:"to invite",cat:"Social & Emotion"},
+  {da:"at irritere",pres:"irriterer",past:"irriterede",perf:"har irriteret",en:"to irritate",cat:"Social & Emotion"},
+  {da:"at kysse",pres:"kysser",past:"kyssede",perf:"har kysset",en:"to kiss",cat:"Social & Emotion"},
+  {da:"at le",pres:"ler",past:"lo",perf:"har leet",en:"to laugh",cat:"Social & Emotion"},
+  {da:"at lide",pres:"lider",past:"led",perf:"har lidt",en:"to suffer",cat:"Social & Emotion"},
+  {da:"at møde",pres:"møder",past:"mødte",perf:"har mødt",en:"to meet",cat:"Social & Emotion"},
+  {da:"at mødes",pres:"mødes",past:"mødtes",perf:"har mødtes",en:"to meet",cat:"Social & Emotion"},
+  {da:"at nyde",pres:"nyder",past:"nød",perf:"har nydt",en:"to enjoy",cat:"Social & Emotion"},
+  {da:"at overraske",pres:"overrasker",past:"overraskede",perf:"har overrasket",en:"to surprise",cat:"Social & Emotion"},
+  {da:"at repræsentere",pres:"repræsenterer",past:"repræsenterede",perf:"har repræsenteret",en:"to represent",cat:"Social & Emotion"},
+  {da:"at respektere",pres:"respekterer",past:"respekterede",perf:"har respekteret",en:"to respect",cat:"Social & Emotion"},
+  {da:"at savne",pres:"savner",past:"savnede",perf:"har savnet",en:"to miss",cat:"Social & Emotion"},
+  {da:"at ses",pres:"ses",past:"sås",perf:"har sets",en:"to see each other",cat:"Social & Emotion"},
+  {da:"at skræmme",pres:"skræmmer",past:"skræmte",perf:"har skræmt",en:"to scare",cat:"Social & Emotion"},
+  {da:"at skuffe",pres:"skuffer",past:"skuffede",perf:"har skuffet",en:"to disappoint",cat:"Social & Emotion"},
+  {da:"at smile",pres:"smiler",past:"smilede",perf:"har smilet",en:"to smile",cat:"Social & Emotion"},
+  {da:"at stole",pres:"på",past:"stoler på stolede på",perf:"har stolet",en:"to trust",cat:"Social & Emotion"},
+  {da:"at støtte",pres:"støtter",past:"støttede",perf:"har støttet",en:"to support",cat:"Social & Emotion"},
+  {da:"at svigte",pres:"svigter",past:"svigtede",perf:"har sviget",en:"to betray",cat:"Social & Emotion"},
+  {da:"at sørge",pres:"for",past:"sørger for sørgede for",perf:"har sørget",en:"to grieve / take care",cat:"Social & Emotion"},
+  {da:"at takke",pres:"takker",past:"takkede",perf:"har takket",en:"to thank",cat:"Social & Emotion"},
+  {da:"at træffe",pres:"træffer",past:"traf",perf:"har truffet",en:"to meet",cat:"Social & Emotion"},
+  {da:"at tåle",pres:"tåler",past:"tålte",perf:"har tålt",en:"to tolerate",cat:"Social & Emotion"},
+  {da:"at underholde",pres:"underholder",past:"underholdt",perf:"har underholdt",en:"to entertain",cat:"Social & Emotion"},
+
+  // ── MONEY & COMMERCE ──
+  {da:"at bestille",pres:"bestiller",past:"bestilte",perf:"har bestilt",en:"to order",cat:"Money & Commerce"},
+  {da:"at betale",pres:"betaler",past:"betalte",perf:"har betalt",en:"to pay",cat:"Money & Commerce"},
+  {da:"at bytte",pres:"bytter",past:"byttede",perf:"har byttet",en:"to swap",cat:"Money & Commerce"},
+  {da:"at investere",pres:"investerer",past:"investerede",perf:"har investeret",en:"to invest",cat:"Money & Commerce"},
+  {da:"at koste",pres:"koster",past:"kostede",perf:"har kostet",en:"to cost",cat:"Money & Commerce"},
+  {da:"at købe",pres:"køber",past:"købte",perf:"har købt",en:"to buy",cat:"Money & Commerce"},
+  {da:"at leje",pres:"lejer",past:"lejede",perf:"har lejet",en:"to rent",cat:"Money & Commerce"},
+  {da:"at låne",pres:"låner",past:"lånte",perf:"har lånt",en:"to borrow",cat:"Money & Commerce"},
+  {da:"at spare",pres:"sparer",past:"sparede",perf:"har sparet",en:"to save",cat:"Money & Commerce"},
+  {da:"at sælge",pres:"sælger",past:"solgte",perf:"har solgt",en:"to sell",cat:"Money & Commerce"},
+  {da:"at tilbyde",pres:"tilbyder",past:"tilbød",perf:"har tilbudt",en:"to offer",cat:"Money & Commerce"},
+  {da:"at tjene",pres:"tjener",past:"tjente",perf:"har tjent",en:"to earn",cat:"Money & Commerce"},
+
+  // ── PHYSICAL ACTIONS ──
+  {da:"at adskille",pres:"adskiller",past:"adskilte",perf:"har adskilt",en:"to separate",cat:"Physical Actions"},
+  {da:"at afgive",pres:"afgiver",past:"afgav",perf:"har afgivet",en:"to submit",cat:"Physical Actions"},
+  {da:"at aflevere",pres:"afleverer",past:"afleverede",perf:"har afleveret",en:"to deliver",cat:"Physical Actions"},
+  {da:"at anbringe",pres:"anbringer",past:"anbragte",perf:"har anbragt",en:"to place",cat:"Physical Actions"},
+  {da:"at anholde",pres:"anholder",past:"anholdt",perf:"har anholdt",en:"to arrest",cat:"Physical Actions"},
+  {da:"at arrestere",pres:"arresterer",past:"arresterede",perf:"har arresteret",en:"to arrest",cat:"Physical Actions"},
+  {da:"at banke",pres:"banker",past:"bankede",perf:"har banket",en:"to knock",cat:"Physical Actions"},
+  {da:"at begrave",pres:"begraver",past:"begravede",perf:"har begravet",en:"to bury",cat:"Physical Actions"},
+  {da:"at beholde",pres:"beholder",past:"beholdt",perf:"har beholdt",en:"to keep",cat:"Physical Actions"},
+  {da:"at besætte",pres:"besætter",past:"besatte",perf:"har besat",en:"to occupy",cat:"Physical Actions"},
+  {da:"at bide",pres:"bider",past:"bed",perf:"har bidt",en:"to bite",cat:"Physical Actions"},
+  {da:"at binde",pres:"binder",past:"bandt",perf:"har bundet",en:"to tie",cat:"Physical Actions"},
+  {da:"at blande",pres:"blander",past:"blandede",perf:"har blandet",en:"to mix",cat:"Physical Actions"},
+  {da:"at blæse",pres:"blæser",past:"blæste",perf:"har blæst",en:"to blow",cat:"Physical Actions"},
+  {da:"at bringe",pres:"bringer",past:"bragte",perf:"har bragt",en:"to bring",cat:"Physical Actions"},
+  {da:"at bære",pres:"bærer",past:"bar",perf:"har båret",en:"to carry",cat:"Physical Actions"},
+  {da:"at dække",pres:"dækker",past:"dækkede",perf:"har dækket",en:"to cover",cat:"Physical Actions"},
+  {da:"at efterlade",pres:"efterlader",past:"efterlod",perf:"har efterladt",en:"to leave behind",cat:"Physical Actions"},
+  {da:"at fange",pres:"fanger",past:"fangede",perf:"har fanget",en:"to catch",cat:"Physical Actions"},
+  {da:"at forbinde",pres:"forbinder",past:"forbandt",perf:"har forbundet",en:"to connect",cat:"Physical Actions"},
+  {da:"at fordele",pres:"fordeler",past:"fordelte",perf:"har fordelt",en:"to distribute",cat:"Physical Actions"},
+  {da:"at fylde",pres:"fylder",past:"fyldte",perf:"har fyldt",en:"to fill",cat:"Physical Actions"},
+  {da:"at gemme",pres:"gemmer",past:"gemte",perf:"har gemt",en:"to hide",cat:"Physical Actions"},
+  {da:"at give",pres:"giver",past:"gav",perf:"har givet",en:"to give",cat:"Physical Actions"},
+  {da:"at gribe",pres:"griber",past:"greb",perf:"har grebet",en:"to grab",cat:"Physical Actions"},
+  {da:"at holde",pres:"holder",past:"holdt",perf:"har holdt",en:"to hold",cat:"Physical Actions"},
+  {da:"at hælde",pres:"hælder",past:"hældte",perf:"har hældt",en:"to pour",cat:"Physical Actions"},
+  {da:"at hænge",pres:"hænger",past:"hang",perf:"har hængt",en:"to hang",cat:"Physical Actions"},
+  {da:"at hæve",pres:"hæver",past:"hævede",perf:"har hævet",en:"to raise",cat:"Physical Actions"},
+  {da:"at kaste",pres:"kaster",past:"kastede",perf:"har kastet",en:"to throw",cat:"Physical Actions"},
+  {da:"at klippe",pres:"klipper",past:"klippede",perf:"har klippet",en:"to cut",cat:"Physical Actions"},
+  {da:"at knytte",pres:"knytter",past:"knyttede",perf:"har knyttet",en:"to tie",cat:"Physical Actions"},
+  {da:"at lade",pres:"lader",past:"lod",perf:"har ladet",en:"to let",cat:"Physical Actions"},
+  {da:"at ligge",pres:"ligger",past:"lå",perf:"har ligget",en:"to lie",cat:"Physical Actions"},
+  {da:"at lukke",pres:"lukker",past:"lukkede",perf:"har lukket",en:"to close",cat:"Physical Actions"},
+  {da:"at lyse",pres:"lyser",past:"lyste",perf:"har lyst",en:"to shine",cat:"Physical Actions"},
+  {da:"at lægge",pres:"lægger",past:"lagde",perf:"har lagt",en:"to lay",cat:"Physical Actions"},
+  {da:"at løfte",pres:"løfter",past:"løftede",perf:"har løftet",en:"to lift",cat:"Physical Actions"},
+  {da:"at modtage",pres:"modtager",past:"modtog",perf:"har modtaget",en:"to receive",cat:"Physical Actions"},
+  {da:"at omgive",pres:"omgiver",past:"omgav",perf:"har omgivet",en:"to surround",cat:"Physical Actions"},
+  {da:"at opstille",pres:"opstiller",past:"opstillede",perf:"har opstillet",en:"to set up / nominate",cat:"Physical Actions"},
+  {da:"at overføre",pres:"overfører",past:"overførte",perf:"har overført",en:"to transfer",cat:"Physical Actions"},
+  {da:"at overlade",pres:"overlader",past:"overlod",perf:"har overladt",en:"to leave to",cat:"Physical Actions"},
+  {da:"at pakke",pres:"pakker",past:"pakkede",perf:"har pakket",en:"to pack",cat:"Physical Actions"},
+  {da:"at placere",pres:"placerer",past:"placerede",perf:"har placeret",en:"to place",cat:"Physical Actions"},
+  {da:"at presse",pres:"presser",past:"pressede",perf:"har presset",en:"to press",cat:"Physical Actions"},
+  {da:"at ramme",pres:"rammer",past:"ramte",perf:"har ramt",en:"to hit",cat:"Physical Actions"},
+  {da:"at ryste",pres:"ryster",past:"rystede",perf:"har rystet",en:"to shake",cat:"Physical Actions"},
+  {da:"at række",pres:"rækker",past:"rakte",perf:"har rakt",en:"to reach",cat:"Physical Actions"},
+  {da:"at røre",pres:"rører",past:"rørte",perf:"har rørt",en:"to touch",cat:"Physical Actions"},
+  {da:"at samle",pres:"samler",past:"samlede",perf:"har samlet",en:"to gather",cat:"Physical Actions"},
+  {da:"at sidde",pres:"sidder",past:"sad",perf:"har siddet",en:"to sit",cat:"Physical Actions"},
+  {da:"at skinne",pres:"skinner",past:"skinnede",perf:"har skinnet",en:"to shine",cat:"Physical Actions"},
+  {da:"at skjule",pres:"skjuler",past:"skjulte",perf:"har skjult",en:"to hide",cat:"Physical Actions"},
+  {da:"at skubbe",pres:"skubber",past:"skubbede",perf:"har skubbet",en:"to push",cat:"Physical Actions"},
+  {da:"at skyde",pres:"skyder",past:"skød",perf:"har skudt",en:"to shoot",cat:"Physical Actions"},
+  {da:"at skære",pres:"skærer",past:"skar",perf:"har skåret",en:"to cut",cat:"Physical Actions"},
+  {da:"at slippe",pres:"slipper",past:"slap",perf:"har / er sluppet",en:"to release",cat:"Physical Actions"},
+  {da:"at slukke",pres:"slukker",past:"slukkede",perf:"er slukket",en:"to turn off",cat:"Physical Actions"},
+  {da:"at slå",pres:"slår",past:"slog",perf:"har slået",en:"to hit",cat:"Physical Actions"},
+  {da:"at slås",pres:"slås",past:"sloges",perf:"har sloges",en:"to fight",cat:"Physical Actions"},
+  {da:"at smide",pres:"smider",past:"smed",perf:"har smidt",en:"to throw",cat:"Physical Actions"},
+  {da:"at stikke",pres:"stikker",past:"stak",perf:"har stukket",en:"to stick",cat:"Physical Actions"},
+  {da:"at stille",pres:"stiller",past:"stillede",perf:"har stillet",en:"to place",cat:"Physical Actions"},
+  {da:"at stjæle",pres:"stjæler",past:"stjal",perf:"har stjålet",en:"to steal",cat:"Physical Actions"},
+  {da:"at stramme",pres:"strammer",past:"strammede",perf:"har strammet",en:"to tighten",cat:"Physical Actions"},
+  {da:"at strække",pres:"strækker",past:"strakte",perf:"har strakt",en:"to stretch",cat:"Physical Actions"},
+  {da:"at stå",pres:"står",past:"stod",perf:"har stået",en:"to stand",cat:"Physical Actions"},
+  {da:"at støde",pres:"på",past:"støder på stødte på",perf:"er stødt",en:"to bump",cat:"Physical Actions"},
+  {da:"at sætte",pres:"sætter",past:"satte",perf:"har sat",en:"to set",cat:"Physical Actions"},
+  {da:"at tage",pres:"tager",past:"tog",perf:"har taget",en:"to take",cat:"Physical Actions"},
+  {da:"at tilføje",pres:"tilføjer",past:"tilføjede",perf:"har tilføjet",en:"to add",cat:"Physical Actions"},
+  {da:"at trykke",pres:"trykker",past:"trykkede",perf:"har trykket",en:"to press",cat:"Physical Actions"},
+  {da:"at trække",pres:"trækker",past:"trak",perf:"har trukket",en:"to pull",cat:"Physical Actions"},
+  {da:"at tænde",pres:"tænder",past:"tændte",perf:"har tændt",en:"to light",cat:"Physical Actions"},
+  {da:"at tømme",pres:"tømmer",past:"tømte",perf:"har tømt",en:"to empty",cat:"Physical Actions"},
+  {da:"at udlevere",pres:"udleverer",past:"udleverede",perf:"har udleveret",en:"to hand over",cat:"Physical Actions"},
+  {da:"at åbne",pres:"åbner",past:"åbnede",perf:"har åbnet",en:"to open",cat:"Physical Actions"},
+
+  // ── CHANGE & BECOMING ──
+  {da:"at afløse",pres:"afløser",past:"afløste",perf:"har afløst",en:"to replace",cat:"Change & Becoming"},
+  {da:"at begrænse",pres:"begrænser",past:"begrænsede",perf:"har begrænset",en:"to limit",cat:"Change & Becoming"},
+  {da:"at begynde",pres:"begynder",past:"begyndte",perf:"er begyndt",en:"to begin",cat:"Change & Becoming"},
+  {da:"at dø",pres:"dør",past:"døde",perf:"er død",en:"to die",cat:"Change & Becoming"},
+  {da:"at ende",pres:"ender",past:"endte",perf:"er endt",en:"to end",cat:"Change & Becoming"},
+  {da:"at erstatte",pres:"erstatter",past:"erstattede",perf:"har erstattet",en:"to replace",cat:"Change & Becoming"},
+  {da:"at forbedre",pres:"forbedrer",past:"forbedrede",perf:"har forbedret",en:"to improve",cat:"Change & Becoming"},
+  {da:"at forsinke",pres:"forsinker",past:"forsinkede",perf:"har forsinket",en:"to delay",cat:"Change & Becoming"},
+  {da:"at forsvinde",pres:"forsvinder",past:"forsvandt",perf:"er forsvundet",en:"to disappear",cat:"Change & Becoming"},
+  {da:"at fortsætte",pres:"fortsætter",past:"fortsatte",perf:"har / er fortsat",en:"to continue",cat:"Change & Becoming"},
+  {da:"at forvandle",pres:"forvandler",past:"forvandlede",perf:"har forvandlet",en:"to transform",cat:"Change & Becoming"},
+  {da:"at føde",pres:"føder",past:"fødte",perf:"har født",en:"to give birth",cat:"Change & Becoming"},
+  {da:"at indføre",pres:"indfører",past:"indførte",perf:"har indført",en:"to introduce",cat:"Change & Becoming"},
+  {da:"at indlede",pres:"indleder",past:"indledte",perf:"har indledt",en:"to begin",cat:"Change & Becoming"},
+  {da:"at medføre",pres:"medfører",past:"medførte",perf:"har medført",en:"to entail",cat:"Change & Becoming"},
+  {da:"at miste",pres:"mister",past:"mistede",perf:"har mistet",en:"to lose",cat:"Change & Becoming"},
+  {da:"at nedsætte",pres:"nedsætter",past:"nedsatte",perf:"har nedsat",en:"to reduce",cat:"Change & Becoming"},
+  {da:"at ophæve",pres:"ophæver",past:"ophævede",perf:"har ophævet",en:"to cancel",cat:"Change & Becoming"},
+  {da:"at opstå",pres:"opstår",past:"opstod",perf:"er opstået",en:"to arise",cat:"Change & Becoming"},
+  {da:"at påvirke",pres:"påvirker",past:"påvirkede",perf:"har påvirket",en:"to influence",cat:"Change & Becoming"},
+  {da:"at reducere",pres:"reducerer",past:"reducerede",perf:"har reduceret",en:"to reduce",cat:"Change & Becoming"},
+  {da:"at ske",pres:"sker",past:"skete",perf:"er sket",en:"to happen",cat:"Change & Becoming"},
+  {da:"at skifte",pres:"skifter",past:"skiftede",perf:"har skiftet",en:"to change",cat:"Change & Becoming"},
+  {da:"at slutte",pres:"slutter",past:"sluttede",perf:"er sluttet",en:"to finish",cat:"Change & Becoming"},
+  {da:"at smitte",pres:"smitter",past:"smittede",perf:"har smittet",en:"to infect",cat:"Change & Becoming"},
+  {da:"at starte",pres:"starter",past:"startede",perf:"har / er startet",en:"to start",cat:"Change & Becoming"},
+  {da:"at styrke",pres:"styrker",past:"styrkede",perf:"har styrket",en:"to strengthen",cat:"Change & Becoming"},
+  {da:"at tabe",pres:"taber",past:"tabte",perf:"har tabt",en:"to lose",cat:"Change & Becoming"},
+  {da:"at udkomme",pres:"udkommer",past:"udkom",perf:"er udkommet",en:"to be released",cat:"Change & Becoming"},
+  {da:"at udløse",pres:"udløser",past:"udløste",perf:"har udløst",en:"to release / trigger",cat:"Change & Becoming"},
+  {da:"at udsætte",pres:"udsætter",past:"udsatte",perf:"har udsat",en:"to postpone",cat:"Change & Becoming"},
+  {da:"at udvide",pres:"udvider",past:"uvidede",perf:"har udvidet",en:"to expand",cat:"Change & Becoming"},
+  {da:"at udvikle",pres:"udvikler",past:"udviklede",perf:"har udviklet",en:"to develop",cat:"Change & Becoming"},
+  {da:"at variere",pres:"varierer",past:"varierede",perf:"har varieret",en:"to vary",cat:"Change & Becoming"},
+  {da:"at vokse",pres:"vokser",past:"voksede",perf:"er vokset",en:"to grow",cat:"Change & Becoming"},
+  {da:"at ændre",pres:"ændrer",past:"ændrede",perf:"har ændret",en:"to change",cat:"Change & Becoming"},
+  {da:"at øge",pres:"øger",past:"øgede",perf:"har øget",en:"to increase",cat:"Change & Becoming"},
+
+  // ── CREATION & DESTRUCTION ──
+  {da:"at afskaffe",pres:"afskaffer",past:"afskaffede",perf:"har afskaffet",en:"to abolish",cat:"Creation & Destruction"},
+  {da:"at afslutte",pres:"afslutter",past:"afsluttede",perf:"har afsluttet",en:"to finish",cat:"Creation & Destruction"},
+  {da:"at bryde",pres:"bryder",past:"brød",perf:"har brudt",en:"to break",cat:"Creation & Destruction"},
+  {da:"at bygge",pres:"bygger",past:"byggede",perf:"har bygget",en:"to build",cat:"Creation & Destruction"},
+  {da:"at danne",pres:"danner",past:"dannede",perf:"har dannet",en:"to form",cat:"Creation & Destruction"},
+  {da:"at dræbe",pres:"dræber",past:"dræbte",perf:"har dræbt",en:"to kill",cat:"Creation & Destruction"},
+  {da:"at fjerne",pres:"fjerner",past:"fjernede",perf:"har fjernet",en:"to remove",cat:"Creation & Destruction"},
+  {da:"at fremstille",pres:"fremstiller",past:"fremstillede",perf:"har fremstillet",en:"to produce",cat:"Creation & Destruction"},
+  {da:"at knuse",pres:"knuser",past:"knuste",perf:"har knust",en:"to crush",cat:"Creation & Destruction"},
+  {da:"at lave",pres:"laver",past:"lavede",perf:"har lavet",en:"to make",cat:"Creation & Destruction"},
+  {da:"at male",pres:"maler",past:"malede",perf:"har malet",en:"to paint",cat:"Creation & Destruction"},
+  {da:"at myrde",pres:"myrder",past:"myrdede",perf:"har myrdet",en:"to murder",cat:"Creation & Destruction"},
+  {da:"at nedlægge",pres:"nedlægger",past:"nedlagde",perf:"har nedlagt",en:"to lay down",cat:"Creation & Destruction"},
+  {da:"at opbygge",pres:"opbygger",past:"opbyggede",perf:"har opbygget",en:"to build up",cat:"Creation & Destruction"},
+  {da:"at opfinde",pres:"opfinder",past:"opfandt",perf:"har opfundet",en:"to invent",cat:"Creation & Destruction"},
+  {da:"at oprette",pres:"opretter",past:"oprettede",perf:"har oprettet",en:"to create",cat:"Creation & Destruction"},
+  {da:"at producere",pres:"producerer",past:"producerede",perf:"har produceret",en:"to produce",cat:"Creation & Destruction"},
+  {da:"at rive",pres:"river",past:"rev",perf:"har revet",en:"to tear",cat:"Creation & Destruction"},
+  {da:"at skabe",pres:"skaber",past:"skabte",perf:"har skabt",en:"to create",cat:"Creation & Destruction"},
+  {da:"at skade",pres:"skader",past:"skadede",perf:"har skadet",en:"to harm",cat:"Creation & Destruction"},
+  {da:"at sy",pres:"syr",past:"syede",perf:"har syet",en:"to sew",cat:"Creation & Destruction"},
+  {da:"at tegne",pres:"tegner",past:"tegnede",perf:"har tegnet",en:"to draw",cat:"Creation & Destruction"},
+  {da:"at ødelægge",pres:"ødelægger",past:"ødelagde",perf:"har ødelagt",en:"to destroy",cat:"Creation & Destruction"},
+];
+
+const CAT_META_VERBS = {
+  "All":                       { icon:"⚡" },
+  "Being & Having":            { icon:"🌀" },
+  "Modals & Auxiliaries":      { icon:"⚙️" },
+  "Movement":                  { icon:"🏃" },
+  "Communication":             { icon:"💬" },
+  "Cognition & Perception":    { icon:"🧠" },
+  "Daily Life":                { icon:"🌅" },
+  "Work & Action":             { icon:"🛠" },
+  "Social & Emotion":          { icon:"❤️" },
+  "Money & Commerce":          { icon:"💰" },
+  "Physical Actions":          { icon:"✋" },
+  "Change & Becoming":         { icon:"🔄" },
+  "Creation & Destruction":    { icon:"🔨" },
+};
+
+const KIDS = [
+  // ── ANIMALS (28) — most kid-pleasing category ─────────────────
+  {da:"hund",en:"dog",emoji:"🐶",cat:"Animals"},
+  {da:"kat",en:"cat",emoji:"🐱",cat:"Animals"},
+  {da:"ko",en:"cow",emoji:"🐮",cat:"Animals"},
+  {da:"hest",en:"horse",emoji:"🐴",cat:"Animals"},
+  {da:"gris",en:"pig",emoji:"🐷",cat:"Animals"},
+  {da:"får",en:"sheep",emoji:"🐑",cat:"Animals"},
+  {da:"høne",en:"hen",emoji:"🐔",cat:"Animals"},
+  {da:"and",en:"duck",emoji:"🦆",cat:"Animals"},
+  {da:"kanin",en:"rabbit",emoji:"🐰",cat:"Animals"},
+  {da:"mus",en:"mouse",emoji:"🐭",cat:"Animals"},
+  {da:"bjørn",en:"bear",emoji:"🐻",cat:"Animals"},
+  {da:"løve",en:"lion",emoji:"🦁",cat:"Animals"},
+  {da:"tiger",en:"tiger",emoji:"🐯",cat:"Animals"},
+  {da:"elefant",en:"elephant",emoji:"🐘",cat:"Animals"},
+  {da:"abe",en:"monkey",emoji:"🐵",cat:"Animals"},
+  {da:"giraf",en:"giraffe",emoji:"🦒",cat:"Animals"},
+  {da:"zebra",en:"zebra",emoji:"🦓",cat:"Animals"},
+  {da:"ræv",en:"fox",emoji:"🦊",cat:"Animals"},
+  {da:"ulv",en:"wolf",emoji:"🐺",cat:"Animals"},
+  {da:"pingvin",en:"penguin",emoji:"🐧",cat:"Animals"},
+  {da:"fugl",en:"bird",emoji:"🐦",cat:"Animals"},
+  {da:"ugle",en:"owl",emoji:"🦉",cat:"Animals"},
+  {da:"fisk",en:"fish",emoji:"🐟",cat:"Animals"},
+  {da:"hval",en:"whale",emoji:"🐳",cat:"Animals"},
+  {da:"delfin",en:"dolphin",emoji:"🐬",cat:"Animals"},
+  {da:"skildpadde",en:"turtle",emoji:"🐢",cat:"Animals"},
+  {da:"slange",en:"snake",emoji:"🐍",cat:"Animals"},
+  {da:"sommerfugl",en:"butterfly",emoji:"🦋",cat:"Animals"},
+  {da:"bi",en:"bee",emoji:"🐝",cat:"Animals"},
+  {da:"edderkop",en:"spider",emoji:"🕷️",cat:"Animals"},
+
+  // ── FOOD (40) ─────────────────────────────────────────────────
+  {da:"æble",en:"apple",emoji:"🍎",cat:"Food"},
+  {da:"banan",en:"banana",emoji:"🍌",cat:"Food"},
+  {da:"appelsin",en:"orange",emoji:"🍊",cat:"Food"},
+  {da:"pære",en:"pear",emoji:"🍐",cat:"Food"},
+  {da:"jordbær",en:"strawberry",emoji:"🍓",cat:"Food"},
+  {da:"vandmelon",en:"watermelon",emoji:"🍉",cat:"Food"},
+  {da:"ananas",en:"pineapple",emoji:"🍍",cat:"Food"},
+  {da:"vindrue",en:"grape",emoji:"🍇",cat:"Food"},
+  {da:"citron",en:"lemon",emoji:"🍋",cat:"Food"},
+  {da:"kirsebær",en:"cherry",emoji:"🍒",cat:"Food"},
+  {da:"fersken",en:"peach",emoji:"🍑",cat:"Food"},
+  {da:"gulerod",en:"carrot",emoji:"🥕",cat:"Food"},
+  {da:"kartoffel",en:"potato",emoji:"🥔",cat:"Food"},
+  {da:"tomat",en:"tomato",emoji:"🍅",cat:"Food"},
+  {da:"agurk",en:"cucumber",emoji:"🥒",cat:"Food"},
+  {da:"majs",en:"corn",emoji:"🌽",cat:"Food"},
+  {da:"broccoli",en:"broccoli",emoji:"🥦",cat:"Food"},
+  {da:"svamp",en:"mushroom",emoji:"🍄",cat:"Food"},
+  {da:"brød",en:"bread",emoji:"🍞",cat:"Food"},
+  {da:"ost",en:"cheese",emoji:"🧀",cat:"Food"},
+  {da:"æg",en:"egg",emoji:"🥚",cat:"Food"},
+  {da:"mælk",en:"milk",emoji:"🥛",cat:"Food"},
+  {da:"smør",en:"butter",emoji:"🧈",cat:"Food"},
+  {da:"pølse",en:"sausage",emoji:"🌭",cat:"Food"},
+  {da:"pizza",en:"pizza",emoji:"🍕",cat:"Food"},
+  {da:"burger",en:"burger",emoji:"🍔",cat:"Food"},
+  {da:"pommes frites",en:"fries",emoji:"🍟",cat:"Food"},
+  {da:"is",en:"ice cream",emoji:"🍦",cat:"Food"},
+  {da:"kage",en:"cake",emoji:"🍰",cat:"Food"},
+  {da:"slik",en:"candy",emoji:"🍬",cat:"Food"},
+  {da:"chokolade",en:"chocolate",emoji:"🍫",cat:"Food"},
+  {da:"kiks",en:"cookie",emoji:"🍪",cat:"Food"},
+  {da:"donut",en:"donut",emoji:"🍩",cat:"Food"},
+  {da:"honning",en:"honey",emoji:"🍯",cat:"Food"},
+  {da:"juice",en:"juice",emoji:"🧃",cat:"Food"},
+  {da:"vand",en:"water",emoji:"💧",cat:"Food"},
+  {da:"kaffe",en:"coffee",emoji:"☕",cat:"Food"},
+  {da:"te",en:"tea",emoji:"🍵",cat:"Food"},
+  {da:"suppe",en:"soup",emoji:"🍲",cat:"Food"},
+  {da:"ris",en:"rice",emoji:"🍚",cat:"Food"},
+
+  // ── COLOURS (12) ──────────────────────────────────────────────
+  {da:"rød",en:"red",emoji:"🔴",cat:"Colours"},
+  {da:"blå",en:"blue",emoji:"🔵",cat:"Colours"},
+  {da:"grøn",en:"green",emoji:"🟢",cat:"Colours"},
+  {da:"gul",en:"yellow",emoji:"🟡",cat:"Colours"},
+  {da:"orange",en:"orange",emoji:"🟠",cat:"Colours"},
+  {da:"lilla",en:"purple",emoji:"🟣",cat:"Colours"},
+  {da:"brun",en:"brown",emoji:"🟤",cat:"Colours"},
+  {da:"sort",en:"black",emoji:"⚫",cat:"Colours"},
+  {da:"hvid",en:"white",emoji:"⚪",cat:"Colours"},
+  {da:"lyserød",en:"pink",emoji:"🌸",cat:"Colours"},
+  {da:"grå",en:"grey",emoji:"🩶",cat:"Colours"},
+
+  // ── NUMBERS 1-20 (20) ────────────────────────────────────────
+  {da:"en",en:"one",emoji:"1️⃣",cat:"Numbers"},
+  {da:"to",en:"two",emoji:"2️⃣",cat:"Numbers"},
+  {da:"tre",en:"three",emoji:"3️⃣",cat:"Numbers"},
+  {da:"fire",en:"four",emoji:"4️⃣",cat:"Numbers"},
+  {da:"fem",en:"five",emoji:"5️⃣",cat:"Numbers"},
+  {da:"seks",en:"six",emoji:"6️⃣",cat:"Numbers"},
+  {da:"syv",en:"seven",emoji:"7️⃣",cat:"Numbers"},
+  {da:"otte",en:"eight",emoji:"8️⃣",cat:"Numbers"},
+  {da:"ni",en:"nine",emoji:"9️⃣",cat:"Numbers"},
+  {da:"ti",en:"ten",emoji:"🔟",cat:"Numbers"},
+  {da:"elleve",en:"eleven",emoji:"1️⃣1️⃣",cat:"Numbers"},
+  {da:"tolv",en:"twelve",emoji:"1️⃣2️⃣",cat:"Numbers"},
+  {da:"tretten",en:"thirteen",emoji:"1️⃣3️⃣",cat:"Numbers"},
+  {da:"fjorten",en:"fourteen",emoji:"1️⃣4️⃣",cat:"Numbers"},
+  {da:"femten",en:"fifteen",emoji:"1️⃣5️⃣",cat:"Numbers"},
+  {da:"seksten",en:"sixteen",emoji:"1️⃣6️⃣",cat:"Numbers"},
+  {da:"sytten",en:"seventeen",emoji:"1️⃣7️⃣",cat:"Numbers"},
+  {da:"atten",en:"eighteen",emoji:"1️⃣8️⃣",cat:"Numbers"},
+  {da:"nitten",en:"nineteen",emoji:"1️⃣9️⃣",cat:"Numbers"},
+  {da:"tyve",en:"twenty",emoji:"2️⃣0️⃣",cat:"Numbers"},
+
+  // ── BODY (16) ─────────────────────────────────────────────────
+  {da:"hoved",en:"head",emoji:"😀",cat:"Body"},
+  {da:"hår",en:"hair",emoji:"💇",cat:"Body"},
+  {da:"øje",en:"eye",emoji:"👁️",cat:"Body"},
+  {da:"næse",en:"nose",emoji:"👃",cat:"Body"},
+  {da:"mund",en:"mouth",emoji:"👄",cat:"Body"},
+  {da:"tand",en:"tooth",emoji:"🦷",cat:"Body"},
+  {da:"tunge",en:"tongue",emoji:"👅",cat:"Body"},
+  {da:"øre",en:"ear",emoji:"👂",cat:"Body"},
+  {da:"hånd",en:"hand",emoji:"✋",cat:"Body"},
+  {da:"finger",en:"finger",emoji:"☝️",cat:"Body"},
+  {da:"arm",en:"arm",emoji:"💪",cat:"Body"},
+  {da:"ben",en:"leg",emoji:"🦵",cat:"Body"},
+  {da:"fod",en:"foot",emoji:"🦶",cat:"Body"},
+  {da:"hjerte",en:"heart",emoji:"❤️",cat:"Body"},
+  {da:"hjerne",en:"brain",emoji:"🧠",cat:"Body"},
+  {da:"knogle",en:"bone",emoji:"🦴",cat:"Body"},
+
+  // ── FAMILY (12) ───────────────────────────────────────────────
+  {da:"mor",en:"mom",emoji:"👩",cat:"Family"},
+  {da:"far",en:"dad",emoji:"👨",cat:"Family"},
+  {da:"baby",en:"baby",emoji:"👶",cat:"Family"},
+  {da:"barn",en:"child",emoji:"🧒",cat:"Family"},
+  {da:"dreng",en:"boy",emoji:"👦",cat:"Family"},
+  {da:"pige",en:"girl",emoji:"👧",cat:"Family"},
+  {da:"bror",en:"brother",emoji:"👦",cat:"Family"},
+  {da:"søster",en:"sister",emoji:"👧",cat:"Family"},
+  {da:"bedstemor",en:"grandma",emoji:"👵",cat:"Family"},
+  {da:"bedstefar",en:"grandpa",emoji:"👴",cat:"Family"},
+  {da:"familie",en:"family",emoji:"👨‍👩‍👧‍👦",cat:"Family"},
+  {da:"ven",en:"friend",emoji:"🤝",cat:"Family"},
+
+  // ── NATURE (24) ───────────────────────────────────────────────
+  {da:"sol",en:"sun",emoji:"☀️",cat:"Nature"},
+  {da:"måne",en:"moon",emoji:"🌙",cat:"Nature"},
+  {da:"stjerne",en:"star",emoji:"⭐",cat:"Nature"},
+  {da:"sky",en:"cloud",emoji:"☁️",cat:"Nature"},
+  {da:"regn",en:"rain",emoji:"🌧️",cat:"Nature"},
+  {da:"sne",en:"snow",emoji:"❄️",cat:"Nature"},
+  {da:"lyn",en:"lightning",emoji:"⚡",cat:"Nature"},
+  {da:"vind",en:"wind",emoji:"💨",cat:"Nature"},
+  {da:"ild",en:"fire",emoji:"🔥",cat:"Nature"},
+  {da:"træ",en:"tree",emoji:"🌳",cat:"Nature"},
+  {da:"blomst",en:"flower",emoji:"🌸",cat:"Nature"},
+  {da:"græs",en:"grass",emoji:"🌱",cat:"Nature"},
+  {da:"blad",en:"leaf",emoji:"🍃",cat:"Nature"},
+  {da:"skov",en:"forest",emoji:"🌲",cat:"Nature"},
+  {da:"bjerg",en:"mountain",emoji:"⛰️",cat:"Nature"},
+  {da:"hav",en:"sea",emoji:"🌊",cat:"Nature"},
+  {da:"strand",en:"beach",emoji:"🏖️",cat:"Nature"},
+  {da:"flod",en:"river",emoji:"🏞️",cat:"Nature"},
+  {da:"sø",en:"lake",emoji:"💦",cat:"Nature"},
+  {da:"jord",en:"earth",emoji:"🌍",cat:"Nature"},
+  {da:"sten",en:"stone",emoji:"🪨",cat:"Nature"},
+  {da:"isterning",en:"ice cube",emoji:"🧊",cat:"Nature"},
+  {da:"regnbue",en:"rainbow",emoji:"🌈",cat:"Nature"},
+  {da:"vulkan",en:"volcano",emoji:"🌋",cat:"Nature"},
+
+  // ── HOME (22) ─────────────────────────────────────────────────
+  {da:"hus",en:"house",emoji:"🏠",cat:"Home"},
+  {da:"dør",en:"door",emoji:"🚪",cat:"Home"},
+  {da:"vindue",en:"window",emoji:"🪟",cat:"Home"},
+  {da:"seng",en:"bed",emoji:"🛏️",cat:"Home"},
+  {da:"stol",en:"chair",emoji:"🪑",cat:"Home"},
+  {da:"bord",en:"table",emoji:"🍽️",cat:"Home"},
+  {da:"sofa",en:"sofa",emoji:"🛋️",cat:"Home"},
+  {da:"toilet",en:"toilet",emoji:"🚽",cat:"Home"},
+  {da:"badekar",en:"bathtub",emoji:"🛁",cat:"Home"},
+  {da:"bruser",en:"shower",emoji:"🚿",cat:"Home"},
+  {da:"sæbe",en:"soap",emoji:"🧼",cat:"Home"},
+  {da:"tandbørste",en:"toothbrush",emoji:"🪥",cat:"Home"},
+  {da:"lampe",en:"lamp",emoji:"💡",cat:"Home"},
+  {da:"ur",en:"clock",emoji:"🕐",cat:"Home"},
+  {da:"nøgle",en:"key",emoji:"🔑",cat:"Home"},
+  {da:"telefon",en:"phone",emoji:"📱",cat:"Home"},
+  {da:"computer",en:"computer",emoji:"💻",cat:"Home"},
+  {da:"fjernsyn",en:"TV",emoji:"📺",cat:"Home"},
+  {da:"bog",en:"book",emoji:"📖",cat:"Home"},
+  {da:"legetøj",en:"toy",emoji:"🧸",cat:"Home"},
+  {da:"bold",en:"ball",emoji:"⚽",cat:"Home"},
+  {da:"balloner",en:"balloons",emoji:"🎈",cat:"Home"},
+
+  // ── CLOTHES (14) ──────────────────────────────────────────────
+  {da:"trøje",en:"shirt",emoji:"👕",cat:"Clothes"},
+  {da:"bukser",en:"pants",emoji:"👖",cat:"Clothes"},
+  {da:"kjole",en:"dress",emoji:"👗",cat:"Clothes"},
+  {da:"sko",en:"shoe",emoji:"👟",cat:"Clothes"},
+  {da:"støvle",en:"boot",emoji:"🥾",cat:"Clothes"},
+  {da:"sok",en:"sock",emoji:"🧦",cat:"Clothes"},
+  {da:"hat",en:"hat",emoji:"🎩",cat:"Clothes"},
+  {da:"hue",en:"cap",emoji:"🧢",cat:"Clothes"},
+  {da:"jakke",en:"jacket",emoji:"🧥",cat:"Clothes"},
+  {da:"vante",en:"mitten",emoji:"🧤",cat:"Clothes"},
+  {da:"halstørklæde",en:"scarf",emoji:"🧣",cat:"Clothes"},
+  {da:"briller",en:"glasses",emoji:"👓",cat:"Clothes"},
+  {da:"krone",en:"crown",emoji:"👑",cat:"Clothes"},
+  {da:"taske",en:"bag",emoji:"🎒",cat:"Clothes"},
+
+  // ── TRANSPORT (18) ────────────────────────────────────────────
+  {da:"bil",en:"car",emoji:"🚗",cat:"Transport"},
+  {da:"bus",en:"bus",emoji:"🚌",cat:"Transport"},
+  {da:"tog",en:"train",emoji:"🚂",cat:"Transport"},
+  {da:"fly",en:"plane",emoji:"✈️",cat:"Transport"},
+  {da:"helikopter",en:"helicopter",emoji:"🚁",cat:"Transport"},
+  {da:"båd",en:"boat",emoji:"⛵",cat:"Transport"},
+  {da:"skib",en:"ship",emoji:"🚢",cat:"Transport"},
+  {da:"raket",en:"rocket",emoji:"🚀",cat:"Transport"},
+  {da:"cykel",en:"bicycle",emoji:"🚲",cat:"Transport"},
+  {da:"motorcykel",en:"motorcycle",emoji:"🏍️",cat:"Transport"},
+  {da:"lastbil",en:"truck",emoji:"🚚",cat:"Transport"},
+  {da:"traktor",en:"tractor",emoji:"🚜",cat:"Transport"},
+  {da:"taxi",en:"taxi",emoji:"🚕",cat:"Transport"},
+  {da:"politibil",en:"police car",emoji:"🚓",cat:"Transport"},
+  {da:"brandbil",en:"fire truck",emoji:"🚒",cat:"Transport"},
+  {da:"ambulance",en:"ambulance",emoji:"🚑",cat:"Transport"},
+  {da:"løbehjul",en:"scooter",emoji:"🛴",cat:"Transport"},
+  {da:"rulleskøjte",en:"skate",emoji:"🛼",cat:"Transport"},
+
+  // ── ACTIONS / VERBS the kid can act out (22) ─────────────────
+  {da:"løbe",en:"to run",emoji:"🏃",cat:"Actions"},
+  {da:"gå",en:"to walk",emoji:"🚶",cat:"Actions"},
+  {da:"hoppe",en:"to jump",emoji:"🤾",cat:"Actions"},
+  {da:"danse",en:"to dance",emoji:"💃",cat:"Actions"},
+  {da:"synge",en:"to sing",emoji:"🎤",cat:"Actions"},
+  {da:"sove",en:"to sleep",emoji:"😴",cat:"Actions"},
+  {da:"spise",en:"to eat",emoji:"🍴",cat:"Actions"},
+  {da:"drikke",en:"to drink",emoji:"🥤",cat:"Actions"},
+  {da:"svømme",en:"to swim",emoji:"🏊",cat:"Actions"},
+  {da:"klatre",en:"to climb",emoji:"🧗",cat:"Actions"},
+  {da:"flyve",en:"to fly",emoji:"🕊️",cat:"Actions"},
+  {da:"læse",en:"to read",emoji:"📚",cat:"Actions"},
+  {da:"skrive",en:"to write",emoji:"✏️",cat:"Actions"},
+  {da:"tegne",en:"to draw",emoji:"🎨",cat:"Actions"},
+  {da:"male",en:"to paint",emoji:"🖌️",cat:"Actions"},
+  {da:"lege",en:"to play",emoji:"🪀",cat:"Actions"},
+  {da:"smile",en:"to smile",emoji:"😊",cat:"Actions"},
+  {da:"græde",en:"to cry",emoji:"😢",cat:"Actions"},
+  {da:"grine",en:"to laugh",emoji:"😂",cat:"Actions"},
+  {da:"kysse",en:"to kiss",emoji:"😘",cat:"Actions"},
+  {da:"kramme",en:"to hug",emoji:"🤗",cat:"Actions"},
+  {da:"vinke",en:"to wave",emoji:"👋",cat:"Actions"},
+
+  // ── FEELINGS / ADJECTIVES (16) ───────────────────────────────
+  {da:"glad",en:"happy",emoji:"😀",cat:"Feelings"},
+  {da:"trist",en:"sad",emoji:"😢",cat:"Feelings"},
+  {da:"vred",en:"angry",emoji:"😠",cat:"Feelings"},
+  {da:"bange",en:"scared",emoji:"😨",cat:"Feelings"},
+  {da:"træt",en:"tired",emoji:"🥱",cat:"Feelings"},
+  {da:"sulten",en:"hungry",emoji:"🍽️",cat:"Feelings"},
+  {da:"tørstig",en:"thirsty",emoji:"💧",cat:"Feelings"},
+  {da:"syg",en:"sick",emoji:"🤒",cat:"Feelings"},
+  {da:"stor",en:"big",emoji:"🐘",cat:"Feelings"},
+  {da:"lille",en:"small",emoji:"🐭",cat:"Feelings"},
+  {da:"varm",en:"hot",emoji:"🥵",cat:"Feelings"},
+  {da:"kold",en:"cold",emoji:"🥶",cat:"Feelings"},
+  {da:"hurtig",en:"fast",emoji:"💨",cat:"Feelings"},
+  {da:"langsom",en:"slow",emoji:"🐢",cat:"Feelings"},
+  {da:"stærk",en:"strong",emoji:"💪",cat:"Feelings"},
+  {da:"sød",en:"sweet/cute",emoji:"🥰",cat:"Feelings"},
+
+  // ── GREETINGS / PHRASES (12) ─────────────────────────────────
+  {da:"hej",en:"hi",emoji:"👋",cat:"Greetings"},
+  {da:"farvel",en:"goodbye",emoji:"🙋",cat:"Greetings"},
+  {da:"tak",en:"thanks",emoji:"🙏",cat:"Greetings"},
+  {da:"velbekomme",en:"you're welcome",emoji:"😊",cat:"Greetings"},
+  {da:"undskyld",en:"sorry",emoji:"🙇",cat:"Greetings"},
+  {da:"ja",en:"yes",emoji:"✅",cat:"Greetings"},
+  {da:"nej",en:"no",emoji:"❌",cat:"Greetings"},
+  {da:"god morgen",en:"good morning",emoji:"🌅",cat:"Greetings"},
+  {da:"god nat",en:"good night",emoji:"🌙",cat:"Greetings"},
+  {da:"vær så god",en:"please / here you go",emoji:"🤲",cat:"Greetings"},
+  {da:"hjælp",en:"help",emoji:"🆘",cat:"Greetings"},
+  {da:"jeg elsker dig",en:"I love you",emoji:"💖",cat:"Greetings"},
+];
+
+
+const CAT_META_KIDS = {
+  "All":       { icon:"🌟" },
+  "Animals":   { icon:"🐾" },
+  "Food":      { icon:"🍎" },
+  "Colours":   { icon:"🎨" },
+  "Numbers":   { icon:"🔢" },
+  "Body":      { icon:"👤" },
+  "Family":    { icon:"👨‍👩‍👧" },
+  "Nature":    { icon:"🌳" },
+  "Home":      { icon:"🏠" },
+  "Clothes":   { icon:"👕" },
+  "Transport": { icon:"🚗" },
+  "Actions":   { icon:"🏃" },
+  "Feelings":  { icon:"😊" },
+  "Greetings": { icon:"👋" },
+};
+
+
+
+// ── CATEGORY META ──────────────────────────────────────────────────
+const CAT_META = {
+  "All":             { icon:"🇩🇰" },
+  "Pronouns":        { icon:"👤" },
+  "Core Verbs":      { icon:"⚡" },
+  "Numbers":         { icon:"🔢" },
+  "Time":            { icon:"🕐" },
+  "Days & Months":   { icon:"📅" },
+  "People":          { icon:"👨‍👩‍👧" },
+  "Body":            { icon:"🫀" },
+  "Food & Drink":    { icon:"🍽️" },
+  "Home":            { icon:"🏠" },
+  "Colours":         { icon:"🎨" },
+  "Adjectives":      { icon:"✨" },
+  "Nature":          { icon:"🌿" },
+  "Animals":         { icon:"🐾" },
+  "Transport":       { icon:"🚆" },
+  "Places":          { icon:"📍" },
+  "Clothes":         { icon:"👗" },
+  "Work & School":   { icon:"💼" },
+  "Health":          { icon:"🏥" },
+  "Emotions":        { icon:"💭" },
+  "Common Words":    { icon:"🔤" },
+  "Prepositions":    { icon:"↔️" },
+  "Phrases":         { icon:"💬" },
+  "Shopping":        { icon:"🛒" },
+  "Technology":      { icon:"💻" },
+  "Society":         { icon:"🏛️" },
+  "Arts & Leisure":  { icon:"🎭" },
+  "Abstract & Misc": { icon:"📦" },
+};
+
+// ── STATE ──────────────────────────────────────────────────────────
+const KNOWN_KEY = { words: 'dk-known', verbs: 'dk-known-verbs', kids: 'dk-known-kids' };
+let mode       = localStorage.getItem('dk-mode') || 'words';
+if (!KNOWN_KEY[mode]) mode = 'words'; // guard against stale values
+let known      = new Set(JSON.parse(localStorage.getItem(KNOWN_KEY[mode]) || '[]'));
+let activeCat  = 'All';
+let searchTerm = '';
+let onlyKnown  = false;
+let allFlipped = false;
+
+// ── DATASET ACCESSORS ─────────────────────────────────────────────
+function dataset() {
+  if (mode === 'verbs') return verbs;
+  if (mode === 'kids')  return KIDS;
+  return words;
+}
+function catMeta() {
+  if (mode === 'verbs') return CAT_META_VERBS;
+  if (mode === 'kids')  return CAT_META_KIDS;
+  return CAT_META;
+}
+function itemLabel() {
+  if (mode === 'verbs') return 'verb';
+  if (mode === 'kids')  return 'word';
+  return 'word';
+}
+
+// ── BUILD SIDEBAR ─────────────────────────────────────────────────
+const sidebar = document.getElementById('sidebar');
+
+function buildSidebar() {
+  // Clear all but the title row
+  [...sidebar.querySelectorAll('.cat-item, .cat-divider')].forEach(n => n.remove());
+  const data = dataset();
+  const cats = ['All', ...[...new Set(data.map(w => w.cat))]];
+  cats.forEach((cat, i) => {
+    if (i === 1) {
+      const div = document.createElement('div');
+      div.className = 'cat-divider';
+      sidebar.appendChild(div);
+    }
+    const count = cat === 'All' ? data.length : data.filter(w => w.cat === cat).length;
+    const meta  = catMeta()[cat] || { icon:'📁' };
+    const item  = document.createElement('div');
+    item.className = 'cat-item' + (cat === activeCat ? ' active' : '');
+    item.dataset.cat = cat;
+    item.innerHTML = `<span class="cat-icon">${meta.icon}</span><span class="cat-name">${cat}</span><span class="cat-count">${count}</span>`;
+    item.addEventListener('click', () => selectCat(cat));
+    sidebar.appendChild(item);
+  });
+}
+
+function selectCat(cat) {
+  activeCat = cat;
+  document.querySelectorAll('.cat-item').forEach(el =>
+    el.classList.toggle('active', el.dataset.cat === cat));
+  allFlipped = false;
+  applyFilters();
+}
+
+// ── MODE TOGGLE ───────────────────────────────────────────────────
+function setMode(newMode) {
+  if (newMode === mode) return;
+  mode = newMode;
+  localStorage.setItem('dk-mode', mode);
+  // Switch known set
+  known = new Set(JSON.parse(localStorage.getItem(KNOWN_KEY[mode]) || '[]'));
+  // Reset transient view state
+  activeCat = 'All';
+  searchTerm = '';
+  onlyKnown = false;
+  allFlipped = false;
+  document.getElementById('search').value = '';
+  document.getElementById('known-filter-btn').classList.remove('active');
+  applyModeClasses();
+  refreshStreakBadge();
+  buildSidebar();
+  applyFilters();
+}
+
+function applyModeClasses() {
+  document.getElementById('mode-words-btn').classList.toggle('active', mode === 'words');
+  document.getElementById('mode-verbs-btn').classList.toggle('active', mode === 'verbs');
+  document.getElementById('mode-kids-btn').classList.toggle('active',  mode === 'kids');
+  document.body.classList.toggle('mode-verbs', mode === 'verbs');
+  document.body.classList.toggle('mode-kids',  mode === 'kids');
+}
+
+// ── FILTERS ───────────────────────────────────────────────────────
+function getFiltered() {
+  const q = searchTerm.toLowerCase();
+  return dataset().filter(w => {
+    const matchCat = activeCat === 'All' || w.cat === activeCat;
+    let matchSearch = !q || w.da.toLowerCase().includes(q) || w.en.toLowerCase().includes(q);
+    if (!matchSearch && mode === 'verbs') {
+      // Also search across verb conjugation forms
+      matchSearch = (w.pres && w.pres.toLowerCase().includes(q))
+                 || (w.past && w.past.toLowerCase().includes(q))
+                 || (w.perf && w.perf.toLowerCase().includes(q));
+    }
+    const matchKnown = !onlyKnown || known.has(w.da);
+    return matchCat && matchSearch && matchKnown;
+  });
+}
+
+function applyFilters() { renderCards(getFiltered()); }
+
+// ── RENDER ────────────────────────────────────────────────────────
+function renderCards(list) {
+  const grid = document.getElementById('grid');
+  grid.innerHTML = '';
+  const sectionLabel = mode === 'verbs' ? 'All Verbs' : (mode === 'kids' ? 'All Words' : 'All Words');
+  document.getElementById('section-title').textContent =
+    activeCat === 'All' ? sectionLabel : activeCat;
+  document.getElementById('section-count').textContent =
+    list.length + ' ' + itemLabel() + (list.length !== 1 ? 's' : '');
+  document.getElementById('showing-count').textContent = list.length;
+
+  if (list.length === 0) {
+    grid.innerHTML = `<div class="empty-state"><p>No ${itemLabel()}s found.</p></div>`;
+    updateStats();
+    return;
+  }
+
+  const data = dataset();
+  list.forEach(w => {
+    const isKnown = known.has(w.da);
+    const wrap = document.createElement('div');
+    wrap.className = 'card-wrap' + (isKnown ? ' known' : '');
+
+    if (mode === 'kids') {
+      // Kid card: emoji-first, audio-first, no flip — tap pops + speaks
+      wrap.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-front cat-${w.cat}">
+            <button class="speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <div class="kid-emoji">${w.emoji}</div>
+            <div class="kid-da">${w.da}</div>
+            <div class="kid-en">${w.en}</div>
+          </div>
+        </div>`;
+      // Speaker button replays without re-popping
+      wrap.querySelector('.speaker-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        speak(w.da);
+      });
+      wrap.addEventListener('click', () => kidTap(wrap, w));
+    } else if (mode === 'verbs') {
+      const auxClass = (w.perf && w.perf.startsWith('er ')) ? 'aux-er' : '';
+      // Strip leading "at " for speech — TTS pronounces the verb cleaner without the infinitive marker
+      const spoken = w.da.replace(/^at\s+/, '');
+      wrap.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-front">
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <span class="card-num">#${data.indexOf(w)+1}</span>
+            <div class="danish-word">${w.da}</div>
+            <div class="word-type">verb</div>
+            <div class="known-dot">✓</div>
+          </div>
+          <div class="card-face card-back">
+            <div class="danish-word" style="font-size:18px;">${w.da}</div>
+            <div class="verb-conj">
+              <span class="verb-conj-label">pres</span><span class="verb-conj-form">${w.pres}</span>
+              <span class="verb-conj-label">past</span><span class="verb-conj-form">${w.past}</span>
+              <span class="verb-conj-label">perf</span><span class="verb-conj-form ${auxClass}">${w.perf}</span>
+            </div>
+            <div class="verb-en">${w.en}</div>
+          </div>
+        </div>`;
+      wrap.querySelector('.adult-speaker-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        speak(spoken);
+      });
+      wrap.addEventListener('click', () => toggleCard(wrap, w));
+    } else {
+      wrap.innerHTML = `
+        <div class="card-inner">
+          <div class="card-face card-front">
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <span class="card-num">#${data.indexOf(w)+1}</span>
+            <div class="danish-word">${w.da}</div>
+            <div class="word-type">${w.type}</div>
+            <div class="known-dot">✓</div>
+          </div>
+          <div class="card-face card-back">
+            <span class="card-num">${w.type}</span>
+            <div class="english-word">${w.en}</div>
+          </div>
+        </div>`;
+      wrap.querySelector('.adult-speaker-btn').addEventListener('click', e => {
+        e.stopPropagation();
+        speak(w.da);
+      });
+      wrap.addEventListener('click', () => toggleCard(wrap, w));
+    }
+    grid.appendChild(wrap);
+  });
+  updateStats();
+}
+
+function toggleCard(wrap, w) {
+  const wasFlipped = wrap.classList.contains('flipped');
+  wrap.classList.toggle('flipped');
+  if (!wasFlipped) {
+    known.add(w.da);
+    wrap.classList.add('known');
+    localStorage.setItem(KNOWN_KEY[mode], JSON.stringify([...known]));
+    updateStats();
+  }
+}
+
+// Kid tap: pop, speak Danish, confetti, mark known, second tap shows English
+function kidTap(wrap, w) {
+  const alreadyFlipped = wrap.classList.contains('flipped');
+  // First tap shows English under the word, second tap hides it again
+  wrap.classList.toggle('flipped');
+  // Always pop + speak + chime, regardless of flip state
+  wrap.classList.add('popping');
+  setTimeout(() => wrap.classList.remove('popping'), 200);
+  speak(w.da);
+  playChime();
+  fireConfetti(wrap);
+  if (!known.has(w.da)) {
+    known.add(w.da);
+    wrap.classList.add('known');
+    localStorage.setItem(KNOWN_KEY[mode], JSON.stringify([...known]));
+    bumpStreak();
+    updateStats();
+  }
+}
+
+function flipAll() {
+  const cards = document.querySelectorAll('.card-wrap');
+  allFlipped = !allFlipped;
+  cards.forEach(c => c.classList.toggle('flipped', allFlipped));
+}
+
+function shuffle() {
+  renderCards(getFiltered().sort(() => Math.random() - 0.5));
+}
+
+function toggleKnownFilter() {
+  onlyKnown = !onlyKnown;
+  document.getElementById('known-filter-btn').classList.toggle('active', onlyKnown);
+  applyFilters();
+}
+
+// ── RESET (no confirm() — uses custom modal) ───────────────────────
+function openResetModal() {
+  document.getElementById('modal-known-count').textContent = known.size;
+  document.getElementById('resetModal').classList.add('open');
+}
+function closeResetModal() {
+  document.getElementById('resetModal').classList.remove('open');
+}
+function confirmReset() {
+  known.clear();
+  localStorage.removeItem(KNOWN_KEY[mode]);
+  closeResetModal();
+  updateStats();
+  applyFilters();
+}
+
+// close modal on overlay click
+document.getElementById('resetModal').addEventListener('click', function(e) {
+  if (e.target === this) closeResetModal();
+});
+
+function updateStats() {
+  document.getElementById('known-count').textContent  = known.size;
+  document.getElementById('total-count').textContent  = dataset().length;
+  const pct = Math.round((known.size / dataset().length) * 100);
+  document.getElementById('progress-pct').textContent = pct + '%';
+  document.getElementById('progress-fill').style.width = pct + '%';
+}
+
+document.getElementById('search').addEventListener('input', e => {
+  searchTerm = e.target.value;
+  applyFilters();
+});
+
+// ════════════════════════════════════════════════════════════════════
+// KIDS MODE HELPERS — speech, confetti, chime, streak
+// ════════════════════════════════════════════════════════════════════
+
+// ── SPEECH ────────────────────────────────────────────────────────
+// Picks first Danish voice once it's available; speaks short utterances.
+// MUST be called synchronously inside a click handler (iOS gesture rule).
+let _daVoice = null;
+function pickDanishVoice() {
+  if (!('speechSynthesis' in window)) return null;
+  const voices = speechSynthesis.getVoices();
+  // Prefer local (offline) voices first, then any da-* voice
+  const local = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da') && v.localService);
+  if (local) return local;
+  return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) || null;
+}
+if ('speechSynthesis' in window) {
+  // Voices arrive asynchronously
+  _daVoice = pickDanishVoice();
+  speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', () => {
+    _daVoice = pickDanishVoice();
+  });
+}
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  try {
+    speechSynthesis.cancel(); // Chrome stall fix
+    if (!_daVoice) _daVoice = pickDanishVoice();
+    const u = new SpeechSynthesisUtterance(text);
+    u.lang = 'da-DK';
+    u.rate = 0.85;  // slightly slower for kid learners
+    u.pitch = 1.05;
+    if (_daVoice) u.voice = _daVoice;
+    speechSynthesis.speak(u);
+  } catch (e) { /* silent — speech is enhancement, not core */ }
+}
+
+// ── CHIME ─────────────────────────────────────────────────────────
+let _audioCtx = null;
+function playChime() {
+  try {
+    if (!_audioCtx) _audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    const ctx = _audioCtx;
+    if (ctx.state === 'suspended') ctx.resume();
+    const now = ctx.currentTime;
+    // Two-note ding: rising fifth
+    [523.25, 783.99].forEach((freq, i) => {
+      const osc = ctx.createOscillator();
+      const gain = ctx.createGain();
+      osc.type = 'sine';
+      osc.frequency.value = freq;
+      osc.connect(gain);
+      gain.connect(ctx.destination);
+      const start = now + i * 0.06;
+      gain.gain.setValueAtTime(0, start);
+      gain.gain.linearRampToValueAtTime(0.15, start + 0.02);
+      gain.gain.exponentialRampToValueAtTime(0.001, start + 0.25);
+      osc.start(start);
+      osc.stop(start + 0.3);
+    });
+  } catch (e) { /* silent */ }
+}
+
+// ── CONFETTI ──────────────────────────────────────────────────────
+const CONFETTI_COLORS = ['#ff7a59','#ffd966','#7accc7','#c799f5','#88b8e8','#a8d995','#ff9bcc'];
+function fireConfetti(originEl) {
+  const rect = originEl.getBoundingClientRect();
+  const cx = rect.left + rect.width / 2;
+  const cy = rect.top + rect.height / 2;
+  const N = 18;
+  for (let i = 0; i < N; i++) {
+    const piece = document.createElement('div');
+    piece.className = 'confetti-piece';
+    const angle = (Math.PI * 2 * i) / N + (Math.random() - 0.5) * 0.4;
+    const dist = 90 + Math.random() * 80;
+    const dx = Math.cos(angle) * dist;
+    const dy = Math.sin(angle) * dist - 30; // upward bias
+    piece.style.left = cx + 'px';
+    piece.style.top = cy + 'px';
+    piece.style.setProperty('--cx', dx + 'px');
+    piece.style.setProperty('--cy', dy + 'px');
+    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+    piece.style.animation = `confettiFall ${800 + Math.random() * 400}ms ease-out forwards`;
+    piece.style.borderRadius = (Math.random() > 0.5 ? '50%' : '2px');
+    document.body.appendChild(piece);
+    setTimeout(() => piece.remove(), 1300);
+  }
+}
+
+// ── STREAK ────────────────────────────────────────────────────────
+function todayKey() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function loadStreak() {
+  try {
+    return JSON.parse(localStorage.getItem('dk-kids-streak') || 'null') || { count: 0, lastDate: null };
+  } catch { return { count: 0, lastDate: null }; }
+}
+function saveStreak(s) { localStorage.setItem('dk-kids-streak', JSON.stringify(s)); }
+function bumpStreak() {
+  const s = loadStreak();
+  const today = todayKey();
+  if (s.lastDate === today) return; // already counted today
+  // Was yesterday? Then increment. Else reset to 1.
+  const y = new Date(); y.setDate(y.getDate() - 1);
+  const yKey = y.getFullYear() + '-' + String(y.getMonth()+1).padStart(2,'0') + '-' + String(y.getDate()).padStart(2,'0');
+  s.count = (s.lastDate === yKey) ? s.count + 1 : 1;
+  s.lastDate = today;
+  saveStreak(s);
+  refreshStreakBadge(true);
+}
+function refreshStreakBadge(celebrate) {
+  const s = loadStreak();
+  // Did the streak break? If lastDate is older than yesterday, show 0
+  let display = s.count;
+  if (s.lastDate) {
+    const last = new Date(s.lastDate + 'T00:00:00');
+    const today = new Date(todayKey() + 'T00:00:00');
+    const diffDays = Math.round((today - last) / (1000 * 60 * 60 * 24));
+    if (diffDays > 1) display = 0;
+  } else {
+    display = 0;
+  }
+  document.getElementById('streak-count').textContent = display;
+  if (celebrate) {
+    const badge = document.getElementById('streak-badge');
+    badge.classList.remove('celebrate');
+    void badge.offsetWidth; // restart animation
+    badge.classList.add('celebrate');
+  }
+}
+
+// init — restore mode from localStorage, then render
+applyModeClasses();
+refreshStreakBadge();
+buildSidebar();
+applyFilters();
+</script>
+</body>
+</html>
