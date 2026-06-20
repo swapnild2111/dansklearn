@@ -720,7 +720,7 @@ function toggleSpeak(idx) {
   }
   if (synth.speaking || synth.pending) synth.cancel();
 
-  const text = paragraphs[idx];
+  const text = String(paragraphs[idx]).replace(/\bI\b/g, 'i');
   if (!text) return;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'da-DK';

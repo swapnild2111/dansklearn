@@ -136,6 +136,7 @@ function speak(text, opts) {
   opts = opts || {};
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
+  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
   if (danishVoice) u.voice = danishVoice;
   u.lang = 'da-DK';

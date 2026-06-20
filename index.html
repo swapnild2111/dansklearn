@@ -4089,6 +4089,7 @@ if ('speechSynthesis' in window) {
 function speak(text) {
   if (!('speechSynthesis' in window)) return;
   try {
+    text = String(text).replace(/\bI\b/g, 'i');
     speechSynthesis.cancel(); // Chrome stall fix
     if (!_daVoice) _daVoice = pickDanishVoice();
     const u = new SpeechSynthesisUtterance(text);
@@ -4681,7 +4682,7 @@ function toggleSpeak(idx) {
   }
   if (synth.speaking || synth.pending) synth.cancel();
 
-  const text = paragraphs[idx];
+  const text = String(paragraphs[idx]).replace(/\bI\b/g, 'i');
   if (!text) return;
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'da-DK';
@@ -5120,6 +5121,7 @@ function speak(text, opts) {
   opts = opts || {};
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
+  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
   if (danishVoice) u.voice = danishVoice;
   u.lang = 'da-DK';
@@ -5343,6 +5345,7 @@ function speak(text, opts) {
   opts = opts || {};
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
+  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
   if (danishVoice) u.voice = danishVoice;
   u.lang = 'da-DK';

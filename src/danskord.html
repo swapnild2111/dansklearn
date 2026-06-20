@@ -2588,6 +2588,7 @@ if ('speechSynthesis' in window) {
 function speak(text) {
   if (!('speechSynthesis' in window)) return;
   try {
+    text = String(text).replace(/\bI\b/g, 'i');
     speechSynthesis.cancel(); // Chrome stall fix
     if (!_daVoice) _daVoice = pickDanishVoice();
     const u = new SpeechSynthesisUtterance(text);
