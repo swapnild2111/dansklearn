@@ -237,6 +237,7 @@ const host = document.getElementById('tale-card-host');
 const toast = document.getElementById('tale-toast');
 let queue = [];
 let qIdx = 0;
+let audioUnlocked = false;
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -301,13 +302,14 @@ function renderCard() {
     '</div>';
   const playBtn = host.querySelector('#tale-play-btn');
   playBtn.addEventListener('click', () => {
+    audioUnlocked = true;
     playBtn.classList.add('speaking');
     speak(p.da, {
       onend: () => playBtn.classList.remove('speaking'),
       onerror: () => { playBtn.classList.remove('speaking'); showToast('Audio unavailable'); },
     });
   });
-  setTimeout(() => playBtn.click(), 250);
+  if (audioUnlocked) setTimeout(() => playBtn.click(), 250);
 
   host.querySelectorAll('.rating-btn').forEach(b => {
     b.addEventListener('click', () => {

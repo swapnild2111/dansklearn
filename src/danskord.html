@@ -126,7 +126,8 @@
      ════════════════════════════════════════════════════════════════════ */
   body.mode-kids { background: linear-gradient(180deg, #fff8e7 0%, #ffe9f0 100%); color: #2d2a4a; }
   body.mode-kids header { background: rgba(255,255,255,0.92); border-bottom: 2px solid #ffd9a8; }
-  body.mode-kids .logo, body.mode-kids .logo span { color: #ff7a59; }
+  body.mode-kids .logo { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+  body.mode-kids .logo span { color: #ff7a59; }
   body.mode-kids .stat-pill { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
   body.mode-kids .stat-pill b { color: #ff7a59; }
   body.mode-kids .btn { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
@@ -2338,7 +2339,10 @@ function selectCat(cat) {
 
 // ── MODE TOGGLE ───────────────────────────────────────────────────
 function setMode(newMode) {
-  if (newMode === mode) return;
+  if (newMode === mode) {
+    applyModeClasses();
+    return;
+  }
   mode = newMode;
   localStorage.setItem('dk-mode', mode);
   // Switch known set

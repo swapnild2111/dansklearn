@@ -88,6 +88,7 @@
   .icon-btn { width: 38px; height: 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
   .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
   .icon-btn.hint:hover  { border-color: var(--accent2); color: var(--accent2); }
+  .icon-btn.hint.active  { border-color: var(--accent2); color: var(--accent2); background: rgba(125,211,252,0.12); }
   .icon-btn.reset:hover { border-color: var(--danger);  color: var(--danger); }
   .progress-mini { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.12); border: 1px solid rgba(125,211,252,0.25); border-radius: 6px; padding: 2px 0; margin-top: 4px; text-align: center; width: 38px; }
   .card.complete .progress-mini { color: var(--success); background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); }
@@ -141,7 +142,7 @@
 <div class="main">
   <div class="intro">
     <h1>Translate to Danish</h1>
-    <p>Read each English paragraph and type the Danish translation. Tap the hint icon if you need to see the original Danish.</p>
+    <p>Read each English paragraph and type the Danish translation. Tap the hint icon to show or hide the original Danish.</p>
   </div>
 
   <div class="overall-wrap">
@@ -361,7 +362,7 @@ function render() {
       '<div class="input-row">' +
         '<textarea id="overset-ta-' + i + '" placeholder="Type the Danish translation…" spellcheck="false">' + states[i].typed.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</textarea>' +
         '<div class="input-side">' +
-          '<button class="icon-btn hint" id="overset-hint-' + i + '" title="Show Danish original" aria-label="Show Danish original">' +
+          '<button class="icon-btn hint' + (hintShown ? ' active' : '') + '" id="overset-hint-' + i + '" title="' + (hintShown ? 'Hide Danish original' : 'Show Danish original') + '" aria-label="' + (hintShown ? 'Hide Danish original' : 'Show Danish original') + '">' +
             '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .8-1.5 1.4-1.5 2.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
           '</button>' +
           '<button class="icon-btn reset" id="overset-reset-' + i + '" title="Clear this card" aria-label="Clear this card">' +
@@ -383,9 +384,13 @@ function render() {
       updateOverall();
     });
     hintBtn.addEventListener('click', () => {
-      states[i].hintShown = true;
+      states[i].hintShown = !states[i].hintShown;
       const da = card.querySelector('#overset-da-' + i);
-      da.classList.add('shown');
+      da.classList.toggle('shown', states[i].hintShown);
+      hintBtn.classList.toggle('active', states[i].hintShown);
+      const label = states[i].hintShown ? 'Hide Danish original' : 'Show Danish original';
+      hintBtn.title = label;
+      hintBtn.setAttribute('aria-label', label);
       saveSession();
     });
     resetBtn.addEventListener('click', () => {

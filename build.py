@@ -349,11 +349,89 @@ body {
 .portal-nav a:hover { color: var(--accent); border-color: var(--border); }
 .portal-nav a.active { color: var(--accent); border-color: var(--accent); background: rgba(79,142,247,0.07); }
 
+#portal-kids-toggle {
+  flex-shrink: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  font-size: 13px;
+  padding: 7px 16px;
+  border-radius: 22px;
+  border: 2px solid #ffb84d;
+  background: linear-gradient(135deg, #fff8d4 0%, #ffd966 45%, #ff9a7a 100%);
+  color: #8a3a12;
+  cursor: pointer;
+  white-space: nowrap;
+  box-shadow:
+    0 2px 0 #e8a030,
+    0 4px 14px rgba(255, 154, 122, 0.45);
+  animation: kidsToggleGlow 2.4s ease-in-out infinite;
+  transition: transform 0.12s, box-shadow 0.15s, filter 0.15s;
+}
+#portal-kids-toggle .kids-star {
+  color: #ff5a20;
+  font-size: 16px;
+  line-height: 1;
+  text-shadow: 0 0 1px #fff, 0 1px 3px rgba(138, 58, 18, 0.45);
+}
+#portal-kids-toggle:hover {
+  transform: translateY(-2px) scale(1.04);
+  filter: brightness(1.05);
+  box-shadow:
+    0 3px 0 #e8a030,
+    0 8px 22px rgba(255, 122, 89, 0.55);
+}
+#portal-kids-toggle:active {
+  transform: translateY(1px) scale(0.98);
+  box-shadow: 0 1px 0 #e8a030, 0 3px 10px rgba(255, 154, 122, 0.35);
+}
+@keyframes kidsToggleGlow {
+  0%, 100% { box-shadow: 0 2px 0 #e8a030, 0 4px 14px rgba(255, 154, 122, 0.4); }
+  50%      { box-shadow: 0 2px 0 #e8a030, 0 4px 20px rgba(255, 122, 89, 0.65), 0 0 0 4px rgba(255, 184, 77, 0.25); }
+}
+body.portal-kids #portal-kids-toggle {
+  border-color: #ff7a59;
+  background: linear-gradient(135deg, #ff9a7a, #ff7a59);
+  color: #fff;
+  animation: kidsToggleOn 2s ease-in-out infinite;
+  box-shadow: 0 3px 0 #d85a3a, 0 6px 20px rgba(255, 122, 89, 0.5);
+}
+body.portal-kids #portal-kids-toggle:hover {
+  color: #fff;
+  filter: brightness(1.08);
+  box-shadow: 0 4px 0 #d85a3a, 0 10px 26px rgba(255, 122, 89, 0.6);
+}
+body.portal-kids #portal-kids-toggle:active {
+  box-shadow: 0 1px 0 #d85a3a, 0 4px 12px rgba(255, 122, 89, 0.4);
+}
+@keyframes kidsToggleOn {
+  0%, 100% { box-shadow: 0 3px 0 #d85a3a, 0 6px 18px rgba(255, 122, 89, 0.45); }
+  50%      { box-shadow: 0 3px 0 #d85a3a, 0 6px 24px rgba(255, 122, 89, 0.7), 0 0 0 5px rgba(255, 122, 89, 0.2); }
+}
+@media (prefers-reduced-motion: reduce) {
+  #portal-kids-toggle,
+  body.portal-kids #portal-kids-toggle { animation: none; }
+}
+
 /* ─── KIDS-MODE OVERRIDES ON PORTAL CHROME ─────────────────────── */
+body.portal-kids .portal-header,
 body.mode-kids .portal-header { background: rgba(255,255,255,0.92); border-bottom: 2px solid #ffd9a8; }
-body.mode-kids .portal-logo, body.mode-kids .portal-logo span { color: #ff7a59; }
+body.portal-kids .portal-logo,
+body.mode-kids .portal-logo {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  color: #2d2a4a;
+  letter-spacing: 0;
+}
+body.portal-kids .portal-logo span,
+body.mode-kids .portal-logo span { color: #ff7a59; }
+body.portal-kids .portal-nav a,
 body.mode-kids .portal-nav a { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+body.portal-kids .portal-nav a:hover,
 body.mode-kids .portal-nav a:hover { color: #ff7a59; border-color: #ffd9a8; }
+body.portal-kids .portal-nav a.active,
 body.mode-kids .portal-nav a.active { color: #ff7a59; border-color: #ff7a59; background: #fff0e0; }
 
 /* ─── LANDING PAGE ─────────────────────────────────────────────── */
@@ -506,6 +584,364 @@ body.mode-kids .portal-nav a.active { color: #ff7a59; border-color: #ff7a59; bac
 </style>
 """
 
+# Portal-wide kids theme — same playful palette as Ord's kids mode, applied to
+# every module when the home-page toggle is on.
+PORTAL_KIDS_STYLE = r"""
+<style id="portal-kids-style">
+body.portal-kids {
+  background: linear-gradient(180deg, #fff8e7 0%, #ffe9f0 100%);
+  color: #2d2a4a;
+}
+
+/* ── Home ─────────────────────────────────────────────────────── */
+body.portal-kids #view-home { background: transparent; }
+body.portal-kids .landing-hero h1 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+body.portal-kids .landing-hero h1 span { color: #ff7a59; }
+body.portal-kids .landing-hero p { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+body.portal-kids .section-label { color: #b8a0c0; font-family: 'Fredoka', sans-serif; font-weight: 600; letter-spacing: 1px; }
+body.portal-kids .module-card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+  box-shadow: 0 4px 0 #ffd9a8, 0 8px 20px rgba(255,154,122,0.12);
+}
+body.portal-kids .module-card:hover {
+  border-color: #ff7a59;
+  transform: translateY(-3px);
+  box-shadow: 0 6px 0 #ffd9a8, 0 12px 28px rgba(255,154,122,0.22);
+}
+body.portal-kids .module-title { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+body.portal-kids .module-title span { color: #ff7a59; }
+body.portal-kids .module-desc { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-size: 14px; }
+body.portal-kids .module-stat { border-top-color: #ffe9d4; color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.portal-kids .module-stat b { color: #ff7a59; font-family: 'Fredoka', sans-serif; font-weight: 700; }
+body.portal-kids .module-stat .pct { color: #ff7a59; }
+body.portal-kids .module-progress { background: #ffe9d4; height: 8px; border-radius: 8px; }
+body.portal-kids .module-progress > div { background: linear-gradient(90deg, #ff9a7a, #ff7a59); border-radius: 8px; }
+body.portal-kids .portal-footer { border-top-color: #ffd9a8; color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+
+body.portal-kids #view-ord { background: transparent; color: #2d2a4a; }
+
+/* ── Shared module chrome (Skriv, Oversæt, Tale, Hør) ─────────── */
+body.portal-kids #view-skriv,
+body.portal-kids #view-overset,
+body.portal-kids #view-tale,
+body.portal-kids #view-hor {
+  background: transparent;
+  color: #2d2a4a;
+}
+body.portal-kids #view-skriv .app-toolbar,
+body.portal-kids #view-overset .app-toolbar,
+body.portal-kids #view-tale .app-toolbar,
+body.portal-kids #view-hor .app-toolbar,
+body.portal-kids #view-ord .app-toolbar {
+  background: rgba(255,255,255,0.92) !important;
+  border-bottom: 2px solid #ffd9a8 !important;
+  box-shadow: none !important;
+}
+body.portal-kids #view-skriv .app-toolbar .logo,
+body.portal-kids #view-overset .app-toolbar .logo,
+body.portal-kids #view-tale .app-toolbar .logo,
+body.portal-kids #view-hor .app-toolbar .logo,
+body.portal-kids #view-ord .app-toolbar .logo,
+body.mode-kids #view-ord .app-toolbar .logo {
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 700;
+  color: #2d2a4a;
+  letter-spacing: 0;
+}
+body.portal-kids #view-skriv .app-toolbar .logo span,
+body.portal-kids #view-overset .app-toolbar .logo span,
+body.portal-kids #view-tale .app-toolbar .logo span,
+body.portal-kids #view-hor .app-toolbar .logo span,
+body.portal-kids #view-ord .app-toolbar .logo span,
+body.mode-kids #view-ord .app-toolbar .logo span { color: #ff7a59; }
+body.portal-kids #view-skriv .app-toolbar .stat-pill,
+body.portal-kids #view-overset .app-toolbar .stat-pill,
+body.portal-kids #view-tale .app-toolbar .stat-pill,
+body.portal-kids #view-hor .app-toolbar .stat-pill {
+  background: #fff;
+  border-color: #ffd9a8;
+  color: #6b5b8a;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+}
+body.portal-kids #view-skriv .app-toolbar .stat-pill b,
+body.portal-kids #view-overset .app-toolbar .stat-pill b,
+body.portal-kids #view-tale .app-toolbar .stat-pill b,
+body.portal-kids #view-hor .app-toolbar .stat-pill b { color: #ff7a59; }
+body.portal-kids #view-skriv .app-toolbar .btn,
+body.portal-kids #view-overset .app-toolbar .btn,
+body.portal-kids #view-tale .app-toolbar .btn,
+body.portal-kids #view-hor .app-toolbar .btn {
+  background: #fff;
+  border-color: #ffd9a8;
+  color: #6b5b8a;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+}
+body.portal-kids #view-skriv .app-toolbar .btn:hover,
+body.portal-kids #view-overset .app-toolbar .btn:hover,
+body.portal-kids #view-tale .app-toolbar .btn:hover,
+body.portal-kids #view-hor .app-toolbar .btn:hover { border-color: #ff7a59; color: #ff7a59; }
+body.portal-kids #view-skriv .app-toolbar .btn-refresh,
+body.portal-kids #view-overset .app-toolbar .btn-refresh {
+  background: linear-gradient(135deg, #ff9a7a, #ff7a59);
+  border: none;
+  color: #fff;
+}
+
+/* ── Skriv & Oversæt ──────────────────────────────────────────── */
+body.portal-kids #view-skriv .intro h1,
+body.portal-kids #view-overset .intro h1 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+body.portal-kids #view-skriv .intro p,
+body.portal-kids #view-overset .intro p { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-skriv .overall-wrap,
+body.portal-kids #view-overset .overall-wrap {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+  box-shadow: 0 4px 0 #ffd9a8;
+}
+body.portal-kids #view-skriv .overall-info,
+body.portal-kids #view-overset .overall-info { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
+body.portal-kids #view-skriv .overall-info b,
+body.portal-kids #view-overset .overall-info b { color: #ff7a59; font-weight: 700; }
+body.portal-kids #view-skriv .overall-track,
+body.portal-kids #view-overset .overall-track { background: #ffe9d4; height: 8px; border-radius: 8px; }
+body.portal-kids #view-skriv .overall-fill,
+body.portal-kids #view-overset .overall-fill { background: linear-gradient(90deg, #ff9a7a, #ff7a59); border-radius: 8px; }
+body.portal-kids #view-skriv .card,
+body.portal-kids #view-overset .card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+  box-shadow: 0 4px 0 #ffd9a8;
+}
+body.portal-kids #view-skriv .card.complete,
+body.portal-kids #view-overset .card.complete { border-color: #a8d995; box-shadow: 0 4px 0 #a8d995; }
+body.portal-kids #view-skriv .card-num,
+body.portal-kids #view-overset .card-num { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-skriv .card-category,
+body.portal-kids #view-overset .card-category {
+  color: #ff7a59;
+  background: #fff0e0;
+  border-color: #ffd9a8;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-skriv .paragraph {
+  background: #fff8e7;
+  border: 2px solid #ffd9a8;
+  border-radius: 16px;
+  padding: 12px 14px;
+  color: #2d2a4a;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-skriv .paragraph .ch.cur,
+body.portal-kids #view-overset .target-da .ch.cur {
+  background: rgba(255, 122, 89, 0.22);
+  box-shadow: inset 0 -2px 0 #ff7a59;
+}
+body.portal-kids #view-overset .prompt-en {
+  background: #fff8e7;
+  border: 2px solid #ffd9a8;
+  border-radius: 16px;
+  color: #2d2a4a;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-overset .prompt-en .label { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-overset .target-da {
+  background: #fff0e0;
+  border: 2px solid #ffb84d;
+  border-radius: 16px;
+  color: #2d2a4a;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-skriv .card-status,
+body.portal-kids #view-overset .card-status { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-skriv .card-source,
+body.portal-kids #view-overset .card-source { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-skriv textarea,
+body.portal-kids #view-overset textarea {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 16px;
+  color: #2d2a4a;
+  font-family: 'Fredoka', sans-serif;
+  font-size: 16px;
+}
+body.portal-kids #view-skriv textarea::placeholder,
+body.portal-kids #view-overset textarea::placeholder { color: #b8a0c0; }
+body.portal-kids #view-skriv textarea:focus,
+body.portal-kids #view-overset textarea:focus { border-color: #ff7a59; }
+body.portal-kids #view-skriv .icon-btn,
+body.portal-kids #view-overset .icon-btn {
+  background: #fff;
+  border: 2px solid #ffd9a8;
+  border-radius: 12px;
+  color: #6b5b8a;
+}
+body.portal-kids #view-skriv .icon-btn:hover,
+body.portal-kids #view-overset .icon-btn:hover { border-color: #ff7a59; color: #ff7a59; }
+body.portal-kids #view-skriv .icon-btn.hint.active,
+body.portal-kids #view-overset .icon-btn.hint.active {
+  background: #fff0e0;
+  border-color: #ff7a59;
+  color: #ff7a59;
+}
+body.portal-kids #view-skriv .progress-mini,
+body.portal-kids #view-overset .progress-mini {
+  color: #ff7a59;
+  background: #fff0e0;
+  border: 2px solid #ffd9a8;
+  border-radius: 10px;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-skriv .card.complete .progress-mini,
+body.portal-kids #view-overset .card.complete .progress-mini {
+  color: #3d7a35;
+  background: #e8f8e0;
+  border-color: #a8d995;
+}
+body.portal-kids #view-skriv .card.error .progress-mini,
+body.portal-kids #view-overset .card.error .progress-mini {
+  color: #c44;
+  background: #ffe5e5;
+  border-color: #ff9999;
+}
+body.portal-kids #view-skriv .skeleton-card,
+body.portal-kids #view-overset .skeleton-card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+}
+body.portal-kids #view-skriv .skeleton-line,
+body.portal-kids #view-overset .skeleton-line {
+  background: linear-gradient(90deg, #ffe9d4 25%, #fff5e9 50%, #ffe9d4 75%);
+}
+body.portal-kids #view-skriv .toast,
+body.portal-kids #view-overset .toast {
+  background: #fff;
+  border: 2px solid #ffd9a8;
+  color: #6b5b8a;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-skriv .modal-text,
+body.portal-kids #view-overset .modal-text { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-skriv .modal-close,
+body.portal-kids #view-overset .modal-close { color: #6b5b8a; }
+body.portal-kids #view-skriv .modal,
+body.portal-kids #view-overset .modal {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+}
+body.portal-kids #view-skriv .modal-head,
+body.portal-kids #view-overset .modal-head { border-bottom-color: #ffd9a8; }
+body.portal-kids #view-skriv .modal-title,
+body.portal-kids #view-overset .modal-title { font-family: 'Fredoka', sans-serif; color: #2d2a4a; font-weight: 700; }
+body.portal-kids #view-skriv .modal-btn,
+body.portal-kids #view-overset .modal-btn {
+  font-family: 'Fredoka', sans-serif;
+  background: #fff;
+  border-color: #ffd9a8;
+  color: #6b5b8a;
+}
+body.portal-kids #view-skriv .modal-btn.primary,
+body.portal-kids #view-overset .modal-btn.primary {
+  background: linear-gradient(135deg, #ff9a7a, #ff7a59);
+  border: none;
+  color: #fff;
+}
+
+/* ── Tale ─────────────────────────────────────────────────────── */
+body.portal-kids #view-tale .intro h1 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+body.portal-kids #view-tale .intro p { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-tale .session-stat,
+body.portal-kids #view-tale .stat-card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+  box-shadow: 0 3px 0 #ffd9a8;
+}
+body.portal-kids #view-tale .session-stat .label,
+body.portal-kids #view-tale .stat-card .label { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-tale .session-stat .value,
+body.portal-kids #view-tale .stat-card .value { color: #ff7a59; font-family: 'Fredoka', sans-serif; font-weight: 700; }
+body.portal-kids #view-tale .review-card,
+body.portal-kids #view-tale .session-done {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 28px;
+  box-shadow: 0 6px 0 #ffd9a8, 0 12px 28px rgba(255,154,122,0.15);
+}
+body.portal-kids #view-tale .review-card .phrase-da { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; font-size: 28px; }
+body.portal-kids #view-tale .review-card .phrase-en { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-tale .play-btn {
+  background: linear-gradient(135deg, #ff9a7a, #ff7a59);
+  box-shadow: 0 6px 0 #e56a4a, 0 10px 24px rgba(255,122,89,0.35);
+}
+body.portal-kids #view-tale .rating-btn {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 18px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 600;
+  box-shadow: 0 3px 0 #ffd9a8;
+}
+body.portal-kids #view-tale .rating-btn .interval { font-family: 'Fredoka', sans-serif; color: #b8a0c0; }
+body.portal-kids #view-tale .session-done { border-color: #a8d995; box-shadow: 0 4px 0 #a8d995; }
+body.portal-kids #view-tale .session-done h2 { font-family: 'Fredoka', sans-serif; color: #2d2a4a; }
+
+/* ── Hør ──────────────────────────────────────────────────────── */
+body.portal-kids #view-hor .intro h1 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; }
+body.portal-kids #view-hor .intro p { color: #6b5b8a; font-family: 'Fredoka', sans-serif; }
+body.portal-kids #view-hor .listen-card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 28px;
+  box-shadow: 0 6px 0 #ffd9a8, 0 12px 28px rgba(255,154,122,0.15);
+}
+body.portal-kids #view-hor .listen-prompt { font-family: 'Fredoka', sans-serif; color: #6b5b8a; }
+body.portal-kids #view-hor .play-btn {
+  background: linear-gradient(135deg, #ff9a7a, #ff7a59);
+  box-shadow: 0 6px 0 #e56a4a, 0 10px 24px rgba(255,122,89,0.35);
+}
+body.portal-kids #view-hor .badge-cat {
+  color: #ff7a59;
+  background: #fff0e0;
+  border-color: #ffd9a8;
+  font-family: 'Fredoka', sans-serif;
+}
+body.portal-kids #view-hor .answer-btn {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 18px;
+  font-family: 'Fredoka', sans-serif;
+  font-weight: 500;
+  box-shadow: 0 3px 0 #ffd9a8;
+  min-height: 60px;
+}
+body.portal-kids #view-hor .answer-btn:hover:not(:disabled) { border-color: #ff7a59; color: #ff7a59; }
+body.portal-kids #view-hor .answer-btn.correct { border-color: #a8d995; background: #e8f8e0; color: #3d7a35; box-shadow: 0 3px 0 #a8d995; }
+body.portal-kids #view-hor .answer-btn.wrong { border-color: #ff9999; background: #ffe5e5; color: #c44; box-shadow: 0 3px 0 #ff9999; }
+body.portal-kids #view-hor .next-btn {
+  font-family: 'Fredoka', sans-serif;
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 18px;
+  box-shadow: 0 3px 0 #ffd9a8;
+}
+body.portal-kids #view-hor .stat-card {
+  background: #fff;
+  border: 3px solid #ffd9a8;
+  border-radius: 22px;
+  box-shadow: 0 3px 0 #ffd9a8;
+}
+body.portal-kids #view-hor .stat-card .value { color: #ff7a59; font-family: 'Fredoka', sans-serif; font-weight: 700; }
+</style>
+"""
+
 # Layout adjustments emitted AFTER the per-app scoped styles so they win on
 # specificity/order. The merged document has two stacked bars (portal header
 # above, per-app toolbar below); the original apps assumed only their own
@@ -588,6 +1024,7 @@ LAYOUT_FIXES = r"""
 
 /* Kids-mode parity: match the warmer palette so the toolbar still reads as a
    distinct surface against the cream/peach background. */
+body.portal-kids #view-ord .app-toolbar,
 body.mode-kids #view-ord .app-toolbar {
   background: linear-gradient(180deg, #fff7ec 0%, #fff0e0 100%);
   border-bottom: 2px solid #ffd9a8;
@@ -614,6 +1051,9 @@ body.mode-kids #view-ord .app-toolbar {
    live inside a display:none subtree — which they do here. This rule is
    belt-and-suspenders.) */
 .view:not(.active) .app-toolbar { display: none !important; }
+
+/* Portal owns global kids mode — hide Ord's duplicate Kids tab. */
+#view-ord #mode-kids-btn { display: none !important; }
 
 /* Inside the toolbar the original CSS used the danskord `header` declarations
    for layout: `display:flex; align-items:center; justify-content:space-between; padding:0 24px;
@@ -695,6 +1135,7 @@ body.mode-kids #view-ord .app-toolbar {
 @media (max-width: 500px) {
   .portal-logo { font-size: 18px; }
   .portal-nav a { padding: 4px 8px; font-size: 11px; }
+  #portal-kids-toggle { padding: 5px 10px; font-size: 11px; }
 }
 </style>
 """
@@ -710,6 +1151,7 @@ PORTAL_HEADER_AND_LANDING = r"""
     <a href="./tale"    data-route="tale">Tale</a>
     <a href="./hor"     data-route="hor">Hør</a>
   </nav>
+  <button id="portal-kids-toggle" type="button" aria-pressed="false" title="Friendly colours &amp; big buttons for ages 5–7"><span class="kids-star" aria-hidden="true">★</span> Kids</button>
 </header>
 
 <section id="view-home" class="view">
@@ -899,15 +1341,20 @@ function setActiveView(name) {
     a.classList.toggle('active', a.dataset.route === name);
   });
   updateSeo(name);
+  // Re-apply portal-kids chrome on every route change (SPA nav skips full reload).
+  syncPortalKidsChrome();
   if (name === 'ord'     && window.OrdApp)     window.OrdApp.init();
   if (name === 'skriv'   && window.SkrivApp)   window.SkrivApp.init();
   if (name === 'overset' && window.OversetApp) window.OversetApp.init();
   if (name === 'tale'    && window.TaleApp)    window.TaleApp.init();
   if (name === 'hor'     && window.HorApp)     window.HorApp.init();
   if (name === 'home') refreshLandingSnapshot();
-  // Kids-mode body class only makes sense inside Ord. Strip it when leaving.
+  // Ord content-mode classes — keep mode-kids while portal kids is on.
   if (name !== 'ord') {
-    document.body.classList.remove('mode-words', 'mode-verbs', 'mode-kids');
+    document.body.classList.remove('mode-words', 'mode-verbs');
+    if (!isPortalKids()) document.body.classList.remove('mode-kids');
+  } else {
+    syncOrdKidsMode();
   }
 }
 document.addEventListener('click', e => {
@@ -930,6 +1377,37 @@ if (useHashRouting) {
     const legacy = location.hash.replace(/^#/, '');
     history.replaceState(null, '', buildUrl(legacy));
   }
+}
+
+// ─── Portal-wide kids mode (home toggle) ─────────────────────────
+const PORTAL_KIDS_KEY = 'dansklearn:portal-kids:v1';
+function isPortalKids() {
+  return localStorage.getItem(PORTAL_KIDS_KEY) === '1';
+}
+function syncOrdKidsMode() {
+  if (typeof window.setMode !== 'function') return;
+  if (isPortalKids()) window.setMode('kids');
+  else if (document.body.classList.contains('mode-kids')) window.setMode('words');
+}
+function syncPortalKidsChrome() {
+  const on = isPortalKids();
+  document.body.classList.toggle('portal-kids', on);
+  updateKidsToggleLabel(on);
+}
+function updateKidsToggleLabel(on) {
+  const btn = document.getElementById('portal-kids-toggle');
+  if (!btn) return;
+  btn.setAttribute('aria-pressed', on ? 'true' : 'false');
+  if (on) btn.textContent = 'Turn off';
+  else btn.innerHTML = '<span class="kids-star" aria-hidden="true">★</span> Kids';
+}
+function applyPortalKids(on) {
+  localStorage.setItem(PORTAL_KIDS_KEY, on ? '1' : '0');
+  syncPortalKidsChrome();
+  syncOrdKidsMode();
+}
+function togglePortalKids() {
+  applyPortalKids(!isPortalKids());
 }
 
 // ─── Landing-page progress snapshot ──────────────────────────────
@@ -1023,6 +1501,9 @@ function setWidth(id, w) { const el = document.getElementById(id); if (el) el.st
 })();
 
 // ─── Boot ────────────────────────────────────────────────────────
+syncPortalKidsChrome();
+const portalKidsBtn = document.getElementById('portal-kids-toggle');
+if (portalKidsBtn) portalKidsBtn.addEventListener('click', togglePortalKids);
 setActiveView(currentRoute());
 </script>
 """
@@ -1127,6 +1608,7 @@ def build() -> None:
         PORTAL_STYLE,
         *style_blocks,
         LAYOUT_FIXES,
+        PORTAL_KIDS_STYLE,
         "</head>",
         "<body>",
         PORTAL_HEADER_AND_LANDING,

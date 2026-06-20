@@ -216,6 +216,7 @@ progress.correct = progress.correct || 0;
 
 let sessionScore = 0;
 let sessionTotal = 0;
+let audioUnlocked = false;
 
 function pickPhrase() {
   const weighted = PHRASES.map(p => ({ p, w: 1 / (1 + (seenCounts[p.id] || 0)) }));
@@ -265,6 +266,7 @@ function nextQuestion() {
     '</div>';
   const playBtn = host.querySelector('#hor-play-btn');
   function playOnce() {
+    audioUnlocked = true;
     playBtn.classList.add('speaking');
     speak(correct.da, {
       onend: () => playBtn.classList.remove('speaking'),
@@ -272,7 +274,7 @@ function nextQuestion() {
     });
   }
   playBtn.addEventListener('click', playOnce);
-  setTimeout(playOnce, 250);
+  if (audioUnlocked) setTimeout(playOnce, 250);
 
   const answerBtns = host.querySelectorAll('.answer-btn');
   const nextRow = host.querySelector('#hor-next-row');
