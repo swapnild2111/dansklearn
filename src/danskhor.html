@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Hør — Listen and pick</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #161b26;
+    --card: #1c2333;
+    --card-alt: #1a2744;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #7dd3fc;
+    --text: #e8edf5;
+    --text-muted: #8896ae;
+    --text-dim: #4a5568;
+    --success: #4ade80;
+    --danger: #f87171;
+    --radius: 12px;
+    --card-radius: 16px;
+    --header-h: 58px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .stat-pill b { color: var(--accent2); font-weight: 500; }
+  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  .intro { padding: 6px 4px 18px; }
+  .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+  .intro p { color: var(--text-muted); font-size: 13px; }
+
+  .listen-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 320px; display: flex; flex-direction: column; align-items: center; gap: 22px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+  .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+  .badge-score { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+  .listen-prompt { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text-muted); margin-top: 22px; }
+  .play-btn { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 42px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
+  .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
+  .play-btn:active { transform: scale(0.96); }
+  .play-btn.speaking { animation: horPulse 1.2s ease-in-out infinite; }
+  @keyframes horPulse { 0%,100% { box-shadow: 0 8px 24px rgba(79,142,247,0.45); } 50% { box-shadow: 0 8px 36px rgba(79,142,247,0.85); } }
+
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 580px; margin-top: 8px; }
+  .answer-btn { padding: 14px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.15s; text-align: left; min-height: 56px; }
+  .answer-btn:hover:not(:disabled) { border-color: var(--accent); }
+  .answer-btn:disabled { cursor: default; }
+  .answer-btn.correct { border-color: var(--success); background: rgba(74,222,128,0.12); color: var(--success); }
+  .answer-btn.wrong   { border-color: var(--danger);  background: rgba(248,113,113,0.12); color: var(--danger); }
+  .answer-btn.faded   { opacity: 0.45; }
+  .next-row { display: flex; gap: 10px; align-items: center; min-height: 38px; }
+  .next-btn { padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
+  .next-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .feedback { font-family: 'Inter', sans-serif; font-size: 13px; }
+  .feedback.correct { color: var(--success); }
+  .feedback.wrong   { color: var(--danger); }
+
+  .stats-row { display: flex; gap: 10px; margin-top: 18px; }
+  .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
+  .stat-card .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+  .stat-card .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+
+  @media (max-width: 700px) {
+    .main { padding: 14px; }
+    .stat-pill { display: none; }
+    .listen-prompt { font-size: 18px; margin-top: 16px; }
+    .play-btn { width: 88px; height: 88px; font-size: 36px; }
+    .answer-btn { font-size: 13px; padding: 12px 10px; min-height: 52px; }
+  }
+  @media (max-width: 500px) {
+    .answers { grid-template-columns: 1fr; gap: 8px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">dansk<span>hør</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Score <b id="hor-score">0/0</b></div>
+    <div class="stat-pill">Accuracy <b id="hor-accuracy">—</b></div>
+    <button class="btn" id="hor-skip-btn" title="Skip / new question">↷ New</button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="intro">
+    <h1>Listen and pick</h1>
+    <p>Tap play, then choose the English meaning of the Danish phrase. Distractors come from the same topic to keep things honest.</p>
+  </div>
+
+  <div id="hor-card-host"></div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="label">All-time accuracy</div><div class="value" id="hor-stat-acc">—</div></div>
+    <div class="stat-card"><div class="label">Played</div><div class="value" id="hor-stat-played">0</div></div>
+  </div>
+</div>
+
+<script src="phrases.js"></script>
+
+<script>
+const PHRASES = (window.DanskPhrases && window.DanskPhrases.BANK) || [];
+const PROGRESS_KEY = 'danskor:progress:v1';
+const SEEN_KEY     = 'danskor:seen-counts:v1';
+
+// ─── Danish TTS ────────────────────────────────────────────────────
+const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+const synth = window.speechSynthesis;
+let danishVoice = null;
+function pickDanishVoice() {
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  for (const name of PREFERRED_DANISH_VOICES) {
+    const v = voices.find(v => v.name === name || v.name.includes(name));
+    if (v) return v;
+  }
+  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
+}
+if (synth) {
+  danishVoice = pickDanishVoice();
+  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
+}
+function speak(text, opts) {
+  opts = opts || {};
+  if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
+  try { synth.cancel(); } catch (_) {}
+  const u = new SpeechSynthesisUtterance(text);
+  if (danishVoice) u.voice = danishVoice;
+  u.lang = 'da-DK';
+  u.rate = opts.rate || 0.9;
+  if (opts.onend) u.onend = opts.onend;
+  if (opts.onerror) u.onerror = opts.onerror;
+  synth.speak(u);
+  return u;
+}
+
+// ─── Web Audio chime / buzz ────────────────────────────────────────
+let _audioCtx = null;
+function audioCtx() {
+  if (_audioCtx) return _audioCtx;
+  try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+  return _audioCtx;
+}
+function playChime() {
+  const ctx = audioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  [{f:523.25,t:0},{f:783.99,t:0.10}].forEach(({f,t}) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0.0001, now+t);
+    gain.gain.exponentialRampToValueAtTime(0.18, now+t+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+t+0.30);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now+t);
+    osc.stop(now+t+0.32);
+  });
+}
+function playBuzz() {
+  const ctx = audioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = 220;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.10, now+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now+0.18);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now); osc.stop(now+0.20);
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────
+function pickRandom(arr, n) {
+  const copy = arr.slice();
+  const out = [];
+  while (out.length < n && copy.length) {
+    const i = Math.floor(Math.random() * copy.length);
+    out.push(copy.splice(i, 1)[0]);
+  }
+  return out;
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─── State ─────────────────────────────────────────────────────────
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveProgress(p) { try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch (_) {} }
+function loadSeen() {
+  try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveSeen(s) { try { localStorage.setItem(SEEN_KEY, JSON.stringify(s)); } catch (_) {} }
+
+let progress = loadProgress();
+let seenCounts = loadSeen();
+progress.seen = progress.seen || 0;
+progress.correct = progress.correct || 0;
+
+let sessionScore = 0;
+let sessionTotal = 0;
+
+function pickPhrase() {
+  const weighted = PHRASES.map(p => ({ p, w: 1 / (1 + (seenCounts[p.id] || 0)) }));
+  const total = weighted.reduce((a, b) => a + b.w, 0);
+  let r = Math.random() * total;
+  for (const wp of weighted) {
+    r -= wp.w;
+    if (r <= 0) return wp.p;
+  }
+  return weighted[weighted.length - 1].p;
+}
+function pickDistractors(correct, n) {
+  const sameCat = PHRASES.filter(p => p.cat === correct.cat && p.id !== correct.id);
+  const pool = sameCat.length >= n ? sameCat : PHRASES.filter(p => p.id !== correct.id);
+  return pickRandom(pool, n);
+}
+
+const host = document.getElementById('hor-card-host');
+const skipBtn = document.getElementById('hor-skip-btn');
+
+function refreshHeaderStats() {
+  const scoreEl = document.getElementById('hor-score');
+  const accEl   = document.getElementById('hor-accuracy');
+  const accStat = document.getElementById('hor-stat-acc');
+  const playedStat = document.getElementById('hor-stat-played');
+  if (scoreEl) scoreEl.textContent = sessionScore + '/' + sessionTotal;
+  const lifePct = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : null;
+  if (accEl) accEl.textContent = lifePct === null ? '—' : (lifePct + '%');
+  if (accStat) accStat.textContent = lifePct === null ? '—' : (lifePct + '%');
+  if (playedStat) playedStat.textContent = progress.seen;
+}
+
+function nextQuestion() {
+  const correct = pickPhrase();
+  const distractors = pickDistractors(correct, 3);
+  const options = pickRandom([correct, ...distractors], 4);
+  host.innerHTML =
+    '<div class="listen-card">' +
+      '<span class="badge-cat">' + escapeHtml(correct.cat) + '</span>' +
+      '<span class="badge-score">Session ' + sessionScore + '/' + sessionTotal + '</span>' +
+      '<div class="listen-prompt">What did you hear?</div>' +
+      '<button class="play-btn" id="hor-play-btn" aria-label="Replay Danish audio">▶</button>' +
+      '<div class="answers" id="hor-answers">' +
+        options.map(o => '<button class="answer-btn" data-correct="' + (o.id === correct.id ? '1' : '0') + '" data-id="' + o.id + '">' + escapeHtml(o.en) + '</button>').join('') +
+      '</div>' +
+      '<div class="next-row" id="hor-next-row"></div>' +
+    '</div>';
+  const playBtn = host.querySelector('#hor-play-btn');
+  function playOnce() {
+    playBtn.classList.add('speaking');
+    speak(correct.da, {
+      onend: () => playBtn.classList.remove('speaking'),
+      onerror: () => playBtn.classList.remove('speaking'),
+    });
+  }
+  playBtn.addEventListener('click', playOnce);
+  setTimeout(playOnce, 250);
+
+  const answerBtns = host.querySelectorAll('.answer-btn');
+  const nextRow = host.querySelector('#hor-next-row');
+  answerBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      if (b.disabled) return;
+      const isCorrect = b.dataset.correct === '1';
+      sessionTotal++;
+      progress.seen++;
+      seenCounts[correct.id] = (seenCounts[correct.id] || 0) + 1;
+      if (isCorrect) {
+        sessionScore++;
+        progress.correct++;
+        playChime();
+        b.classList.add('correct');
+      } else {
+        playBuzz();
+        b.classList.add('wrong');
+        answerBtns.forEach(x => { if (x.dataset.correct === '1') x.classList.add('correct'); });
+      }
+      answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
+      saveProgress(progress); saveSeen(seenCounts);
+      const fb = isCorrect ? '<span class="feedback correct">Correct — well heard.</span>' : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
+      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn">Next →</button>';
+      nextRow.querySelector('#hor-next-btn').addEventListener('click', nextQuestion);
+      refreshHeaderStats();
+    });
+  });
+  refreshHeaderStats();
+}
+
+skipBtn.addEventListener('click', nextQuestion);
+nextQuestion();
+</script>
+
+</body>
+</html>

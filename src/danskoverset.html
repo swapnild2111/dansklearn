@@ -1,0 +1,507 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Oversæt — Translate to Danish</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #161b26;
+    --card: #1c2333;
+    --card-alt: #1a2744;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #7dd3fc;
+    --text: #e8edf5;
+    --text-muted: #8896ae;
+    --text-dim: #4a5568;
+    --success: #4ade80;
+    --danger: #f87171;
+    --radius: 12px;
+    --card-radius: 16px;
+    --header-h: 58px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  /* HEADER (rewritten to .app-toolbar by build.py when merged into index.html) */
+  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .stat-pill b { color: var(--accent2); font-weight: 500; }
+  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+  .btn:hover { border-color: var(--accent); color: var(--accent); }
+  .btn-refresh { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white; }
+  .btn-refresh:hover { opacity: 0.88; color: white; }
+
+  /* MAIN */
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 980px; margin-left: auto; margin-right: auto; }
+  .intro { padding: 6px 4px 18px; }
+  .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+  .intro p { color: var(--text-muted); font-size: 13px; }
+
+  /* OVERALL */
+  .overall-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 22px; }
+  .overall-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+  .overall-info b { color: var(--accent2); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+  .overall-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+  .overall-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width 0.35s ease; }
+
+  /* CARDS */
+  .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; overflow: hidden; }
+  .card.complete { border-color: var(--success); box-shadow: 0 0 0 1px rgba(74,222,128,0.25); }
+  .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+  .card-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+  .card-category { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+  .card-source { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-left: 8px; }
+  .card-head-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+  .card-status { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+  .card-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); transition: background 0.2s; }
+  .card.complete .card-status .dot { background: var(--success); }
+  .card.typing   .card-status .dot { background: var(--accent); }
+  .card.error    .card-status .dot { background: var(--danger); }
+
+  .prompt-en { font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: var(--text); background: var(--card-alt); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+  .prompt-en .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+  .prompt-en.loading { color: var(--text-muted); font-style: italic; }
+  .prompt-en.error { color: var(--danger); border-color: var(--danger); }
+
+  .target-da { font-family: 'DM Serif Display', serif; font-size: 17px; line-height: 1.55; color: var(--text); background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.25); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; user-select: none; display: none; }
+  .target-da.shown { display: block; }
+  .target-da .ch { display: inline; transition: color 0.05s, background 0.05s; }
+  .target-da .ch.ok  { color: var(--success); }
+  .target-da .ch.bad { color: var(--danger); background: rgba(248,113,113,0.18); border-radius: 2px; }
+  .target-da .ch.cur { background: rgba(79,142,247,0.25); border-radius: 2px; box-shadow: inset 0 -2px 0 var(--accent); }
+
+  .input-row { display: flex; gap: 10px; align-items: stretch; }
+  textarea { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; resize: vertical; min-height: 84px; outline: none; transition: border-color 0.2s; }
+  textarea:focus { border-color: var(--accent); }
+  textarea::placeholder { color: var(--text-dim); }
+  .card.complete textarea { border-color: var(--success); }
+  .card.error    textarea { border-color: var(--danger); }
+  .input-side { display: flex; flex-direction: column; gap: 8px; align-items: center; padding-top: 2px; }
+  .icon-btn { width: 38px; height: 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+  .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .icon-btn.hint:hover  { border-color: var(--accent2); color: var(--accent2); }
+  .icon-btn.reset:hover { border-color: var(--danger);  color: var(--danger); }
+  .progress-mini { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.12); border: 1px solid rgba(125,211,252,0.25); border-radius: 6px; padding: 2px 0; margin-top: 4px; text-align: center; width: 38px; }
+  .card.complete .progress-mini { color: var(--success); background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); }
+  .card.error    .progress-mini { color: var(--danger);  background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.3); }
+
+  .skeleton-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; }
+  .skeleton-line { height: 14px; background: linear-gradient(90deg, var(--border) 25%, #303a52 50%, var(--border) 75%); background-size: 200% 100%; border-radius: 4px; margin-bottom: 8px; animation: shimmer 1.4s infinite; }
+  .skeleton-line.short { width: 60%; }
+  @keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+  .toast.success { border-color: var(--success); color: var(--success); }
+  .toast.danger  { border-color: var(--danger);  color: var(--danger); }
+
+  .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 600; padding: 20px; }
+  .modal-backdrop.show { display: flex; }
+  .modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); max-width: 460px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+  .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+  .modal-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+  .modal-close { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s; }
+  .modal-body { padding: 16px 18px; }
+  .modal-text { color: var(--text-muted); font-size: 14px; line-height: 1.55; }
+  .modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 18px 16px; }
+  .modal-btn { padding: 8px 16px; border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.15s; }
+  .modal-btn.primary { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border-color: transparent; color: white; }
+
+  @media (max-width: 700px) {
+    .main { padding: 14px; }
+    .stat-pill { display: none; }
+    .prompt-en { font-size: 15px; }
+    .target-da { font-size: 15px; }
+    .icon-btn { width: 36px; height: 36px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">dansk<span>oversæt</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Done <b id="overset-done-count">0</b>/5</div>
+    <div class="stat-pill">Accuracy <b id="overset-accuracy">—</b></div>
+    <button class="btn btn-refresh" id="overset-refresh-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span>Refresh</span>
+    </button>
+  </div>
+</header>
+
+<div class="main">
+  <div class="intro">
+    <h1>Translate to Danish</h1>
+    <p>Read each English paragraph and type the Danish translation. Tap the hint icon if you need to see the original Danish.</p>
+  </div>
+
+  <div class="overall-wrap">
+    <div class="overall-info">
+      <span>Overall accuracy</span>
+      <span><b id="overset-overall-accuracy">0%</b> · <span id="overset-overall-chars">0 / 0 chars</span></span>
+    </div>
+    <div class="overall-track"><div class="overall-fill" id="overset-overall-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="overset-cards"></div>
+</div>
+
+<div class="toast" id="overset-toast"></div>
+
+<div class="modal-backdrop" id="overset-confirm-backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Load new paragraphs?</div>
+      <button class="modal-close" id="overset-confirm-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-text">This will replace your current paragraphs and clear what you've typed so far. Your progress can't be recovered.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="overset-confirm-cancel">Cancel</button>
+      <button class="modal-btn primary" id="overset-confirm-ok">Load new paragraphs</button>
+    </div>
+  </div>
+</div>
+
+<script>
+// ─── RSS feeds + offline fallbacks ──────────────────────────────────
+const CATEGORIES = [
+  { key:'news',    label:'News',    source:'DR Nyheder',  rss:'https://www.dr.dk/nyheder/service/feeds/allenyheder' },
+  { key:'politik', label:'Politics',source:'DR Politik',  rss:'https://www.dr.dk/nyheder/service/feeds/politik' },
+  { key:'kultur',  label:'Culture', source:'DR Kultur',   rss:'https://www.dr.dk/nyheder/service/feeds/kultur' },
+  { key:'sport',   label:'Sport',   source:'DR Sporten',  rss:'https://www.dr.dk/nyheder/service/feeds/sporten' },
+  { key:'tech',    label:'Tech',    source:'DR Viden',    rss:'https://www.dr.dk/nyheder/service/feeds/viden' },
+];
+const RSS_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const FALLBACK_PARAGRAPHS = {
+  news:    "Færre regionaltog på Sjælland fra på mandag. Togbusser kører hele weekenden på lokaltogstrækninger i Nordsjælland. Melding om israelsk luftangreb i Libanon. Bolivia erklærer nødretstilstand.",
+  politik: "Moderaternes sundhedsordfører affejer kritik fra Kræftens Bekæmpelse og forsvarer Løkkes pibe. Kræftens Bekæmpelse og professor kritiserer Moderaterne for at profilere Løkke som piberyger.",
+  kultur:  "Pippi Langstrømpe vender tilbage i ny animeret tv-serie. Den nye serie får premiere på SVT i 2025 og bygger på Astrid Lindgrens klassiske historier om verdens stærkeste pige.",
+  sport:   "Landstræneren udtager truppen til den kommende landskamp. Flere spillere er ude med skader, men der er optimisme før kampen mod Sverige i København næste lørdag.",
+  tech:    "Forskere ved DTU har udviklet en ny type batteri, der kan oplade hurtigere og holde længere. Teknologien forventes at være klar til markedet inden for de næste fem år.",
+};
+
+const STORAGE_KEY = 'danskoverset:session:v1';
+const TRANSLATE_CACHE_KEY = 'danskoverset:translation-cache:v1';
+
+// Persisted translation cache (mymemory free tier ~1k req/day; cache aggressively)
+const translationCache = (() => {
+  try { return new Map(Object.entries(JSON.parse(localStorage.getItem(TRANSLATE_CACHE_KEY) || '{}'))); }
+  catch (_) { return new Map(); }
+})();
+function saveTranslationCache() {
+  try {
+    const obj = {};
+    translationCache.forEach((v, k) => { obj[k] = v; });
+    localStorage.setItem(TRANSLATE_CACHE_KEY, JSON.stringify(obj));
+  } catch (_) {}
+}
+async function translateCached(da) {
+  if (translationCache.has(da)) return translationCache.get(da);
+  try {
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(da) + '&langpair=da|en';
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('translate http ' + r.status);
+    const j = await r.json();
+    const t = j && j.responseData && j.responseData.translatedText;
+    if (!t) throw new Error('translate empty');
+    translationCache.set(da, t);
+    saveTranslationCache();
+    return t;
+  } catch (_) {
+    return null;
+  }
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+function trimExtract(text) {
+  text = (text || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= 220) return text;
+  const cut = text.slice(0, 220);
+  const lastDot = cut.lastIndexOf('. ');
+  return (lastDot > 100 ? cut.slice(0, lastDot+1) : cut);
+}
+async function fetchDanishRss(category) {
+  const cat = CATEGORIES.find(c => c.key === category) || CATEGORIES[0];
+  try {
+    const r = await fetch(RSS_API + encodeURIComponent(cat.rss));
+    if (!r.ok) throw new Error('rss http ' + r.status);
+    const j = await r.json();
+    const items = j && j.items;
+    if (!Array.isArray(items) || !items.length) throw new Error('no items');
+    const item = items[Math.floor(Math.random() * Math.min(5, items.length))];
+    const text = trimExtract(stripHtml(item.description || item.content || item.title || ''));
+    if (!text) throw new Error('empty');
+    return { text, source: cat.source, label: cat.label, fromFallback: false };
+  } catch (e) {
+    return { text: FALLBACK_PARAGRAPHS[cat.key] || FALLBACK_PARAGRAPHS.news, source: cat.source, label: cat.label, fromFallback: true };
+  }
+}
+
+// ─── Session state ─────────────────────────────────────────────────
+let paragraphs = []; // Danish targets
+let englishs   = []; // English prompts
+let cardMeta   = []; // [{label, source, fromFallback}]
+let states     = []; // [{typed, hintShown}]
+
+const cardsEl = document.getElementById('overset-cards');
+const refreshBtn = document.getElementById('overset-refresh-btn');
+const toastEl = document.getElementById('overset-toast');
+const doneCountEl = document.getElementById('overset-done-count');
+const accuracyEl  = document.getElementById('overset-accuracy');
+const overallAccEl = document.getElementById('overset-overall-accuracy');
+const overallCharsEl = document.getElementById('overset-overall-chars');
+const overallFillEl  = document.getElementById('overset-overall-fill');
+
+function showToast(msg, kind) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { toastEl.className = 'toast'; }, 2800);
+}
+
+function saveSession() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      paragraphs, english: englishs, cardMeta,
+      typed: states.map(s => s.typed),
+      hint:  states.map(s => s.hintShown ? 1 : 0),
+    }));
+  } catch (_) {}
+}
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || !Array.isArray(s.paragraphs) || !s.paragraphs.length) return null;
+    return s;
+  } catch (_) { return null; }
+}
+
+function escapeChar(c) {
+  if (c === '<') return '&lt;';
+  if (c === '>') return '&gt;';
+  if (c === '&') return '&amp;';
+  if (c === ' ') return '&nbsp;';
+  return c;
+}
+function buildHighlightedHTML(target, typed) {
+  let html = '';
+  for (let i = 0; i < target.length; i++) {
+    const ch = target[i];
+    let cls = '';
+    if (i < typed.length) cls = (typed[i] === ch) ? 'ok' : 'bad';
+    else if (i === typed.length) cls = 'cur';
+    html += '<span class="ch ' + cls + '">' + escapeChar(ch) + '</span>';
+  }
+  if (typed.length > target.length) {
+    for (let i = target.length; i < typed.length; i++) {
+      html += '<span class="ch bad">' + escapeChar(typed[i]) + '</span>';
+    }
+  }
+  return html;
+}
+function computeStatus(target, typed) {
+  if (!typed) return { status: 'empty', correct: 0, total: target.length };
+  let correct = 0;
+  const min = Math.min(target.length, typed.length);
+  for (let i = 0; i < min; i++) if (target[i] === typed[i]) correct++;
+  if (typed === target) return { status: 'complete', correct: target.length, total: target.length };
+  if (typed.length > target.length || correct < typed.length) return { status: 'error', correct, total: target.length };
+  return { status: 'typing', correct, total: target.length };
+}
+
+function renderSkeleton() {
+  cardsEl.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const sk = document.createElement('div');
+    sk.className = 'skeleton-card';
+    sk.innerHTML = '<div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div>';
+    cardsEl.appendChild(sk);
+  }
+}
+
+function render() {
+  cardsEl.innerHTML = '';
+  for (let i = 0; i < paragraphs.length; i++) {
+    const meta = cardMeta[i] || {label: '', source: '', fromFallback: false};
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'overset-card-' + i;
+    const hintShown = !!states[i].hintShown;
+    const enText = englishs[i] || '(translation unavailable — type the Danish below)';
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<div class="card-head-left">' +
+          '<span class="card-num">PARAGRAPH ' + (i+1) + '</span>' +
+          '<span class="card-category">' + (meta.label || '') + '</span>' +
+          '<span class="card-source">' + (meta.source || '') + (meta.fromFallback ? ' (fallback)' : '') + '</span>' +
+        '</div>' +
+        '<div class="card-status"><span class="dot"></span><span id="overset-info-' + i + '">empty</span></div>' +
+      '</div>' +
+      '<div class="prompt-en"><div class="label">English</div>' + enText + '</div>' +
+      '<div class="target-da ' + (hintShown ? 'shown' : '') + '" id="overset-da-' + i + '">' + buildHighlightedHTML(paragraphs[i], states[i].typed) + '</div>' +
+      '<div class="input-row">' +
+        '<textarea id="overset-ta-' + i + '" placeholder="Type the Danish translation…" spellcheck="false">' + states[i].typed.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</textarea>' +
+        '<div class="input-side">' +
+          '<button class="icon-btn hint" id="overset-hint-' + i + '" title="Show Danish original" aria-label="Show Danish original">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .8-1.5 1.4-1.5 2.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+          '</button>' +
+          '<button class="icon-btn reset" id="overset-reset-' + i + '" title="Clear this card" aria-label="Clear this card">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>' +
+          '</button>' +
+          '<div class="progress-mini" id="overset-mini-' + i + '">0%</div>' +
+        '</div>' +
+      '</div>';
+    cardsEl.appendChild(card);
+
+    const ta = card.querySelector('#overset-ta-' + i);
+    const hintBtn = card.querySelector('#overset-hint-' + i);
+    const resetBtn = card.querySelector('#overset-reset-' + i);
+
+    ta.addEventListener('input', () => {
+      states[i].typed = ta.value;
+      updateCard(i);
+      saveSession();
+      updateOverall();
+    });
+    hintBtn.addEventListener('click', () => {
+      states[i].hintShown = true;
+      const da = card.querySelector('#overset-da-' + i);
+      da.classList.add('shown');
+      saveSession();
+    });
+    resetBtn.addEventListener('click', () => {
+      states[i].typed = '';
+      ta.value = '';
+      updateCard(i);
+      saveSession();
+      updateOverall();
+    });
+
+    updateCard(i);
+  }
+  updateOverall();
+}
+
+function updateCard(idx) {
+  const card = document.getElementById('overset-card-' + idx);
+  if (!card) return;
+  const target = paragraphs[idx], typed = states[idx].typed;
+  const da = document.getElementById('overset-da-' + idx);
+  if (da) da.innerHTML = buildHighlightedHTML(target, typed);
+  const status = computeStatus(target, typed);
+  card.classList.remove('complete', 'typing', 'error');
+  if (status.status !== 'empty') card.classList.add(status.status);
+  const info = document.getElementById('overset-info-' + idx);
+  const mini = document.getElementById('overset-mini-' + idx);
+  if (info) info.textContent = status.status === 'empty' ? 'empty' : (status.correct + ' / ' + status.total);
+  if (mini) mini.textContent = status.total ? Math.round((status.correct / status.total) * 100) + '%' : '0%';
+}
+function updateOverall() {
+  let correct = 0, total = 0, done = 0;
+  for (let i = 0; i < paragraphs.length; i++) {
+    const s = computeStatus(paragraphs[i], states[i].typed);
+    correct += s.correct;
+    total += s.total;
+    if (s.status === 'complete') done++;
+  }
+  const pct = total ? Math.round((correct / total) * 100) : 0;
+  if (doneCountEl) doneCountEl.textContent = done;
+  if (accuracyEl) accuracyEl.textContent = pct + '%';
+  if (overallAccEl) overallAccEl.textContent = pct + '%';
+  if (overallCharsEl) overallCharsEl.textContent = correct + ' / ' + total + ' chars';
+  if (overallFillEl) overallFillEl.style.width = pct + '%';
+}
+
+// ─── Loading flow ─────────────────────────────────────────────────
+async function loadParagraphs() {
+  renderSkeleton();
+  paragraphs = []; englishs = []; cardMeta = []; states = [];
+  const cats = CATEGORIES.map(c => c.key);
+  const fetched = [];
+  for (const cat of cats) {
+    const r = await fetchDanishRss(cat);
+    fetched.push(r);
+  }
+  paragraphs = fetched.map(f => f.text);
+  cardMeta = fetched.map(f => ({label: f.label, source: f.source, fromFallback: f.fromFallback}));
+  states = paragraphs.map(() => ({typed: '', hintShown: false}));
+  const enResults = await Promise.all(paragraphs.map(p => translateCached(p)));
+  englishs = enResults.map(en => en || null);
+  saveSession();
+  render();
+  const anyFallback = cardMeta.some(m => m.fromFallback);
+  const anyTranslateFail = englishs.some(e => !e);
+  if (anyFallback) showToast('Could not reach DR — using offline samples', 'danger');
+  else if (anyTranslateFail) showToast('Some translations unavailable — type the Danish anyway', 'danger');
+  else showToast('Loaded latest from DR (Danmarks Radio)', 'success');
+}
+
+// ─── Refresh confirm modal ────────────────────────────────────────
+const confirmBackdrop = document.getElementById('overset-confirm-backdrop');
+const confirmClose = document.getElementById('overset-confirm-close');
+const confirmCancel = document.getElementById('overset-confirm-cancel');
+const confirmOk = document.getElementById('overset-confirm-ok');
+function openConfirm() { confirmBackdrop.classList.add('show'); }
+function closeConfirm() { confirmBackdrop.classList.remove('show'); }
+confirmClose.addEventListener('click', closeConfirm);
+confirmCancel.addEventListener('click', closeConfirm);
+confirmBackdrop.addEventListener('click', e => { if (e.target === confirmBackdrop) closeConfirm(); });
+confirmOk.addEventListener('click', () => { closeConfirm(); loadParagraphs(); });
+refreshBtn.addEventListener('click', () => {
+  const anyTyped = states.some(s => s.typed && s.typed.length);
+  if (!anyTyped) loadParagraphs();
+  else openConfirm();
+});
+
+// ─── Boot ─────────────────────────────────────────────────────────
+const saved = loadSession();
+if (saved) {
+  paragraphs = saved.paragraphs;
+  englishs = saved.english || saved.paragraphs.map(() => null);
+  cardMeta = saved.cardMeta || saved.paragraphs.map(() => ({label:'', source:'', fromFallback:false}));
+  states = saved.typed.map((t, i) => ({typed: t, hintShown: !!(saved.hint && saved.hint[i])}));
+  render();
+  // Re-translate any nulls in the background.
+  const missing = englishs.map((e, i) => e ? -1 : i).filter(i => i >= 0);
+  if (missing.length) {
+    (async () => {
+      for (const i of missing) {
+        const en = await translateCached(paragraphs[i]);
+        if (en) {
+          englishs[i] = en;
+          const card = document.getElementById('overset-card-' + i);
+          if (card) {
+            const p = card.querySelector('.prompt-en');
+            if (p) p.innerHTML = '<div class="label">English</div>' + en;
+          }
+          saveSession();
+        }
+      }
+    })();
+  }
+} else {
+  loadParagraphs();
+}
+</script>
+
+</body>
+</html>

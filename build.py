@@ -2,21 +2,26 @@
 """
 Build script for danskLearn portal.
 
-Reads danskord.html and danskskriv.html, assembles a single-file SPA at index.html.
+Reads five standalone .html source files and assembles a single-file SPA at
+index.html. Each source file is also runnable on its own in a browser.
 
 How it works:
-- Each app's <style> block is extracted and every selector is prefixed with
-  the view's container id (#view-ord / #view-skriv) so the CSS only applies
-  inside that view. Selectors targeting `body` or `header` (the app's own
-  fixed header) are rewritten to fit inside the portal shell.
-- Each app's body markup (everything inside <body> except <header> and <script>)
-  is dropped into its view container.
-- Each app's <script> body is wrapped in an IIFE and exposed as
-  window.OrdApp.init() / window.SkrivApp.init() so the router can lazy-init
-  each view the first time it is shown.
+- Each source's <style> is extracted and every selector is prefixed with the
+  view's container id (#view-X) so the CSS only applies inside that view.
+  Selectors targeting `body` or `header` (the source's own fixed header) are
+  rewritten to fit inside the portal shell.
+- Each source's body markup (everything inside <body> except <script>) is
+  dropped into its view container, with the original <header>...</header>
+  rewritten to <div class="app-toolbar">...</div>.
+- Each source's last <script> body is wrapped in an IIFE and exposed as
+  window.{Name}App.init() so the router can lazy-init each view the first
+  time it is shown.
+- phrases.js is inlined ONCE before the per-app scripts so the shared phrase
+  bank (window.DanskPhrases.BANK) is available to dansktale and danskhor
+  without duplication.
 - A shared header, landing page, and tiny hash-based router sit on top.
 
-Re-run this whenever danskord.html or danskskriv.html change.
+Re-run this whenever any of the source .html files or phrases.js change.
 """
 from __future__ import annotations
 import re
@@ -24,9 +29,14 @@ import sys
 from pathlib import Path
 
 ROOT = Path(__file__).parent
-ORD_PATH = ROOT / "danskord.html"
-SKRIV_PATH = ROOT / "danskskriv.html"
-OUT_PATH = ROOT / "index.html"
+SRC = ROOT / "src"
+ORD_PATH       = SRC / "danskord.html"
+SKRIV_PATH     = SRC / "danskskriv.html"
+OVERSET_PATH   = SRC / "danskoverset.html"
+TALE_PATH      = SRC / "dansktale.html"
+HOR_PATH       = SRC / "danskhor.html"
+PHRASES_PATH   = SRC / "phrases.js"
+OUT_PATH       = ROOT / "index.html"
 
 
 def read_source(path: Path) -> str:
@@ -51,22 +61,35 @@ def extract_style(src: str) -> str:
 
 
 def extract_body_markup(src: str) -> str:
-    """Return everything between <body> and </body>, with the trailing
-    <script>...</script> removed and the original <header> rewritten into an
-    in-view toolbar (`<div class="app-toolbar">...</div>`).
+    """Return everything between <body> and </body>, with all <script> tags
+    removed (both `<script src="...">` and inline) and the original <header>
+    rewritten into an in-view toolbar (`<div class="app-toolbar">...</div>`).
 
     The portal owns the page-level header now, but each app's <header> carries
     real action controls (Ord's mode-toggle, stat pills, Shuffle/Known/Reset;
-    Skriv's Done/Accuracy/Refresh). We keep that markup verbatim — only the
-    enclosing tag name changes — so all original IDs/classes the script binds
-    to still exist. The `.app-toolbar` CSS in PORTAL_STYLE then lays it out
-    without `position: fixed`."""
+    Skriv's Done/Accuracy/Refresh; etc.). We keep that markup verbatim — only
+    the enclosing tag name changes — so all original IDs/classes the script
+    binds to still exist. The `.app-toolbar` CSS in LAYOUT_FIXES then lays it
+    out without `position: fixed`.
+
+    All <script> tags (including <script src="phrases.js">) are stripped here.
+    The last inline script per source file is reattached separately by
+    `extract_script` and wrapped in an IIFE; phrases.js is inlined once
+    globally."""
     body, _, _ = extract_section(src, r"<body[^>]*>", "</body>")
+    # Strip HTML comments FIRST so that comment content like `<script>`
+    # references don't trip up the script-stripping regex below. (HTML
+    # parsers respect `<!-- -->` boundaries; regex doesn't, so we have
+    # to remove comments before applying tag-shaped patterns.)
+    body = re.sub(r"<!--[\s\S]*?-->", "", body)
     # Replace the opening <header ...> and closing </header>; everything in
     # between (logo, .header-right, etc.) is preserved.
     body = re.sub(r"<header(\s[^>]*)?>", '<div class="app-toolbar">', body, count=1)
     body = re.sub(r"</header>", "</div>", body, count=1)
-    body = re.sub(r"<script[\s\S]*?</script>\s*$", "", body)
+    # Strip ALL <script> tags from the body — both `<script src="...">` and
+    # inline `<script>...</script>`. The dansktale/danskhor sources have a
+    # `<script src="phrases.js">` tag that would otherwise leak through.
+    body = re.sub(r"<script\b[^>]*>[\s\S]*?</script>", "", body)
     return body.strip()
 
 
@@ -450,6 +473,19 @@ body.mode-kids .portal-nav a.active { color: #ff7a59; border-color: #ff7a59; bac
   margin: 36px 0 14px;
 }
 
+/* ─── PORTAL FOOTER (home view only) ─────────────────────────── */
+.portal-footer {
+  margin-top: 60px;
+  padding: 24px 0 8px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.portal-footer p { margin: 2px 0; }
+.portal-footer .footer-sub { color: var(--text-dim); opacity: 0.75; font-size: 11px; }
+
 /* ─── VIEW CONTAINERS ──────────────────────────────────────────── */
 .view { display: none; }
 .view.active { display: block; }
@@ -489,7 +525,10 @@ LAYOUT_FIXES = r"""
    a soft shadow underneath so the toolbar reads as a distinct plane floating
    below the portal header rather than welding into it. */
 #view-ord .app-toolbar,
-#view-skriv .app-toolbar {
+#view-skriv .app-toolbar,
+#view-overset .app-toolbar,
+#view-tale .app-toolbar,
+#view-hor .app-toolbar {
   position: fixed;
   top: var(--header-h);
   left: 0; right: 0;
@@ -501,7 +540,47 @@ LAYOUT_FIXES = r"""
     inset 0 1px 0 rgba(255,255,255,0.04),  /* hairline highlight along seam */
     0 6px 16px rgba(0,0,0,0.35);            /* soft drop below */
   backdrop-filter: none;  /* override the original blur — we use solid surface */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
 }
+/* The hand-authored toolbars in the new modules need toolbar internals
+   styled too (Ord/Skriv inherit these from their original CSS). */
+#view-overset .app-toolbar .logo,
+#view-tale    .app-toolbar .logo,
+#view-hor     .app-toolbar .logo {
+  font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text);
+}
+#view-overset .app-toolbar .logo span,
+#view-tale    .app-toolbar .logo span,
+#view-hor     .app-toolbar .logo span { color: var(--accent); }
+#view-overset .app-toolbar .header-right,
+#view-tale    .app-toolbar .header-right,
+#view-hor     .app-toolbar .header-right { display: flex; align-items: center; gap: 10px; }
+#view-overset .app-toolbar .stat-pill,
+#view-tale    .app-toolbar .stat-pill,
+#view-hor     .app-toolbar .stat-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px;
+}
+#view-overset .app-toolbar .stat-pill b,
+#view-tale    .app-toolbar .stat-pill b,
+#view-hor     .app-toolbar .stat-pill b { color: var(--accent2); font-weight: 500; }
+#view-overset .app-toolbar .btn,
+#view-tale    .app-toolbar .btn,
+#view-hor     .app-toolbar .btn {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+}
+#view-overset .app-toolbar .btn:hover,
+#view-tale    .app-toolbar .btn:hover,
+#view-hor     .app-toolbar .btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-overset .app-toolbar .btn-refresh {
+  background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white;
+}
+#view-overset .app-toolbar .btn-refresh:hover { opacity: 0.88; color: white; }
 
 /* Kids-mode parity: match the warmer palette so the toolbar still reads as a
    distinct surface against the cream/peach background. */
@@ -521,6 +600,9 @@ body.mode-kids #view-ord .app-toolbar {
 #view-ord .topbar { top: var(--total-h); }
 #view-ord .progress-bar-wrap { /* keeps natural flow under .topbar */ }
 #view-skriv .main { margin-top: var(--total-h); }
+#view-overset .main { margin-top: var(--total-h); }
+#view-tale .main { margin-top: var(--total-h); }
+#view-hor .main { margin-top: var(--total-h); }
 
 /* Hide each app's toolbar when its view isn't active (toolbars are
    position:fixed so visibility doesn't follow display:none ancestors
@@ -535,6 +617,81 @@ body.mode-kids #view-ord .app-toolbar {
    These transferred via the `header -> .app-toolbar` selector rewrite, so the
    toolbar already has the right look. Skriv's header had nearly identical
    declarations so it does too. */
+
+/* ─── Mobile ───────────────────────────────────────────────────────
+   At <700px the portal nav scrolls horizontally (better than a hamburger
+   for a learning portal where module discovery matters). The Ord toolbar
+   wraps to two rows; non-essential controls collapse to icon-only. */
+@media (max-width: 700px) {
+  /* Portal header: smaller padding, condensed gap. */
+  .portal-header { padding: 0 14px; gap: 10px; }
+
+  /* Make the portal nav a horizontally-scrolling strip. */
+  .portal-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, black 92%, transparent);
+  }
+  .portal-nav::-webkit-scrollbar { display: none; }
+  .portal-nav a {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  /* Home link → 🏠 icon. The text is replaced via ::before/font-size:0 trick
+     so screen readers can still expose the original "Home" text. */
+  .portal-nav a[data-route="home"] {
+    font-size: 0;
+  }
+  .portal-nav a[data-route="home"]::before {
+    content: "🏠";
+    font-size: 16px;
+  }
+
+  /* Ord toolbar: wrap to two rows, collapse btns to icon-only first letter. */
+  #view-ord .app-toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  /* Collapse the three action btns (Shuffle/Known/Reset) to first-letter
+     glyph only; their text already starts with the appropriate symbol. */
+  #view-ord .app-toolbar .btn:not(.btn-shuffle):not(.btn-reset):not(.btn-refresh):not(#known-filter-btn),
+  #view-ord .app-toolbar .btn-shuffle,
+  #view-ord .app-toolbar #known-filter-btn,
+  #view-ord .app-toolbar .btn-reset {
+    font-size: 0;
+    padding: 6px 10px;
+    min-width: 36px;
+  }
+  #view-ord .app-toolbar .btn::first-letter,
+  #view-ord .app-toolbar .btn-shuffle::first-letter,
+  #view-ord .app-toolbar #known-filter-btn::first-letter,
+  #view-ord .app-toolbar .btn-reset::first-letter {
+    font-size: 14px;
+  }
+  /* The Ord toolbar now wraps; bump --total-h so .shell, .sidebar, .topbar
+     clear the taller toolbar correctly. */
+  #view-ord .shell, #view-ord .sidebar, #view-ord .topbar {
+    --total-h: calc(var(--header-h) + 96px);
+  }
+  /* Sidebar already hidden by source CSS at <700px; keep that. */
+
+  /* Skriv toolbar already handled by source CSS at <700px. */
+
+  /* Logo collapses to "d" + accent glyph at very narrow widths to reclaim space. */
+}
+@media (max-width: 500px) {
+  .portal-logo { font-size: 18px; }
+  .portal-nav a { padding: 4px 8px; font-size: 11px; }
+}
 </style>
 """
 
@@ -542,16 +699,19 @@ PORTAL_HEADER_AND_LANDING = r"""
 <header class="portal-header">
   <div class="portal-logo" onclick="location.hash='#/'">dansk<span>learn</span></div>
   <nav class="portal-nav">
-    <a href="#/" data-route="home">Home</a>
-    <a href="#/ord" data-route="ord">Ord</a>
-    <a href="#/skriv" data-route="skriv">Skriv</a>
+    <a href="#/"        data-route="home">Home</a>
+    <a href="#/ord"     data-route="ord">Ord</a>
+    <a href="#/skriv"   data-route="skriv">Skriv</a>
+    <a href="#/overset" data-route="overset">Oversæt</a>
+    <a href="#/tale"    data-route="tale">Tale</a>
+    <a href="#/hor"     data-route="hor">Hør</a>
   </nav>
 </header>
 
 <section id="view-home" class="view">
   <div class="landing-hero">
     <h1>dansk<span>learn</span></h1>
-    <p>A growing portal for learning Danish — vocabulary, writing, and more on the way. Pick a module below to start, or jump back in where you left off.</p>
+    <p>A growing portal for learning Danish — vocabulary, writing, listening, speaking, and translation. Pick a module below to start, or jump back in where you left off.</p>
   </div>
 
   <div class="section-label">Modules</div>
@@ -580,23 +740,48 @@ PORTAL_HEADER_AND_LANDING = r"""
       </div>
       <div class="module-progress"><div id="snap-skriv-fill" style="width:0%"></div></div>
     </a>
-    <div class="module-card disabled">
-      <span class="coming-soon">Soon</span>
+    <a class="module-card" href="#/overset">
+      <div class="module-card-head">
+        <div class="module-icon">🌐</div>
+        <div class="module-title">dansk<span>oversæt</span></div>
+      </div>
+      <div class="module-desc">Same fresh paragraphs, reversed: read English, type the Danish translation. Hint icon reveals the original Danish.</div>
+      <div class="module-stat">
+        <span>Done</span><b id="snap-overset-done">—</b>
+        <span class="pct" id="snap-overset-pct">0%</span>
+      </div>
+      <div class="module-progress"><div id="snap-overset-fill" style="width:0%"></div></div>
+    </a>
+    <a class="module-card" href="#/tale">
       <div class="module-card-head">
         <div class="module-icon">🗣️</div>
         <div class="module-title">dansk<span>tale</span></div>
       </div>
-      <div class="module-desc">Speaking practice — pronounce phrases out loud and get instant feedback on your accent and rhythm.</div>
-    </div>
-    <div class="module-card disabled">
-      <span class="coming-soon">Soon</span>
+      <div class="module-desc">Listen and repeat — phrases for everyday Danish. Self-rate Hard/Good/Easy and the deck schedules itself like Anki.</div>
+      <div class="module-stat">
+        <span>Today</span><b id="snap-tale-reviewed">—</b>
+        <span class="pct" id="snap-tale-streak">🔥 0</span>
+      </div>
+      <div class="module-progress"><div id="snap-tale-fill" style="width:0%"></div></div>
+    </a>
+    <a class="module-card" href="#/hor">
       <div class="module-card-head">
         <div class="module-icon">👂</div>
         <div class="module-title">dansk<span>hør</span></div>
       </div>
-      <div class="module-desc">Listening drills — short Danish audio clips with comprehension questions, drawn from real radio and podcasts.</div>
-    </div>
+      <div class="module-desc">Listen to a Danish phrase and pick the English meaning from four choices. Distractors come from the same topic.</div>
+      <div class="module-stat">
+        <span>Played</span><b id="snap-hor-played">—</b>
+        <span class="pct" id="snap-hor-acc">—</span>
+      </div>
+      <div class="module-progress"><div id="snap-hor-fill" style="width:0%"></div></div>
+    </a>
   </div>
+
+  <footer class="portal-footer">
+    <p>© <span id="portal-year">2026</span> Swapnil Deshpande. All rights reserved.</p>
+    <p class="footer-sub">danskLearn — built for learning Danish. Content for educational use only.</p>
+  </footer>
 </section>
 """
 
@@ -607,6 +792,9 @@ const Routes = {
   '': 'home', '/': 'home',
   '/ord': 'ord',
   '/skriv': 'skriv',
+  '/overset': 'overset',
+  '/tale': 'tale',
+  '/hor': 'hor',
 };
 function currentRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
@@ -619,8 +807,11 @@ function setActiveView(name) {
   document.querySelectorAll('.portal-nav a').forEach(a => {
     a.classList.toggle('active', a.dataset.route === name);
   });
-  if (name === 'ord' && window.OrdApp) window.OrdApp.init();
-  if (name === 'skriv' && window.SkrivApp) window.SkrivApp.init();
+  if (name === 'ord'     && window.OrdApp)     window.OrdApp.init();
+  if (name === 'skriv'   && window.SkrivApp)   window.SkrivApp.init();
+  if (name === 'overset' && window.OversetApp) window.OversetApp.init();
+  if (name === 'tale'    && window.TaleApp)    window.TaleApp.init();
+  if (name === 'hor'     && window.HorApp)     window.HorApp.init();
   if (name === 'home') refreshLandingSnapshot();
   // Kids-mode body class only makes sense inside Ord. Strip it when leaving.
   if (name !== 'ord') {
@@ -631,47 +822,93 @@ window.addEventListener('hashchange', () => setActiveView(currentRoute()));
 
 // ─── Landing-page progress snapshot ──────────────────────────────
 function refreshLandingSnapshot() {
-  // Ord — sum known counts across all three Ord modes (words / verbs / kids).
-  const ordKeys = [
-    { storage: 'dk-known',       totalApprox: 1000 },
-    { storage: 'dk-known-verbs', totalApprox: 80   },
-    { storage: 'dk-known-kids',  totalApprox: 200  },
-  ];
-  let ordKnown = 0, ordTotal = 0;
-  for (const k of ordKeys) {
-    try {
-      const arr = JSON.parse(localStorage.getItem(k.storage) || '[]');
-      ordKnown += Array.isArray(arr) ? arr.length : 0;
-    } catch (_) { /* ignore */ }
-    ordTotal += k.totalApprox;
-  }
+  // ── Ord — Words mode only (matches the card's "1000 words" copy). ────
+  let ordKnown = 0;
+  try {
+    const arr = JSON.parse(localStorage.getItem('dk-known') || '[]');
+    ordKnown = Array.isArray(arr) ? arr.length : 0;
+  } catch (_) { /* ignore */ }
+  const ordTotal = 1000;
   const ordPct = ordTotal ? Math.round((ordKnown / ordTotal) * 100) : 0;
   setText('snap-ord-known', `${ordKnown} / ${ordTotal}`);
   setText('snap-ord-pct', ordPct + '%');
   setWidth('snap-ord-fill', ordPct + '%');
 
-  // Skriv — count cards in current session whose typed text matches the target.
-  let skrivDone = 0, skrivTotal = 0;
+  // ── Skriv — count cards in current session whose typed text matches the target.
+  const skriv = countTypingProgress('danskskriv:session:v1', 5);
+  setText('snap-skriv-done', `${skriv.done} / ${skriv.total}`);
+  setText('snap-skriv-pct', skriv.pct + '%');
+  setWidth('snap-skriv-fill', skriv.pct + '%');
+
+  // ── Overset — same shape as Skriv. ────────────────────────────────
+  const overset = countTypingProgress('danskoverset:session:v1', 5);
+  setText('snap-overset-done', `${overset.done} / ${overset.total}`);
+  setText('snap-overset-pct', overset.pct + '%');
+  setWidth('snap-overset-fill', overset.pct + '%');
+
+  // ── Tale — reviewed today + streak from meta. ─────────────────────
+  let taleReviewed = 0, taleStreak = 0;
   try {
-    const raw = localStorage.getItem('danskskriv:session:v1');
+    const raw = localStorage.getItem('dansktale:meta:v1');
+    if (raw) {
+      const m = JSON.parse(raw);
+      const today = todayStrLocal();
+      if (m && m.lastDate === today) taleReviewed = m.reviewedToday || 0;
+      taleStreak = m && m.streak || 0;
+    }
+  } catch (_) { /* ignore */ }
+  setText('snap-tale-reviewed', taleReviewed);
+  setText('snap-tale-streak', '🔥 ' + taleStreak);
+  // Fill bar uses today-reviewed against an aspirational 10/day target.
+  const taleTarget = 10;
+  const talePct = Math.min(100, Math.round((taleReviewed / taleTarget) * 100));
+  setWidth('snap-tale-fill', talePct + '%');
+
+  // ── Hør — accuracy + played from progress. ────────────────────────
+  let horSeen = 0, horCorrect = 0;
+  try {
+    const raw = localStorage.getItem('danskor:progress:v1');
+    if (raw) {
+      const p = JSON.parse(raw);
+      horSeen = (p && p.seen) || 0;
+      horCorrect = (p && p.correct) || 0;
+    }
+  } catch (_) { /* ignore */ }
+  const horPct = horSeen ? Math.round((horCorrect / horSeen) * 100) : 0;
+  setText('snap-hor-played', horSeen);
+  setText('snap-hor-acc', horSeen ? horPct + '%' : '—');
+  setWidth('snap-hor-fill', horPct + '%');
+}
+function countTypingProgress(storageKey, fallbackTotal) {
+  let done = 0, total = 0;
+  try {
+    const raw = localStorage.getItem(storageKey);
     if (raw) {
       const s = JSON.parse(raw);
       if (s && Array.isArray(s.paragraphs) && Array.isArray(s.typed)) {
-        skrivTotal = s.paragraphs.length;
-        for (let i = 0; i < skrivTotal; i++) {
-          if ((s.typed[i] || '') === s.paragraphs[i]) skrivDone++;
+        total = s.paragraphs.length;
+        for (let i = 0; i < total; i++) {
+          if ((s.typed[i] || '') === s.paragraphs[i]) done++;
         }
       }
     }
   } catch (_) { /* ignore */ }
-  if (!skrivTotal) skrivTotal = 5;
-  const skrivPct = skrivTotal ? Math.round((skrivDone / skrivTotal) * 100) : 0;
-  setText('snap-skriv-done', `${skrivDone} / ${skrivTotal}`);
-  setText('snap-skriv-pct', skrivPct + '%');
-  setWidth('snap-skriv-fill', skrivPct + '%');
+  if (!total) total = fallbackTotal;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  return { done, total, pct };
+}
+function todayStrLocal() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 function setText(id, v)  { const el = document.getElementById(id); if (el) el.textContent = v; }
 function setWidth(id, w) { const el = document.getElementById(id); if (el) el.style.width  = w; }
+
+// ─── Footer year ─────────────────────────────────────────────────
+(function setFooterYear() {
+  const el = document.getElementById('portal-year');
+  if (el) el.textContent = new Date().getFullYear();
+})();
 
 // ─── Boot ────────────────────────────────────────────────────────
 setActiveView(currentRoute());
@@ -736,36 +973,59 @@ window.{namespace} = (function () {{
 """.lstrip()
 
 
+## Source files that go through the same extract → scope → wrap pipeline.
+## Each is a standalone runnable .html. Order is preserved in the merged
+## index.html (each shows up as `#view-{name}`).
+APP_SOURCES = [
+    ("ord",     ORD_PATH),
+    ("skriv",   SKRIV_PATH),
+    ("overset", OVERSET_PATH),
+    ("tale",    TALE_PATH),
+    ("hor",     HOR_PATH),
+]
+
+
 def build() -> None:
-    ord_src = read_source(ORD_PATH)
-    skriv_src = read_source(SKRIV_PATH)
+    # Extract and scope each source.
+    apps = []
+    for name, path in APP_SOURCES:
+        src = read_source(path)
+        style = extract_style(src)
+        body = extract_body_markup(src)
+        script = extract_script(src)
+        scoped = scope_css(style, f"#view-{name}", drop_root=True)
+        apps.append({"name": name, "scoped": scoped, "body": body, "script": script})
 
-    # Extract pieces
-    ord_style = extract_style(ord_src)
-    ord_body = extract_body_markup(ord_src)
-    ord_script = extract_script(ord_src)
+    phrases_js = read_source(PHRASES_PATH)
 
-    skriv_style = extract_style(skriv_src)
-    skriv_body = extract_body_markup(skriv_src)
-    skriv_script = extract_script(skriv_src)
-
-    # Scope the per-app stylesheets
-    ord_style_scoped = scope_css(ord_style, "#view-ord", drop_root=True)
-    skriv_style_scoped = scope_css(skriv_style, "#view-skriv", drop_root=True)
+    style_blocks = [
+        f'<style id="{a["name"]}-style">\n{a["scoped"]}\n</style>'
+        for a in apps
+    ]
+    view_sections = [
+        f'<section id="view-{a["name"]}" class="view">\n{a["body"]}\n</section>'
+        for a in apps
+    ]
+    # Wrap each app's script in its IIFE. Inline-onclick exports apply only
+    # to the source apps that need them (see INLINE_ONCLICK_EXPORTS).
+    app_scripts = [wrap_app_script(a["name"], a["script"]) for a in apps]
 
     parts = [
         PORTAL_HEAD,
         PORTAL_STYLE,
-        f'<style id="ord-style">\n{ord_style_scoped}\n</style>',
-        f'<style id="skriv-style">\n{skriv_style_scoped}\n</style>',
+        *style_blocks,
         LAYOUT_FIXES,
         "</head>",
         "<body>",
         PORTAL_HEADER_AND_LANDING,
-        f'<section id="view-ord" class="view">\n{ord_body}\n</section>',
-        f'<section id="view-skriv" class="view">\n{skriv_body}\n</section>',
-        wrap_app_script("ord", ord_script),
-        wrap_app_script("skriv", skriv_script),
+        *view_sections,
+        # Shared phrase bank — inlined ONCE before per-app scripts so
+        # window.DanskPhrases.BANK is available to dansktale & danskhor
+        # without duplication. (Standalone HTML files load it via
+        # <script src="phrases.js">; we strip that in extract_body_markup
+        # and inline the bank's contents here instead.)
+        f'<script id="phrases-bank">\n{phrases_js}\n</script>',
+        *app_scripts,
         PORTAL_FOOTER_SCRIPT,
         "</body>",
         "</html>",

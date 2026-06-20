@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Dansk Tale — Speak along</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0e1117;
+    --surface: #161b26;
+    --card: #1c2333;
+    --card-alt: #1a2744;
+    --border: #2a3347;
+    --accent: #4f8ef7;
+    --accent2: #7dd3fc;
+    --text: #e8edf5;
+    --text-muted: #8896ae;
+    --text-dim: #4a5568;
+    --success: #4ade80;
+    --danger: #f87171;
+    --radius: 12px;
+    --card-radius: 16px;
+    --header-h: 58px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+
+  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+  .logo span { color: var(--accent); }
+  .header-right { display: flex; align-items: center; gap: 10px; }
+  .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+  .stat-pill b { color: var(--accent2); font-weight: 500; }
+
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  .intro { padding: 6px 4px 18px; }
+  .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+  .intro p { color: var(--text-muted); font-size: 13px; }
+
+  .session-stats { display: flex; gap: 10px; margin-bottom: 18px; }
+  .session-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
+  .session-stat .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-stat .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+
+  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 280px; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+  .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+  .badge-progress { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+  .phrase-da { font-family: 'DM Serif Display', serif; font-size: 36px; line-height: 1.25; text-align: center; color: var(--text); margin-top: 28px; padding: 0 8px; }
+  .phrase-en { font-family: 'Inter', sans-serif; font-style: italic; font-size: 16px; color: var(--text-muted); text-align: center; }
+  .play-btn { margin-top: 6px; width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 38px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
+  .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
+  .play-btn:active { transform: scale(0.96); }
+  .play-btn.speaking { animation: talePulse 1.2s ease-in-out infinite; }
+  @keyframes talePulse { 0%,100% { box-shadow: 0 8px 24px rgba(79,142,247,0.45); } 50% { box-shadow: 0 8px 36px rgba(79,142,247,0.85); } }
+
+  .rating-row { display: flex; gap: 10px; width: 100%; max-width: 520px; margin-top: 12px; }
+  .rating-btn { flex: 1; padding: 14px 10px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.15s; }
+  .rating-btn .label { font-weight: 600; }
+  .rating-btn .interval { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+  .rating-btn.hard:hover { border-color: var(--danger);  color: var(--danger); }
+  .rating-btn.good:hover { border-color: var(--accent);  color: var(--accent); }
+  .rating-btn.easy:hover { border-color: var(--success); color: var(--success); }
+
+  .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; }
+  .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px; }
+  .session-done p { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
+  .session-done .btn { padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; }
+  .session-done .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 700px) {
+    .main { padding: 14px; }
+    .stat-pill { display: none; }
+    .phrase-da { font-size: 28px; margin-top: 24px; }
+    .phrase-en { font-size: 14px; }
+    .play-btn { width: 80px; height: 80px; font-size: 32px; }
+    .rating-btn { padding: 12px 6px; font-size: 13px; }
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="logo">dansk<span>tale</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Today <b id="tale-today-count">0</b></div>
+    <div class="stat-pill">🔥 <b id="tale-streak">0</b></div>
+    <div class="stat-pill">Bank <b id="tale-bank-count">0</b></div>
+  </div>
+</header>
+
+<div class="main">
+  <div class="intro">
+    <h1>Speak along</h1>
+    <p>Listen to each phrase, say it out loud, then rate how it felt. Hard means show again soon; Easy means come back later.</p>
+  </div>
+
+  <div class="session-stats">
+    <div class="session-stat"><div class="label">In queue</div><div class="value" id="tale-queue-len">—</div></div>
+    <div class="session-stat"><div class="label">Reviewed today</div><div class="value" id="tale-stat-today">0</div></div>
+    <div class="session-stat"><div class="label">Streak</div><div class="value" id="tale-stat-streak">0 d</div></div>
+  </div>
+
+  <div id="tale-card-host"></div>
+</div>
+
+<div class="toast" id="tale-toast"></div>
+
+<!-- Shared phrase bank. Standalone: loads via the next tag.
+     Merged into index.html: build.py strips this and inlines phrases.js once. -->
+<script src="phrases.js"></script>
+
+<script>
+const PHRASES = (window.DanskPhrases && window.DanskPhrases.BANK) || [];
+const PROGRESS_KEY = 'dansktale:progress:v1';
+const META_KEY     = 'dansktale:meta:v1';
+
+// ─── Danish TTS ────────────────────────────────────────────────────
+const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+const synth = window.speechSynthesis;
+let danishVoice = null;
+function pickDanishVoice() {
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  for (const name of PREFERRED_DANISH_VOICES) {
+    const v = voices.find(v => v.name === name || v.name.includes(name));
+    if (v) return v;
+  }
+  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
+}
+if (synth) {
+  danishVoice = pickDanishVoice();
+  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
+}
+function speak(text, opts) {
+  opts = opts || {};
+  if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
+  try { synth.cancel(); } catch (_) {}
+  const u = new SpeechSynthesisUtterance(text);
+  if (danishVoice) u.voice = danishVoice;
+  u.lang = 'da-DK';
+  u.rate = opts.rate || 0.9;
+  if (opts.onend) u.onend = opts.onend;
+  if (opts.onerror) u.onerror = opts.onerror;
+  synth.speak(u);
+  return u;
+}
+
+// ─── SR scheduling ─────────────────────────────────────────────────
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function dayDiff(a, b) {
+  const da = new Date(a + 'T00:00:00'), db = new Date(b + 'T00:00:00');
+  return Math.round((da - db) / 86400000);
+}
+function addDays(yyyymmdd, days) {
+  const d = new Date(yyyymmdd + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveProgress(p) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch (_) {}
+}
+function loadMeta() {
+  try {
+    const raw = localStorage.getItem(META_KEY);
+    if (!raw) return { lastDate: null, streak: 0, reviewedToday: 0 };
+    const m = JSON.parse(raw);
+    const t = todayStr();
+    if (m.lastDate !== t) {
+      const gap = m.lastDate ? dayDiff(t, m.lastDate) : 9999;
+      const newStreak = (gap === 1) ? (m.streak || 0) + 1 : (gap === 0 ? (m.streak || 0) : 0);
+      return { lastDate: t, streak: newStreak, reviewedToday: 0 };
+    }
+    return m;
+  } catch (_) { return { lastDate: todayStr(), streak: 0, reviewedToday: 0 }; }
+}
+function saveMeta(m) { try { localStorage.setItem(META_KEY, JSON.stringify(m)); } catch (_) {} }
+
+let progress = loadProgress();
+let meta = loadMeta();
+saveMeta(meta);
+
+const FRESH_QUOTA = 5;
+
+function buildQueue() {
+  const today = todayStr();
+  const dueOld = [];
+  const fresh  = [];
+  for (const p of PHRASES) {
+    const st = progress[p.id];
+    if (!st) fresh.push(p);
+    else if (st.due && dayDiff(today, st.due) >= 0) dueOld.push(p);
+  }
+  const queue = dueOld.concat(fresh.slice(0, FRESH_QUOTA));
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  return queue;
+}
+
+function applyRating(p, rating) {
+  const today = todayStr();
+  const st = progress[p.id] || { seen: 0, ease: 2.5, interval: 0, due: today };
+  st.seen = (st.seen || 0) + 1;
+  if (rating === 'hard') {
+    st.ease = Math.max(1.3, (st.ease || 2.5) - 0.15);
+    st.interval = Math.max(1, Math.floor((st.interval || 1) * 0.5));
+    st.due = addDays(today, 1);
+  } else if (rating === 'good') {
+    st.interval = Math.max(1, Math.floor((st.interval || 1) * (st.ease || 2.5)));
+    st.due = addDays(today, st.interval);
+  } else if (rating === 'easy') {
+    st.interval = Math.max(3, Math.floor((st.interval || 1) * (st.ease || 2.5) * 1.3));
+    st.due = addDays(today, st.interval);
+  }
+  progress[p.id] = st;
+  saveProgress(progress);
+  meta.reviewedToday = (meta.reviewedToday || 0) + 1;
+  meta.lastDate = today;
+  saveMeta(meta);
+}
+
+// ─── Render ────────────────────────────────────────────────────────
+const host = document.getElementById('tale-card-host');
+const toast = document.getElementById('tale-toast');
+let queue = [];
+let qIdx = 0;
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function refreshHeaderStats() {
+  const todayEl = document.getElementById('tale-today-count');
+  const streakEl = document.getElementById('tale-streak');
+  const bankEl = document.getElementById('tale-bank-count');
+  const queueLenEl = document.getElementById('tale-queue-len');
+  const todayStatEl = document.getElementById('tale-stat-today');
+  const streakStatEl = document.getElementById('tale-stat-streak');
+  if (todayEl) todayEl.textContent = meta.reviewedToday || 0;
+  if (streakEl) streakEl.textContent = meta.streak || 0;
+  if (bankEl) bankEl.textContent = PHRASES.length;
+  if (queueLenEl) queueLenEl.textContent = Math.max(0, queue.length - qIdx);
+  if (todayStatEl) todayStatEl.textContent = meta.reviewedToday || 0;
+  if (streakStatEl) streakStatEl.textContent = (meta.streak || 0) + ' d';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderCard() {
+  refreshHeaderStats();
+  if (qIdx >= queue.length) {
+    host.innerHTML =
+      '<div class="session-done">' +
+        '<h2>You\'re done for now</h2>' +
+        '<p>You reviewed ' + (meta.reviewedToday || 0) + ' phrase' + ((meta.reviewedToday || 0) === 1 ? '' : 's') + ' today. Come back tomorrow for the next round.</p>' +
+        '<button class="btn" id="tale-restart">Force-load fresh deck</button>' +
+      '</div>';
+    host.querySelector('#tale-restart').addEventListener('click', () => {
+      const allFresh = PHRASES.slice();
+      for (let i = allFresh.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [allFresh[i], allFresh[j]] = [allFresh[j], allFresh[i]];
+      }
+      queue = allFresh.slice(0, 10);
+      qIdx = 0;
+      renderCard();
+    });
+    return;
+  }
+  const p = queue[qIdx];
+  host.innerHTML =
+    '<div class="review-card">' +
+      '<span class="badge-cat">' + escapeHtml(p.cat) + '</span>' +
+      '<span class="badge-progress">' + (qIdx + 1) + ' / ' + queue.length + '</span>' +
+      '<div class="phrase-da">' + escapeHtml(p.da) + '</div>' +
+      '<div class="phrase-en">' + escapeHtml(p.en) + '</div>' +
+      '<button class="play-btn" id="tale-play-btn" aria-label="Play Danish audio">▶</button>' +
+      '<div class="rating-row">' +
+        '<button class="rating-btn hard" data-rating="hard"><span class="label">Hard</span><span class="interval">again tomorrow</span></button>' +
+        '<button class="rating-btn good" data-rating="good"><span class="label">Good</span><span class="interval">in a few days</span></button>' +
+        '<button class="rating-btn easy" data-rating="easy"><span class="label">Easy</span><span class="interval">in a week+</span></button>' +
+      '</div>' +
+    '</div>';
+  const playBtn = host.querySelector('#tale-play-btn');
+  playBtn.addEventListener('click', () => {
+    playBtn.classList.add('speaking');
+    speak(p.da, {
+      onend: () => playBtn.classList.remove('speaking'),
+      onerror: () => { playBtn.classList.remove('speaking'); showToast('Audio unavailable'); },
+    });
+  });
+  setTimeout(() => playBtn.click(), 250);
+
+  host.querySelectorAll('.rating-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      applyRating(p, b.dataset.rating);
+      qIdx++;
+      renderCard();
+    });
+  });
+}
+
+queue = buildQueue();
+qIdx = 0;
+renderCard();
+</script>
+
+</body>
+</html>

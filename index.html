@@ -208,6 +208,19 @@ body.mode-kids .portal-nav a.active { color: #ff7a59; border-color: #ff7a59; bac
   margin: 36px 0 14px;
 }
 
+/* ─── PORTAL FOOTER (home view only) ─────────────────────────── */
+.portal-footer {
+  margin-top: 60px;
+  padding: 24px 0 8px;
+  border-top: 1px solid var(--border);
+  text-align: center;
+  color: var(--text-dim);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.portal-footer p { margin: 2px 0; }
+.portal-footer .footer-sub { color: var(--text-dim); opacity: 0.75; font-size: 11px; }
+
 /* ─── VIEW CONTAINERS ──────────────────────────────────────────── */
 .view { display: none; }
 .view.active { display: block; }
@@ -538,6 +551,193 @@ body #view-skriv { background: var(--bg); color: var(--text); font-family: 'Inte
 #view-skriv .header-right .btn:not(.btn-refresh) { display: none; }
 }
 </style>
+<style id="overset-style">
+#view-overset * { box-sizing: border-box; margin: 0; padding: 0; }
+body #view-overset { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+#view-overset .app-toolbar { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+#view-overset .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+#view-overset .logo span { color: var(--accent); }
+#view-overset .header-right { display: flex; align-items: center; gap: 10px; }
+#view-overset .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+#view-overset .stat-pill b { color: var(--accent2); font-weight: 500; }
+#view-overset .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+#view-overset .btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-overset .btn-refresh { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white; }
+#view-overset .btn-refresh:hover { opacity: 0.88; color: white; }
+#view-overset .main { margin-top: var(--header-h); padding: 24px; max-width: 980px; margin-left: auto; margin-right: auto; }
+#view-overset .intro { padding: 6px 4px 18px; }
+#view-overset .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+#view-overset .intro p { color: var(--text-muted); font-size: 13px; }
+#view-overset .overall-wrap { background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 14px 18px; margin-bottom: 22px; }
+#view-overset .overall-info { display: flex; justify-content: space-between; font-size: 12px; color: var(--text-muted); margin-bottom: 6px; }
+#view-overset .overall-info b { color: var(--accent2); font-weight: 500; font-family: 'JetBrains Mono', monospace; }
+#view-overset .overall-track { height: 4px; background: var(--border); border-radius: 4px; overflow: hidden; }
+#view-overset .overall-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--success)); border-radius: 4px; transition: width 0.35s ease; }
+#view-overset .card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; transition: border-color 0.2s, box-shadow 0.2s; min-width: 0; overflow: hidden; }
+#view-overset .card.complete { border-color: var(--success); box-shadow: 0 0 0 1px rgba(74,222,128,0.25); }
+#view-overset .card-head { display: flex; align-items: center; justify-content: space-between; margin-bottom: 10px; flex-wrap: wrap; gap: 8px; }
+#view-overset .card-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; }
+#view-overset .card-category { font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+#view-overset .card-source { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); margin-left: 8px; }
+#view-overset .card-head-left { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+#view-overset .card-status { display: flex; align-items: center; gap: 6px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); }
+#view-overset .card-status .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--text-dim); transition: background 0.2s; }
+#view-overset .card.complete .card-status .dot { background: var(--success); }
+#view-overset .card.typing   .card-status .dot { background: var(--accent); }
+#view-overset .card.error    .card-status .dot { background: var(--danger); }
+#view-overset .prompt-en { font-family: 'Inter', sans-serif; font-size: 16px; line-height: 1.6; color: var(--text); background: var(--card-alt); border: 1px solid var(--border); border-radius: var(--radius); padding: 14px 16px; margin-bottom: 12px; }
+#view-overset .prompt-en .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
+#view-overset .prompt-en.loading { color: var(--text-muted); font-style: italic; }
+#view-overset .prompt-en.error { color: var(--danger); border-color: var(--danger); }
+#view-overset .target-da { font-family: 'DM Serif Display', serif; font-size: 17px; line-height: 1.55; color: var(--text); background: rgba(79,142,247,0.08); border: 1px solid rgba(79,142,247,0.25); border-radius: var(--radius); padding: 12px 14px; margin-bottom: 12px; white-space: pre-wrap; word-break: break-word; overflow-wrap: anywhere; user-select: none; display: none; }
+#view-overset .target-da.shown { display: block; }
+#view-overset .target-da .ch { display: inline; transition: color 0.05s, background 0.05s; }
+#view-overset .target-da .ch.ok { color: var(--success); }
+#view-overset .target-da .ch.bad { color: var(--danger); background: rgba(248,113,113,0.18); border-radius: 2px; }
+#view-overset .target-da .ch.cur { background: rgba(79,142,247,0.25); border-radius: 2px; box-shadow: inset 0 -2px 0 var(--accent); }
+#view-overset .input-row { display: flex; gap: 10px; align-items: stretch; }
+#view-overset textarea { flex: 1; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 12px 14px; font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.55; resize: vertical; min-height: 84px; outline: none; transition: border-color 0.2s; }
+#view-overset textarea:focus { border-color: var(--accent); }
+#view-overset textarea::placeholder { color: var(--text-dim); }
+#view-overset .card.complete textarea { border-color: var(--success); }
+#view-overset .card.error    textarea { border-color: var(--danger); }
+#view-overset .input-side { display: flex; flex-direction: column; gap: 8px; align-items: center; padding-top: 2px; }
+#view-overset .icon-btn { width: 38px; height: 38px; background: var(--surface); border: 1px solid var(--border); border-radius: 10px; color: var(--text-muted); cursor: pointer; display: flex; align-items: center; justify-content: center; transition: all 0.15s; }
+#view-overset .icon-btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-overset .icon-btn.hint:hover { border-color: var(--accent2); color: var(--accent2); }
+#view-overset .icon-btn.reset:hover { border-color: var(--danger);  color: var(--danger); }
+#view-overset .progress-mini { font-family: 'JetBrains Mono', monospace; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.12); border: 1px solid rgba(125,211,252,0.25); border-radius: 6px; padding: 2px 0; margin-top: 4px; text-align: center; width: 38px; }
+#view-overset .card.complete .progress-mini { color: var(--success); background: rgba(74,222,128,0.15); border-color: rgba(74,222,128,0.4); }
+#view-overset .card.error    .progress-mini { color: var(--danger);  background: rgba(248,113,113,0.12); border-color: rgba(248,113,113,0.3); }
+#view-overset .skeleton-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 18px 20px; margin-bottom: 18px; }
+#view-overset .skeleton-line { height: 14px; background: linear-gradient(90deg, var(--border) 25%, #303a52 50%, var(--border) 75%); background-size: 200% 100%; border-radius: 4px; margin-bottom: 8px; animation: shimmer 1.4s infinite; }
+#view-overset .skeleton-line.short { width: 60%; }
+@keyframes shimmer { 0% { background-position: 200% 0; } 100% { background-position: -200% 0; } }
+#view-overset .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+#view-overset .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+#view-overset .toast.success { border-color: var(--success); color: var(--success); }
+#view-overset .toast.danger { border-color: var(--danger);  color: var(--danger); }
+#view-overset .modal-backdrop { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(3px); display: none; align-items: center; justify-content: center; z-index: 600; padding: 20px; }
+#view-overset .modal-backdrop.show { display: flex; }
+#view-overset .modal { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); max-width: 460px; width: 100%; box-shadow: 0 20px 60px rgba(0,0,0,0.5); }
+#view-overset .modal-head { display: flex; align-items: center; justify-content: space-between; padding: 14px 18px; border-bottom: 1px solid var(--border); }
+#view-overset .modal-title { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); }
+#view-overset .modal-close { background: transparent; border: none; color: var(--text-muted); cursor: pointer; padding: 4px; display: flex; align-items: center; justify-content: center; border-radius: 6px; transition: all 0.15s; }
+#view-overset .modal-body { padding: 16px 18px; }
+#view-overset .modal-text { color: var(--text-muted); font-size: 14px; line-height: 1.55; }
+#view-overset .modal-actions { display: flex; gap: 10px; justify-content: flex-end; padding: 12px 18px 16px; }
+#view-overset .modal-btn { padding: 8px 16px; border-radius: var(--radius); font-family: 'Inter', sans-serif; font-size: 13px; cursor: pointer; border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); transition: all 0.15s; }
+#view-overset .modal-btn.primary { background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border-color: transparent; color: white; }
+@media (max-width: 700px) {
+#view-overset .main { padding: 14px; }
+#view-overset .stat-pill { display: none; }
+#view-overset .prompt-en { font-size: 15px; }
+#view-overset .target-da { font-size: 15px; }
+#view-overset .icon-btn { width: 36px; height: 36px; }
+}
+</style>
+<style id="tale-style">
+#view-tale * { box-sizing: border-box; margin: 0; padding: 0; }
+body #view-tale { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+#view-tale .app-toolbar { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+#view-tale .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+#view-tale .logo span { color: var(--accent); }
+#view-tale .header-right { display: flex; align-items: center; gap: 10px; }
+#view-tale .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+#view-tale .stat-pill b { color: var(--accent2); font-weight: 500; }
+#view-tale .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+#view-tale .intro { padding: 6px 4px 18px; }
+#view-tale .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+#view-tale .intro p { color: var(--text-muted); font-size: 13px; }
+#view-tale .session-stats { display: flex; gap: 10px; margin-bottom: 18px; }
+#view-tale .session-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
+#view-tale .session-stat .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+#view-tale .session-stat .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+#view-tale .review-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 280px; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+#view-tale .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+#view-tale .badge-progress { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+#view-tale .phrase-da { font-family: 'DM Serif Display', serif; font-size: 36px; line-height: 1.25; text-align: center; color: var(--text); margin-top: 28px; padding: 0 8px; }
+#view-tale .phrase-en { font-family: 'Inter', sans-serif; font-style: italic; font-size: 16px; color: var(--text-muted); text-align: center; }
+#view-tale .play-btn { margin-top: 6px; width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 38px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
+#view-tale .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
+#view-tale .play-btn:active { transform: scale(0.96); }
+#view-tale .play-btn.speaking { animation: talePulse 1.2s ease-in-out infinite; }
+@keyframes talePulse { 0%,100% { box-shadow: 0 8px 24px rgba(79,142,247,0.45); } 50% { box-shadow: 0 8px 36px rgba(79,142,247,0.85); } }
+#view-tale .rating-row { display: flex; gap: 10px; width: 100%; max-width: 520px; margin-top: 12px; }
+#view-tale .rating-btn { flex: 1; padding: 14px 10px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; font-weight: 500; cursor: pointer; display: flex; flex-direction: column; align-items: center; gap: 4px; transition: all 0.15s; }
+#view-tale .rating-btn .label { font-weight: 600; }
+#view-tale .rating-btn .interval { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+#view-tale .rating-btn.hard:hover { border-color: var(--danger);  color: var(--danger); }
+#view-tale .rating-btn.good:hover { border-color: var(--accent);  color: var(--accent); }
+#view-tale .rating-btn.easy:hover { border-color: var(--success); color: var(--success); }
+#view-tale .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; }
+#view-tale .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px; }
+#view-tale .session-done p { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
+#view-tale .session-done .btn { padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; }
+#view-tale .session-done .btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-tale .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+#view-tale .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+@media (max-width: 700px) {
+#view-tale .main { padding: 14px; }
+#view-tale .stat-pill { display: none; }
+#view-tale .phrase-da { font-size: 28px; margin-top: 24px; }
+#view-tale .phrase-en { font-size: 14px; }
+#view-tale .play-btn { width: 80px; height: 80px; font-size: 32px; }
+#view-tale .rating-btn { padding: 12px 6px; font-size: 13px; }
+}
+</style>
+<style id="hor-style">
+#view-hor * { box-sizing: border-box; margin: 0; padding: 0; }
+body #view-hor { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; }
+#view-hor .app-toolbar { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+#view-hor .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
+#view-hor .logo span { color: var(--accent); }
+#view-hor .header-right { display: flex; align-items: center; gap: 10px; }
+#view-hor .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
+#view-hor .stat-pill b { color: var(--accent2); font-weight: 500; }
+#view-hor .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
+#view-hor .btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-hor .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+#view-hor .intro { padding: 6px 4px 18px; }
+#view-hor .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
+#view-hor .intro p { color: var(--text-muted); font-size: 13px; }
+#view-hor .listen-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 320px; display: flex; flex-direction: column; align-items: center; gap: 22px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+#view-hor .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
+#view-hor .badge-score { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
+#view-hor .listen-prompt { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text-muted); margin-top: 22px; }
+#view-hor .play-btn { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 42px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
+#view-hor .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
+#view-hor .play-btn:active { transform: scale(0.96); }
+#view-hor .play-btn.speaking { animation: horPulse 1.2s ease-in-out infinite; }
+@keyframes horPulse { 0%,100% { box-shadow: 0 8px 24px rgba(79,142,247,0.45); } 50% { box-shadow: 0 8px 36px rgba(79,142,247,0.85); } }
+#view-hor .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 580px; margin-top: 8px; }
+#view-hor .answer-btn { padding: 14px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.15s; text-align: left; min-height: 56px; }
+#view-hor .answer-btn:hover:not(:disabled) { border-color: var(--accent); }
+#view-hor .answer-btn:disabled { cursor: default; }
+#view-hor .answer-btn.correct { border-color: var(--success); background: rgba(74,222,128,0.12); color: var(--success); }
+#view-hor .answer-btn.wrong { border-color: var(--danger);  background: rgba(248,113,113,0.12); color: var(--danger); }
+#view-hor .answer-btn.faded { opacity: 0.45; }
+#view-hor .next-row { display: flex; gap: 10px; align-items: center; min-height: 38px; }
+#view-hor .next-btn { padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
+#view-hor .next-btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-hor .feedback { font-family: 'Inter', sans-serif; font-size: 13px; }
+#view-hor .feedback.correct { color: var(--success); }
+#view-hor .feedback.wrong { color: var(--danger); }
+#view-hor .stats-row { display: flex; gap: 10px; margin-top: 18px; }
+#view-hor .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
+#view-hor .stat-card .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+#view-hor .stat-card .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+@media (max-width: 700px) {
+#view-hor .main { padding: 14px; }
+#view-hor .stat-pill { display: none; }
+#view-hor .listen-prompt { font-size: 18px; margin-top: 16px; }
+#view-hor .play-btn { width: 88px; height: 88px; font-size: 36px; }
+#view-hor .answer-btn { font-size: 13px; padding: 12px 10px; min-height: 52px; }
+}
+@media (max-width: 500px) {
+#view-hor .answers { grid-template-columns: 1fr; gap: 8px; }
+}
+</style>
 
 <style id="layout-fixes">
 /* The per-app `body { ... }` rules became `body #view-ord { ... }` and
@@ -556,7 +756,10 @@ body #view-skriv { background: var(--bg); color: var(--text); font-family: 'Inte
    a soft shadow underneath so the toolbar reads as a distinct plane floating
    below the portal header rather than welding into it. */
 #view-ord .app-toolbar,
-#view-skriv .app-toolbar {
+#view-skriv .app-toolbar,
+#view-overset .app-toolbar,
+#view-tale .app-toolbar,
+#view-hor .app-toolbar {
   position: fixed;
   top: var(--header-h);
   left: 0; right: 0;
@@ -568,7 +771,47 @@ body #view-skriv { background: var(--bg); color: var(--text); font-family: 'Inte
     inset 0 1px 0 rgba(255,255,255,0.04),  /* hairline highlight along seam */
     0 6px 16px rgba(0,0,0,0.35);            /* soft drop below */
   backdrop-filter: none;  /* override the original blur — we use solid surface */
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
 }
+/* The hand-authored toolbars in the new modules need toolbar internals
+   styled too (Ord/Skriv inherit these from their original CSS). */
+#view-overset .app-toolbar .logo,
+#view-tale    .app-toolbar .logo,
+#view-hor     .app-toolbar .logo {
+  font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text);
+}
+#view-overset .app-toolbar .logo span,
+#view-tale    .app-toolbar .logo span,
+#view-hor     .app-toolbar .logo span { color: var(--accent); }
+#view-overset .app-toolbar .header-right,
+#view-tale    .app-toolbar .header-right,
+#view-hor     .app-toolbar .header-right { display: flex; align-items: center; gap: 10px; }
+#view-overset .app-toolbar .stat-pill,
+#view-tale    .app-toolbar .stat-pill,
+#view-hor     .app-toolbar .stat-pill {
+  font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted);
+  background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px;
+}
+#view-overset .app-toolbar .stat-pill b,
+#view-tale    .app-toolbar .stat-pill b,
+#view-hor     .app-toolbar .stat-pill b { color: var(--accent2); font-weight: 500; }
+#view-overset .app-toolbar .btn,
+#view-tale    .app-toolbar .btn,
+#view-hor     .app-toolbar .btn {
+  background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius);
+  color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px;
+  cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px;
+}
+#view-overset .app-toolbar .btn:hover,
+#view-tale    .app-toolbar .btn:hover,
+#view-hor     .app-toolbar .btn:hover { border-color: var(--accent); color: var(--accent); }
+#view-overset .app-toolbar .btn-refresh {
+  background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: white;
+}
+#view-overset .app-toolbar .btn-refresh:hover { opacity: 0.88; color: white; }
 
 /* Kids-mode parity: match the warmer palette so the toolbar still reads as a
    distinct surface against the cream/peach background. */
@@ -588,6 +831,9 @@ body.mode-kids #view-ord .app-toolbar {
 #view-ord .topbar { top: var(--total-h); }
 #view-ord .progress-bar-wrap { /* keeps natural flow under .topbar */ }
 #view-skriv .main { margin-top: var(--total-h); }
+#view-overset .main { margin-top: var(--total-h); }
+#view-tale .main { margin-top: var(--total-h); }
+#view-hor .main { margin-top: var(--total-h); }
 
 /* Hide each app's toolbar when its view isn't active (toolbars are
    position:fixed so visibility doesn't follow display:none ancestors
@@ -602,6 +848,81 @@ body.mode-kids #view-ord .app-toolbar {
    These transferred via the `header -> .app-toolbar` selector rewrite, so the
    toolbar already has the right look. Skriv's header had nearly identical
    declarations so it does too. */
+
+/* ─── Mobile ───────────────────────────────────────────────────────
+   At <700px the portal nav scrolls horizontally (better than a hamburger
+   for a learning portal where module discovery matters). The Ord toolbar
+   wraps to two rows; non-essential controls collapse to icon-only. */
+@media (max-width: 700px) {
+  /* Portal header: smaller padding, condensed gap. */
+  .portal-header { padding: 0 14px; gap: 10px; }
+
+  /* Make the portal nav a horizontally-scrolling strip. */
+  .portal-nav {
+    overflow-x: auto;
+    overflow-y: hidden;
+    flex-wrap: nowrap;
+    -webkit-overflow-scrolling: touch;
+    scrollbar-width: none;
+    mask-image: linear-gradient(to right, black 92%, transparent);
+    -webkit-mask-image: linear-gradient(to right, black 92%, transparent);
+  }
+  .portal-nav::-webkit-scrollbar { display: none; }
+  .portal-nav a {
+    flex-shrink: 0;
+    scroll-snap-align: start;
+    padding: 5px 10px;
+    font-size: 12px;
+  }
+
+  /* Home link → 🏠 icon. The text is replaced via ::before/font-size:0 trick
+     so screen readers can still expose the original "Home" text. */
+  .portal-nav a[data-route="home"] {
+    font-size: 0;
+  }
+  .portal-nav a[data-route="home"]::before {
+    content: "🏠";
+    font-size: 16px;
+  }
+
+  /* Ord toolbar: wrap to two rows, collapse btns to icon-only first letter. */
+  #view-ord .app-toolbar {
+    flex-wrap: wrap;
+    height: auto;
+    padding: 6px 12px;
+    gap: 8px;
+  }
+  /* Collapse the three action btns (Shuffle/Known/Reset) to first-letter
+     glyph only; their text already starts with the appropriate symbol. */
+  #view-ord .app-toolbar .btn:not(.btn-shuffle):not(.btn-reset):not(.btn-refresh):not(#known-filter-btn),
+  #view-ord .app-toolbar .btn-shuffle,
+  #view-ord .app-toolbar #known-filter-btn,
+  #view-ord .app-toolbar .btn-reset {
+    font-size: 0;
+    padding: 6px 10px;
+    min-width: 36px;
+  }
+  #view-ord .app-toolbar .btn::first-letter,
+  #view-ord .app-toolbar .btn-shuffle::first-letter,
+  #view-ord .app-toolbar #known-filter-btn::first-letter,
+  #view-ord .app-toolbar .btn-reset::first-letter {
+    font-size: 14px;
+  }
+  /* The Ord toolbar now wraps; bump --total-h so .shell, .sidebar, .topbar
+     clear the taller toolbar correctly. */
+  #view-ord .shell, #view-ord .sidebar, #view-ord .topbar {
+    --total-h: calc(var(--header-h) + 96px);
+  }
+  /* Sidebar already hidden by source CSS at <700px; keep that. */
+
+  /* Skriv toolbar already handled by source CSS at <700px. */
+
+  /* Logo collapses to "d" + accent glyph at very narrow widths to reclaim space. */
+}
+@media (max-width: 500px) {
+  .portal-logo { font-size: 18px; }
+  .portal-nav a { padding: 4px 8px; font-size: 11px; }
+}
 </style>
 
 </head>
@@ -610,16 +931,19 @@ body.mode-kids #view-ord .app-toolbar {
 <header class="portal-header">
   <div class="portal-logo" onclick="location.hash='#/'">dansk<span>learn</span></div>
   <nav class="portal-nav">
-    <a href="#/" data-route="home">Home</a>
-    <a href="#/ord" data-route="ord">Ord</a>
-    <a href="#/skriv" data-route="skriv">Skriv</a>
+    <a href="#/"        data-route="home">Home</a>
+    <a href="#/ord"     data-route="ord">Ord</a>
+    <a href="#/skriv"   data-route="skriv">Skriv</a>
+    <a href="#/overset" data-route="overset">Oversæt</a>
+    <a href="#/tale"    data-route="tale">Tale</a>
+    <a href="#/hor"     data-route="hor">Hør</a>
   </nav>
 </header>
 
 <section id="view-home" class="view">
   <div class="landing-hero">
     <h1>dansk<span>learn</span></h1>
-    <p>A growing portal for learning Danish — vocabulary, writing, and more on the way. Pick a module below to start, or jump back in where you left off.</p>
+    <p>A growing portal for learning Danish — vocabulary, writing, listening, speaking, and translation. Pick a module below to start, or jump back in where you left off.</p>
   </div>
 
   <div class="section-label">Modules</div>
@@ -648,23 +972,48 @@ body.mode-kids #view-ord .app-toolbar {
       </div>
       <div class="module-progress"><div id="snap-skriv-fill" style="width:0%"></div></div>
     </a>
-    <div class="module-card disabled">
-      <span class="coming-soon">Soon</span>
+    <a class="module-card" href="#/overset">
+      <div class="module-card-head">
+        <div class="module-icon">🌐</div>
+        <div class="module-title">dansk<span>oversæt</span></div>
+      </div>
+      <div class="module-desc">Same fresh paragraphs, reversed: read English, type the Danish translation. Hint icon reveals the original Danish.</div>
+      <div class="module-stat">
+        <span>Done</span><b id="snap-overset-done">—</b>
+        <span class="pct" id="snap-overset-pct">0%</span>
+      </div>
+      <div class="module-progress"><div id="snap-overset-fill" style="width:0%"></div></div>
+    </a>
+    <a class="module-card" href="#/tale">
       <div class="module-card-head">
         <div class="module-icon">🗣️</div>
         <div class="module-title">dansk<span>tale</span></div>
       </div>
-      <div class="module-desc">Speaking practice — pronounce phrases out loud and get instant feedback on your accent and rhythm.</div>
-    </div>
-    <div class="module-card disabled">
-      <span class="coming-soon">Soon</span>
+      <div class="module-desc">Listen and repeat — phrases for everyday Danish. Self-rate Hard/Good/Easy and the deck schedules itself like Anki.</div>
+      <div class="module-stat">
+        <span>Today</span><b id="snap-tale-reviewed">—</b>
+        <span class="pct" id="snap-tale-streak">🔥 0</span>
+      </div>
+      <div class="module-progress"><div id="snap-tale-fill" style="width:0%"></div></div>
+    </a>
+    <a class="module-card" href="#/hor">
       <div class="module-card-head">
         <div class="module-icon">👂</div>
         <div class="module-title">dansk<span>hør</span></div>
       </div>
-      <div class="module-desc">Listening drills — short Danish audio clips with comprehension questions, drawn from real radio and podcasts.</div>
-    </div>
+      <div class="module-desc">Listen to a Danish phrase and pick the English meaning from four choices. Distractors come from the same topic.</div>
+      <div class="module-stat">
+        <span>Played</span><b id="snap-hor-played">—</b>
+        <span class="pct" id="snap-hor-acc">—</span>
+      </div>
+      <div class="module-progress"><div id="snap-hor-fill" style="width:0%"></div></div>
+    </a>
   </div>
+
+  <footer class="portal-footer">
+    <p>© <span id="portal-year">2026</span> Swapnil Deshpande. All rights reserved.</p>
+    <p class="footer-sub">danskLearn — built for learning Danish. Content for educational use only.</p>
+  </footer>
 </section>
 
 <section id="view-ord" class="view">
@@ -686,7 +1035,7 @@ body.mode-kids #view-ord .app-toolbar {
   </div>
 </div>
 
-<!-- Reset confirmation modal -->
+
 <div class="modal-overlay" id="resetModal">
   <div class="modal">
     <h3>Reset progress?</h3>
@@ -799,6 +1148,214 @@ body.mode-kids #view-ord .app-toolbar {
   </div>
 </div>
 </section>
+<section id="view-overset" class="view">
+<div class="app-toolbar">
+  <div class="logo">dansk<span>oversæt</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Done <b id="overset-done-count">0</b>/5</div>
+    <div class="stat-pill">Accuracy <b id="overset-accuracy">—</b></div>
+    <button class="btn btn-refresh" id="overset-refresh-btn">
+      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="23 4 23 10 17 10"/><polyline points="1 20 1 14 7 14"/><path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"/></svg>
+      <span>Refresh</span>
+    </button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="intro">
+    <h1>Translate to Danish</h1>
+    <p>Read each English paragraph and type the Danish translation. Tap the hint icon if you need to see the original Danish.</p>
+  </div>
+
+  <div class="overall-wrap">
+    <div class="overall-info">
+      <span>Overall accuracy</span>
+      <span><b id="overset-overall-accuracy">0%</b> · <span id="overset-overall-chars">0 / 0 chars</span></span>
+    </div>
+    <div class="overall-track"><div class="overall-fill" id="overset-overall-fill" style="width:0%"></div></div>
+  </div>
+
+  <div id="overset-cards"></div>
+</div>
+
+<div class="toast" id="overset-toast"></div>
+
+<div class="modal-backdrop" id="overset-confirm-backdrop">
+  <div class="modal">
+    <div class="modal-head">
+      <div class="modal-title">Load new paragraphs?</div>
+      <button class="modal-close" id="overset-confirm-close" aria-label="Close">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
+    </div>
+    <div class="modal-body">
+      <p class="modal-text">This will replace your current paragraphs and clear what you've typed so far. Your progress can't be recovered.</p>
+    </div>
+    <div class="modal-actions">
+      <button class="modal-btn" id="overset-confirm-cancel">Cancel</button>
+      <button class="modal-btn primary" id="overset-confirm-ok">Load new paragraphs</button>
+    </div>
+  </div>
+</div>
+</section>
+<section id="view-tale" class="view">
+<div class="app-toolbar">
+  <div class="logo">dansk<span>tale</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Today <b id="tale-today-count">0</b></div>
+    <div class="stat-pill">🔥 <b id="tale-streak">0</b></div>
+    <div class="stat-pill">Bank <b id="tale-bank-count">0</b></div>
+  </div>
+</div>
+
+<div class="main">
+  <div class="intro">
+    <h1>Speak along</h1>
+    <p>Listen to each phrase, say it out loud, then rate how it felt. Hard means show again soon; Easy means come back later.</p>
+  </div>
+
+  <div class="session-stats">
+    <div class="session-stat"><div class="label">In queue</div><div class="value" id="tale-queue-len">—</div></div>
+    <div class="session-stat"><div class="label">Reviewed today</div><div class="value" id="tale-stat-today">0</div></div>
+    <div class="session-stat"><div class="label">Streak</div><div class="value" id="tale-stat-streak">0 d</div></div>
+  </div>
+
+  <div id="tale-card-host"></div>
+</div>
+
+<div class="toast" id="tale-toast"></div>
+</section>
+<section id="view-hor" class="view">
+<div class="app-toolbar">
+  <div class="logo">dansk<span>hør</span></div>
+  <div class="header-right">
+    <div class="stat-pill">Score <b id="hor-score">0/0</b></div>
+    <div class="stat-pill">Accuracy <b id="hor-accuracy">—</b></div>
+    <button class="btn" id="hor-skip-btn" title="Skip / new question">↷ New</button>
+  </div>
+</div>
+
+<div class="main">
+  <div class="intro">
+    <h1>Listen and pick</h1>
+    <p>Tap play, then choose the English meaning of the Danish phrase. Distractors come from the same topic to keep things honest.</p>
+  </div>
+
+  <div id="hor-card-host"></div>
+
+  <div class="stats-row">
+    <div class="stat-card"><div class="label">All-time accuracy</div><div class="value" id="hor-stat-acc">—</div></div>
+    <div class="stat-card"><div class="label">Played</div><div class="value" id="hor-stat-played">0</div></div>
+  </div>
+</div>
+</section>
+<script id="phrases-bank">
+// danskLearn shared phrase bank — used by dansktale.html and danskhor.html.
+//
+// Stable IDs (e.g. "food-12") survive reorderings so spaced-repetition state in
+// localStorage doesn't drift as we add or remove phrases.
+//
+// When the standalone files load this directly, window.DanskPhrases.BANK is
+// the source of truth. When build.py assembles index.html, this file is
+// inlined once at the top of the bundled scripts.
+
+window.DanskPhrases = {
+  BANK: [
+    // Greetings (12)
+    {id:"greet-1",  da:"Hej",                          en:"Hi",                                 cat:"Greetings"},
+    {id:"greet-2",  da:"Hej hej",                      en:"Bye",                                cat:"Greetings"},
+    {id:"greet-3",  da:"God morgen",                   en:"Good morning",                       cat:"Greetings"},
+    {id:"greet-4",  da:"God aften",                    en:"Good evening",                       cat:"Greetings"},
+    {id:"greet-5",  da:"God nat",                      en:"Good night",                         cat:"Greetings"},
+    {id:"greet-6",  da:"Hvordan har du det?",          en:"How are you?",                       cat:"Greetings"},
+    {id:"greet-7",  da:"Jeg har det godt, tak",        en:"I'm well, thanks",                   cat:"Greetings"},
+    {id:"greet-8",  da:"Tak",                          en:"Thanks",                             cat:"Greetings"},
+    {id:"greet-9",  da:"Tusind tak",                   en:"Thank you very much",                cat:"Greetings"},
+    {id:"greet-10", da:"Velbekomme",                   en:"You're welcome",                     cat:"Greetings"},
+    {id:"greet-11", da:"Vi ses senere",                en:"See you later",                      cat:"Greetings"},
+    {id:"greet-12", da:"Undskyld",                     en:"Excuse me / Sorry",                  cat:"Greetings"},
+
+    // Daily Life (18)
+    {id:"daily-1",  da:"Jeg står op klokken syv",      en:"I get up at seven o'clock",          cat:"Daily Life"},
+    {id:"daily-2",  da:"Jeg laver morgenmad",          en:"I make breakfast",                   cat:"Daily Life"},
+    {id:"daily-3",  da:"Hvor er nøglerne?",            en:"Where are the keys?",                cat:"Daily Life"},
+    {id:"daily-4",  da:"Jeg cykler på arbejde",        en:"I cycle to work",                    cat:"Daily Life"},
+    {id:"daily-5",  da:"Jeg taler i telefon",          en:"I'm on the phone",                   cat:"Daily Life"},
+    {id:"daily-6",  da:"Vi spiser middag sammen",      en:"We eat dinner together",             cat:"Daily Life"},
+    {id:"daily-7",  da:"Hunden skal luftes",           en:"The dog needs to be walked",         cat:"Daily Life"},
+    {id:"daily-8",  da:"Jeg vasker tøj",               en:"I'm doing laundry",                  cat:"Daily Life"},
+    {id:"daily-9",  da:"Vi handler ind om lørdagen",   en:"We do groceries on Saturdays",       cat:"Daily Life"},
+    {id:"daily-10", da:"Jeg ser nyhederne",            en:"I'm watching the news",              cat:"Daily Life"},
+    {id:"daily-11", da:"Jeg går i seng nu",            en:"I'm going to bed now",               cat:"Daily Life"},
+    {id:"daily-12", da:"Hvor bor du?",                 en:"Where do you live?",                 cat:"Daily Life"},
+    {id:"daily-13", da:"Jeg bor i København",          en:"I live in Copenhagen",               cat:"Daily Life"},
+    {id:"daily-14", da:"Hvad arbejder du med?",        en:"What do you do for work?",           cat:"Daily Life"},
+    {id:"daily-15", da:"Jeg er studerende",            en:"I'm a student",                      cat:"Daily Life"},
+    {id:"daily-16", da:"Hvor gammel er du?",           en:"How old are you?",                   cat:"Daily Life"},
+    {id:"daily-17", da:"Hvad hedder du?",              en:"What's your name?",                  cat:"Daily Life"},
+    {id:"daily-18", da:"Jeg hedder Anna",              en:"My name is Anna",                    cat:"Daily Life"},
+
+    // Food (14)
+    {id:"food-1",   da:"Et glas vand, tak",            en:"A glass of water, please",           cat:"Food"},
+    {id:"food-2",   da:"Hvad anbefaler du?",           en:"What do you recommend?",             cat:"Food"},
+    {id:"food-3",   da:"Jeg vil gerne bestille",       en:"I'd like to order",                  cat:"Food"},
+    {id:"food-4",   da:"Smager det godt?",             en:"Does it taste good?",                cat:"Food"},
+    {id:"food-5",   da:"Det smager dejligt",           en:"It tastes lovely",                   cat:"Food"},
+    {id:"food-6",   da:"Jeg er sulten",                en:"I'm hungry",                         cat:"Food"},
+    {id:"food-7",   da:"Jeg er tørstig",               en:"I'm thirsty",                        cat:"Food"},
+    {id:"food-8",   da:"Må jeg få regningen?",         en:"May I have the bill?",               cat:"Food"},
+    {id:"food-9",   da:"Hvor er menuen?",              en:"Where is the menu?",                 cat:"Food"},
+    {id:"food-10",  da:"En kop kaffe, tak",            en:"A cup of coffee, please",            cat:"Food"},
+    {id:"food-11",  da:"Jeg er vegetar",               en:"I'm a vegetarian",                   cat:"Food"},
+    {id:"food-12",  da:"Det var lækkert",              en:"That was delicious",                 cat:"Food"},
+    {id:"food-13",  da:"Hvad indeholder retten?",      en:"What's in the dish?",                cat:"Food"},
+    {id:"food-14",  da:"Jeg er allergisk over for nødder", en:"I'm allergic to nuts",           cat:"Food"},
+
+    // Travel (14)
+    {id:"travel-1", da:"Hvor er stationen?",           en:"Where is the station?",              cat:"Travel"},
+    {id:"travel-2", da:"En billet til Aarhus, tak",    en:"One ticket to Aarhus, please",       cat:"Travel"},
+    {id:"travel-3", da:"Hvornår kører toget?",         en:"When does the train leave?",         cat:"Travel"},
+    {id:"travel-4", da:"Hvor lang tid tager det?",     en:"How long does it take?",             cat:"Travel"},
+    {id:"travel-5", da:"Jeg har mistet min taske",     en:"I've lost my bag",                   cat:"Travel"},
+    {id:"travel-6", da:"Hvor er toilettet?",           en:"Where is the toilet?",               cat:"Travel"},
+    {id:"travel-7", da:"Kan du hjælpe mig?",           en:"Can you help me?",                   cat:"Travel"},
+    {id:"travel-8", da:"Jeg er turist",                en:"I'm a tourist",                      cat:"Travel"},
+    {id:"travel-9", da:"Hvor meget koster det?",       en:"How much does it cost?",             cat:"Travel"},
+    {id:"travel-10",da:"Jeg leder efter et hotel",     en:"I'm looking for a hotel",            cat:"Travel"},
+    {id:"travel-11",da:"Til venstre eller til højre?", en:"Left or right?",                     cat:"Travel"},
+    {id:"travel-12",da:"Lige ud",                      en:"Straight ahead",                     cat:"Travel"},
+    {id:"travel-13",da:"Er det langt herfra?",         en:"Is it far from here?",               cat:"Travel"},
+    {id:"travel-14",da:"Hvilken bus skal jeg tage?",   en:"Which bus should I take?",           cat:"Travel"},
+
+    // Numbers/Time (10)
+    {id:"num-1",    da:"Hvad er klokken?",             en:"What time is it?",                   cat:"Numbers/Time"},
+    {id:"num-2",    da:"Klokken er to",                en:"It's two o'clock",                   cat:"Numbers/Time"},
+    {id:"num-3",    da:"Klokken er kvart over to",     en:"It's quarter past two",              cat:"Numbers/Time"},
+    {id:"num-4",    da:"Klokken er halv tre",          en:"It's half past two",                 cat:"Numbers/Time"},
+    {id:"num-5",    da:"Det koster halvtreds kroner",  en:"It costs fifty kroner",              cat:"Numbers/Time"},
+    {id:"num-6",    da:"I morgen tidlig",              en:"Tomorrow morning",                   cat:"Numbers/Time"},
+    {id:"num-7",    da:"I aften",                      en:"Tonight",                            cat:"Numbers/Time"},
+    {id:"num-8",    da:"I weekenden",                  en:"On the weekend",                     cat:"Numbers/Time"},
+    {id:"num-9",    da:"Hver dag",                     en:"Every day",                          cat:"Numbers/Time"},
+    {id:"num-10",   da:"Sidste år",                    en:"Last year",                          cat:"Numbers/Time"},
+
+    // Feelings (12)
+    {id:"feel-1",   da:"Jeg er træt",                  en:"I'm tired",                          cat:"Feelings"},
+    {id:"feel-2",   da:"Jeg er glad",                  en:"I'm happy",                          cat:"Feelings"},
+    {id:"feel-3",   da:"Jeg er ked af det",            en:"I'm sad",                            cat:"Feelings"},
+    {id:"feel-4",   da:"Jeg savner dig",               en:"I miss you",                         cat:"Feelings"},
+    {id:"feel-5",   da:"Det var hyggeligt",            en:"That was lovely / cozy",             cat:"Feelings"},
+    {id:"feel-6",   da:"Jeg keder mig",                en:"I'm bored",                          cat:"Feelings"},
+    {id:"feel-7",   da:"Jeg er forvirret",             en:"I'm confused",                       cat:"Feelings"},
+    {id:"feel-8",   da:"Jeg er forelsket",             en:"I'm in love",                        cat:"Feelings"},
+    {id:"feel-9",   da:"Jeg er stolt af dig",          en:"I'm proud of you",                   cat:"Feelings"},
+    {id:"feel-10",  da:"Det er pinligt",               en:"That's embarrassing",                cat:"Feelings"},
+    {id:"feel-11",  da:"Jeg er nervøs",                en:"I'm nervous",                        cat:"Feelings"},
+    {id:"feel-12",  da:"Det er irriterende",           en:"That's annoying",                    cat:"Feelings"},
+  ],
+};
+
+</script>
 <script>
 window.OrdApp = (function () {
   let initialized = false;
@@ -3738,6 +4295,778 @@ if (saved) {
 })();
 </script>
 
+<script>
+window.OversetApp = (function () {
+  let initialized = false;
+  return {
+    init() {
+      if (initialized) return;
+      initialized = true;
+      // ─── BEGIN overset app code ───
+      // ─── RSS feeds + offline fallbacks ──────────────────────────────────
+const CATEGORIES = [
+  { key:'news',    label:'News',    source:'DR Nyheder',  rss:'https://www.dr.dk/nyheder/service/feeds/allenyheder' },
+  { key:'politik', label:'Politics',source:'DR Politik',  rss:'https://www.dr.dk/nyheder/service/feeds/politik' },
+  { key:'kultur',  label:'Culture', source:'DR Kultur',   rss:'https://www.dr.dk/nyheder/service/feeds/kultur' },
+  { key:'sport',   label:'Sport',   source:'DR Sporten',  rss:'https://www.dr.dk/nyheder/service/feeds/sporten' },
+  { key:'tech',    label:'Tech',    source:'DR Viden',    rss:'https://www.dr.dk/nyheder/service/feeds/viden' },
+];
+const RSS_API = 'https://api.rss2json.com/v1/api.json?rss_url=';
+const FALLBACK_PARAGRAPHS = {
+  news:    "Færre regionaltog på Sjælland fra på mandag. Togbusser kører hele weekenden på lokaltogstrækninger i Nordsjælland. Melding om israelsk luftangreb i Libanon. Bolivia erklærer nødretstilstand.",
+  politik: "Moderaternes sundhedsordfører affejer kritik fra Kræftens Bekæmpelse og forsvarer Løkkes pibe. Kræftens Bekæmpelse og professor kritiserer Moderaterne for at profilere Løkke som piberyger.",
+  kultur:  "Pippi Langstrømpe vender tilbage i ny animeret tv-serie. Den nye serie får premiere på SVT i 2025 og bygger på Astrid Lindgrens klassiske historier om verdens stærkeste pige.",
+  sport:   "Landstræneren udtager truppen til den kommende landskamp. Flere spillere er ude med skader, men der er optimisme før kampen mod Sverige i København næste lørdag.",
+  tech:    "Forskere ved DTU har udviklet en ny type batteri, der kan oplade hurtigere og holde længere. Teknologien forventes at være klar til markedet inden for de næste fem år.",
+};
+
+const STORAGE_KEY = 'danskoverset:session:v1';
+const TRANSLATE_CACHE_KEY = 'danskoverset:translation-cache:v1';
+
+// Persisted translation cache (mymemory free tier ~1k req/day; cache aggressively)
+const translationCache = (() => {
+  try { return new Map(Object.entries(JSON.parse(localStorage.getItem(TRANSLATE_CACHE_KEY) || '{}'))); }
+  catch (_) { return new Map(); }
+})();
+function saveTranslationCache() {
+  try {
+    const obj = {};
+    translationCache.forEach((v, k) => { obj[k] = v; });
+    localStorage.setItem(TRANSLATE_CACHE_KEY, JSON.stringify(obj));
+  } catch (_) {}
+}
+async function translateCached(da) {
+  if (translationCache.has(da)) return translationCache.get(da);
+  try {
+    const url = 'https://api.mymemory.translated.net/get?q=' + encodeURIComponent(da) + '&langpair=da|en';
+    const r = await fetch(url);
+    if (!r.ok) throw new Error('translate http ' + r.status);
+    const j = await r.json();
+    const t = j && j.responseData && j.responseData.translatedText;
+    if (!t) throw new Error('translate empty');
+    translationCache.set(da, t);
+    saveTranslationCache();
+    return t;
+  } catch (_) {
+    return null;
+  }
+}
+
+function stripHtml(html) {
+  const tmp = document.createElement('div');
+  tmp.innerHTML = html;
+  return tmp.textContent || tmp.innerText || '';
+}
+function trimExtract(text) {
+  text = (text || '').replace(/\s+/g, ' ').trim();
+  if (text.length <= 220) return text;
+  const cut = text.slice(0, 220);
+  const lastDot = cut.lastIndexOf('. ');
+  return (lastDot > 100 ? cut.slice(0, lastDot+1) : cut);
+}
+async function fetchDanishRss(category) {
+  const cat = CATEGORIES.find(c => c.key === category) || CATEGORIES[0];
+  try {
+    const r = await fetch(RSS_API + encodeURIComponent(cat.rss));
+    if (!r.ok) throw new Error('rss http ' + r.status);
+    const j = await r.json();
+    const items = j && j.items;
+    if (!Array.isArray(items) || !items.length) throw new Error('no items');
+    const item = items[Math.floor(Math.random() * Math.min(5, items.length))];
+    const text = trimExtract(stripHtml(item.description || item.content || item.title || ''));
+    if (!text) throw new Error('empty');
+    return { text, source: cat.source, label: cat.label, fromFallback: false };
+  } catch (e) {
+    return { text: FALLBACK_PARAGRAPHS[cat.key] || FALLBACK_PARAGRAPHS.news, source: cat.source, label: cat.label, fromFallback: true };
+  }
+}
+
+// ─── Session state ─────────────────────────────────────────────────
+let paragraphs = []; // Danish targets
+let englishs   = []; // English prompts
+let cardMeta   = []; // [{label, source, fromFallback}]
+let states     = []; // [{typed, hintShown}]
+
+const cardsEl = document.getElementById('overset-cards');
+const refreshBtn = document.getElementById('overset-refresh-btn');
+const toastEl = document.getElementById('overset-toast');
+const doneCountEl = document.getElementById('overset-done-count');
+const accuracyEl  = document.getElementById('overset-accuracy');
+const overallAccEl = document.getElementById('overset-overall-accuracy');
+const overallCharsEl = document.getElementById('overset-overall-chars');
+const overallFillEl  = document.getElementById('overset-overall-fill');
+
+function showToast(msg, kind) {
+  toastEl.textContent = msg;
+  toastEl.className = 'toast show' + (kind ? ' ' + kind : '');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => { toastEl.className = 'toast'; }, 2800);
+}
+
+function saveSession() {
+  try {
+    localStorage.setItem(STORAGE_KEY, JSON.stringify({
+      paragraphs, english: englishs, cardMeta,
+      typed: states.map(s => s.typed),
+      hint:  states.map(s => s.hintShown ? 1 : 0),
+    }));
+  } catch (_) {}
+}
+function loadSession() {
+  try {
+    const raw = localStorage.getItem(STORAGE_KEY);
+    if (!raw) return null;
+    const s = JSON.parse(raw);
+    if (!s || !Array.isArray(s.paragraphs) || !s.paragraphs.length) return null;
+    return s;
+  } catch (_) { return null; }
+}
+
+function escapeChar(c) {
+  if (c === '<') return '&lt;';
+  if (c === '>') return '&gt;';
+  if (c === '&') return '&amp;';
+  if (c === ' ') return '&nbsp;';
+  return c;
+}
+function buildHighlightedHTML(target, typed) {
+  let html = '';
+  for (let i = 0; i < target.length; i++) {
+    const ch = target[i];
+    let cls = '';
+    if (i < typed.length) cls = (typed[i] === ch) ? 'ok' : 'bad';
+    else if (i === typed.length) cls = 'cur';
+    html += '<span class="ch ' + cls + '">' + escapeChar(ch) + '</span>';
+  }
+  if (typed.length > target.length) {
+    for (let i = target.length; i < typed.length; i++) {
+      html += '<span class="ch bad">' + escapeChar(typed[i]) + '</span>';
+    }
+  }
+  return html;
+}
+function computeStatus(target, typed) {
+  if (!typed) return { status: 'empty', correct: 0, total: target.length };
+  let correct = 0;
+  const min = Math.min(target.length, typed.length);
+  for (let i = 0; i < min; i++) if (target[i] === typed[i]) correct++;
+  if (typed === target) return { status: 'complete', correct: target.length, total: target.length };
+  if (typed.length > target.length || correct < typed.length) return { status: 'error', correct, total: target.length };
+  return { status: 'typing', correct, total: target.length };
+}
+
+function renderSkeleton() {
+  cardsEl.innerHTML = '';
+  for (let i = 0; i < 5; i++) {
+    const sk = document.createElement('div');
+    sk.className = 'skeleton-card';
+    sk.innerHTML = '<div class="skeleton-line"></div><div class="skeleton-line short"></div><div class="skeleton-line"></div><div class="skeleton-line short"></div>';
+    cardsEl.appendChild(sk);
+  }
+}
+
+function render() {
+  cardsEl.innerHTML = '';
+  for (let i = 0; i < paragraphs.length; i++) {
+    const meta = cardMeta[i] || {label: '', source: '', fromFallback: false};
+    const card = document.createElement('div');
+    card.className = 'card';
+    card.id = 'overset-card-' + i;
+    const hintShown = !!states[i].hintShown;
+    const enText = englishs[i] || '(translation unavailable — type the Danish below)';
+    card.innerHTML =
+      '<div class="card-head">' +
+        '<div class="card-head-left">' +
+          '<span class="card-num">PARAGRAPH ' + (i+1) + '</span>' +
+          '<span class="card-category">' + (meta.label || '') + '</span>' +
+          '<span class="card-source">' + (meta.source || '') + (meta.fromFallback ? ' (fallback)' : '') + '</span>' +
+        '</div>' +
+        '<div class="card-status"><span class="dot"></span><span id="overset-info-' + i + '">empty</span></div>' +
+      '</div>' +
+      '<div class="prompt-en"><div class="label">English</div>' + enText + '</div>' +
+      '<div class="target-da ' + (hintShown ? 'shown' : '') + '" id="overset-da-' + i + '">' + buildHighlightedHTML(paragraphs[i], states[i].typed) + '</div>' +
+      '<div class="input-row">' +
+        '<textarea id="overset-ta-' + i + '" placeholder="Type the Danish translation…" spellcheck="false">' + states[i].typed.replace(/&/g, '&amp;').replace(/</g, '&lt;') + '</textarea>' +
+        '<div class="input-side">' +
+          '<button class="icon-btn hint" id="overset-hint-' + i + '" title="Show Danish original" aria-label="Show Danish original">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9.5 9a2.5 2.5 0 1 1 4 2c-1 .8-1.5 1.4-1.5 2.5"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>' +
+          '</button>' +
+          '<button class="icon-btn reset" id="overset-reset-' + i + '" title="Clear this card" aria-label="Clear this card">' +
+            '<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 1 0 2.13-9.36L1 10"/></svg>' +
+          '</button>' +
+          '<div class="progress-mini" id="overset-mini-' + i + '">0%</div>' +
+        '</div>' +
+      '</div>';
+    cardsEl.appendChild(card);
+
+    const ta = card.querySelector('#overset-ta-' + i);
+    const hintBtn = card.querySelector('#overset-hint-' + i);
+    const resetBtn = card.querySelector('#overset-reset-' + i);
+
+    ta.addEventListener('input', () => {
+      states[i].typed = ta.value;
+      updateCard(i);
+      saveSession();
+      updateOverall();
+    });
+    hintBtn.addEventListener('click', () => {
+      states[i].hintShown = true;
+      const da = card.querySelector('#overset-da-' + i);
+      da.classList.add('shown');
+      saveSession();
+    });
+    resetBtn.addEventListener('click', () => {
+      states[i].typed = '';
+      ta.value = '';
+      updateCard(i);
+      saveSession();
+      updateOverall();
+    });
+
+    updateCard(i);
+  }
+  updateOverall();
+}
+
+function updateCard(idx) {
+  const card = document.getElementById('overset-card-' + idx);
+  if (!card) return;
+  const target = paragraphs[idx], typed = states[idx].typed;
+  const da = document.getElementById('overset-da-' + idx);
+  if (da) da.innerHTML = buildHighlightedHTML(target, typed);
+  const status = computeStatus(target, typed);
+  card.classList.remove('complete', 'typing', 'error');
+  if (status.status !== 'empty') card.classList.add(status.status);
+  const info = document.getElementById('overset-info-' + idx);
+  const mini = document.getElementById('overset-mini-' + idx);
+  if (info) info.textContent = status.status === 'empty' ? 'empty' : (status.correct + ' / ' + status.total);
+  if (mini) mini.textContent = status.total ? Math.round((status.correct / status.total) * 100) + '%' : '0%';
+}
+function updateOverall() {
+  let correct = 0, total = 0, done = 0;
+  for (let i = 0; i < paragraphs.length; i++) {
+    const s = computeStatus(paragraphs[i], states[i].typed);
+    correct += s.correct;
+    total += s.total;
+    if (s.status === 'complete') done++;
+  }
+  const pct = total ? Math.round((correct / total) * 100) : 0;
+  if (doneCountEl) doneCountEl.textContent = done;
+  if (accuracyEl) accuracyEl.textContent = pct + '%';
+  if (overallAccEl) overallAccEl.textContent = pct + '%';
+  if (overallCharsEl) overallCharsEl.textContent = correct + ' / ' + total + ' chars';
+  if (overallFillEl) overallFillEl.style.width = pct + '%';
+}
+
+// ─── Loading flow ─────────────────────────────────────────────────
+async function loadParagraphs() {
+  renderSkeleton();
+  paragraphs = []; englishs = []; cardMeta = []; states = [];
+  const cats = CATEGORIES.map(c => c.key);
+  const fetched = [];
+  for (const cat of cats) {
+    const r = await fetchDanishRss(cat);
+    fetched.push(r);
+  }
+  paragraphs = fetched.map(f => f.text);
+  cardMeta = fetched.map(f => ({label: f.label, source: f.source, fromFallback: f.fromFallback}));
+  states = paragraphs.map(() => ({typed: '', hintShown: false}));
+  const enResults = await Promise.all(paragraphs.map(p => translateCached(p)));
+  englishs = enResults.map(en => en || null);
+  saveSession();
+  render();
+  const anyFallback = cardMeta.some(m => m.fromFallback);
+  const anyTranslateFail = englishs.some(e => !e);
+  if (anyFallback) showToast('Could not reach DR — using offline samples', 'danger');
+  else if (anyTranslateFail) showToast('Some translations unavailable — type the Danish anyway', 'danger');
+  else showToast('Loaded latest from DR (Danmarks Radio)', 'success');
+}
+
+// ─── Refresh confirm modal ────────────────────────────────────────
+const confirmBackdrop = document.getElementById('overset-confirm-backdrop');
+const confirmClose = document.getElementById('overset-confirm-close');
+const confirmCancel = document.getElementById('overset-confirm-cancel');
+const confirmOk = document.getElementById('overset-confirm-ok');
+function openConfirm() { confirmBackdrop.classList.add('show'); }
+function closeConfirm() { confirmBackdrop.classList.remove('show'); }
+confirmClose.addEventListener('click', closeConfirm);
+confirmCancel.addEventListener('click', closeConfirm);
+confirmBackdrop.addEventListener('click', e => { if (e.target === confirmBackdrop) closeConfirm(); });
+confirmOk.addEventListener('click', () => { closeConfirm(); loadParagraphs(); });
+refreshBtn.addEventListener('click', () => {
+  const anyTyped = states.some(s => s.typed && s.typed.length);
+  if (!anyTyped) loadParagraphs();
+  else openConfirm();
+});
+
+// ─── Boot ─────────────────────────────────────────────────────────
+const saved = loadSession();
+if (saved) {
+  paragraphs = saved.paragraphs;
+  englishs = saved.english || saved.paragraphs.map(() => null);
+  cardMeta = saved.cardMeta || saved.paragraphs.map(() => ({label:'', source:'', fromFallback:false}));
+  states = saved.typed.map((t, i) => ({typed: t, hintShown: !!(saved.hint && saved.hint[i])}));
+  render();
+  // Re-translate any nulls in the background.
+  const missing = englishs.map((e, i) => e ? -1 : i).filter(i => i >= 0);
+  if (missing.length) {
+    (async () => {
+      for (const i of missing) {
+        const en = await translateCached(paragraphs[i]);
+        if (en) {
+          englishs[i] = en;
+          const card = document.getElementById('overset-card-' + i);
+          if (card) {
+            const p = card.querySelector('.prompt-en');
+            if (p) p.innerHTML = '<div class="label">English</div>' + en;
+          }
+          saveSession();
+        }
+      }
+    })();
+  }
+} else {
+  loadParagraphs();
+}
+      // ─── END overset app code ───
+      
+    }
+  };
+})();
+</script>
+
+<script>
+window.TaleApp = (function () {
+  let initialized = false;
+  return {
+    init() {
+      if (initialized) return;
+      initialized = true;
+      // ─── BEGIN tale app code ───
+      const PHRASES = (window.DanskPhrases && window.DanskPhrases.BANK) || [];
+const PROGRESS_KEY = 'dansktale:progress:v1';
+const META_KEY     = 'dansktale:meta:v1';
+
+// ─── Danish TTS ────────────────────────────────────────────────────
+const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+const synth = window.speechSynthesis;
+let danishVoice = null;
+function pickDanishVoice() {
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  for (const name of PREFERRED_DANISH_VOICES) {
+    const v = voices.find(v => v.name === name || v.name.includes(name));
+    if (v) return v;
+  }
+  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
+}
+if (synth) {
+  danishVoice = pickDanishVoice();
+  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
+}
+function speak(text, opts) {
+  opts = opts || {};
+  if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
+  try { synth.cancel(); } catch (_) {}
+  const u = new SpeechSynthesisUtterance(text);
+  if (danishVoice) u.voice = danishVoice;
+  u.lang = 'da-DK';
+  u.rate = opts.rate || 0.9;
+  if (opts.onend) u.onend = opts.onend;
+  if (opts.onerror) u.onerror = opts.onerror;
+  synth.speak(u);
+  return u;
+}
+
+// ─── SR scheduling ─────────────────────────────────────────────────
+function todayStr() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function dayDiff(a, b) {
+  const da = new Date(a + 'T00:00:00'), db = new Date(b + 'T00:00:00');
+  return Math.round((da - db) / 86400000);
+}
+function addDays(yyyymmdd, days) {
+  const d = new Date(yyyymmdd + 'T00:00:00');
+  d.setDate(d.getDate() + days);
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
+}
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveProgress(p) {
+  try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch (_) {}
+}
+function loadMeta() {
+  try {
+    const raw = localStorage.getItem(META_KEY);
+    if (!raw) return { lastDate: null, streak: 0, reviewedToday: 0 };
+    const m = JSON.parse(raw);
+    const t = todayStr();
+    if (m.lastDate !== t) {
+      const gap = m.lastDate ? dayDiff(t, m.lastDate) : 9999;
+      const newStreak = (gap === 1) ? (m.streak || 0) + 1 : (gap === 0 ? (m.streak || 0) : 0);
+      return { lastDate: t, streak: newStreak, reviewedToday: 0 };
+    }
+    return m;
+  } catch (_) { return { lastDate: todayStr(), streak: 0, reviewedToday: 0 }; }
+}
+function saveMeta(m) { try { localStorage.setItem(META_KEY, JSON.stringify(m)); } catch (_) {} }
+
+let progress = loadProgress();
+let meta = loadMeta();
+saveMeta(meta);
+
+const FRESH_QUOTA = 5;
+
+function buildQueue() {
+  const today = todayStr();
+  const dueOld = [];
+  const fresh  = [];
+  for (const p of PHRASES) {
+    const st = progress[p.id];
+    if (!st) fresh.push(p);
+    else if (st.due && dayDiff(today, st.due) >= 0) dueOld.push(p);
+  }
+  const queue = dueOld.concat(fresh.slice(0, FRESH_QUOTA));
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i+1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  return queue;
+}
+
+function applyRating(p, rating) {
+  const today = todayStr();
+  const st = progress[p.id] || { seen: 0, ease: 2.5, interval: 0, due: today };
+  st.seen = (st.seen || 0) + 1;
+  if (rating === 'hard') {
+    st.ease = Math.max(1.3, (st.ease || 2.5) - 0.15);
+    st.interval = Math.max(1, Math.floor((st.interval || 1) * 0.5));
+    st.due = addDays(today, 1);
+  } else if (rating === 'good') {
+    st.interval = Math.max(1, Math.floor((st.interval || 1) * (st.ease || 2.5)));
+    st.due = addDays(today, st.interval);
+  } else if (rating === 'easy') {
+    st.interval = Math.max(3, Math.floor((st.interval || 1) * (st.ease || 2.5) * 1.3));
+    st.due = addDays(today, st.interval);
+  }
+  progress[p.id] = st;
+  saveProgress(progress);
+  meta.reviewedToday = (meta.reviewedToday || 0) + 1;
+  meta.lastDate = today;
+  saveMeta(meta);
+}
+
+// ─── Render ────────────────────────────────────────────────────────
+const host = document.getElementById('tale-card-host');
+const toast = document.getElementById('tale-toast');
+let queue = [];
+let qIdx = 0;
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+}
+
+function refreshHeaderStats() {
+  const todayEl = document.getElementById('tale-today-count');
+  const streakEl = document.getElementById('tale-streak');
+  const bankEl = document.getElementById('tale-bank-count');
+  const queueLenEl = document.getElementById('tale-queue-len');
+  const todayStatEl = document.getElementById('tale-stat-today');
+  const streakStatEl = document.getElementById('tale-stat-streak');
+  if (todayEl) todayEl.textContent = meta.reviewedToday || 0;
+  if (streakEl) streakEl.textContent = meta.streak || 0;
+  if (bankEl) bankEl.textContent = PHRASES.length;
+  if (queueLenEl) queueLenEl.textContent = Math.max(0, queue.length - qIdx);
+  if (todayStatEl) todayStatEl.textContent = meta.reviewedToday || 0;
+  if (streakStatEl) streakStatEl.textContent = (meta.streak || 0) + ' d';
+}
+
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+function renderCard() {
+  refreshHeaderStats();
+  if (qIdx >= queue.length) {
+    host.innerHTML =
+      '<div class="session-done">' +
+        '<h2>You\'re done for now</h2>' +
+        '<p>You reviewed ' + (meta.reviewedToday || 0) + ' phrase' + ((meta.reviewedToday || 0) === 1 ? '' : 's') + ' today. Come back tomorrow for the next round.</p>' +
+        '<button class="btn" id="tale-restart">Force-load fresh deck</button>' +
+      '</div>';
+    host.querySelector('#tale-restart').addEventListener('click', () => {
+      const allFresh = PHRASES.slice();
+      for (let i = allFresh.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i+1));
+        [allFresh[i], allFresh[j]] = [allFresh[j], allFresh[i]];
+      }
+      queue = allFresh.slice(0, 10);
+      qIdx = 0;
+      renderCard();
+    });
+    return;
+  }
+  const p = queue[qIdx];
+  host.innerHTML =
+    '<div class="review-card">' +
+      '<span class="badge-cat">' + escapeHtml(p.cat) + '</span>' +
+      '<span class="badge-progress">' + (qIdx + 1) + ' / ' + queue.length + '</span>' +
+      '<div class="phrase-da">' + escapeHtml(p.da) + '</div>' +
+      '<div class="phrase-en">' + escapeHtml(p.en) + '</div>' +
+      '<button class="play-btn" id="tale-play-btn" aria-label="Play Danish audio">▶</button>' +
+      '<div class="rating-row">' +
+        '<button class="rating-btn hard" data-rating="hard"><span class="label">Hard</span><span class="interval">again tomorrow</span></button>' +
+        '<button class="rating-btn good" data-rating="good"><span class="label">Good</span><span class="interval">in a few days</span></button>' +
+        '<button class="rating-btn easy" data-rating="easy"><span class="label">Easy</span><span class="interval">in a week+</span></button>' +
+      '</div>' +
+    '</div>';
+  const playBtn = host.querySelector('#tale-play-btn');
+  playBtn.addEventListener('click', () => {
+    playBtn.classList.add('speaking');
+    speak(p.da, {
+      onend: () => playBtn.classList.remove('speaking'),
+      onerror: () => { playBtn.classList.remove('speaking'); showToast('Audio unavailable'); },
+    });
+  });
+  setTimeout(() => playBtn.click(), 250);
+
+  host.querySelectorAll('.rating-btn').forEach(b => {
+    b.addEventListener('click', () => {
+      applyRating(p, b.dataset.rating);
+      qIdx++;
+      renderCard();
+    });
+  });
+}
+
+queue = buildQueue();
+qIdx = 0;
+renderCard();
+      // ─── END tale app code ───
+      
+    }
+  };
+})();
+</script>
+
+<script>
+window.HorApp = (function () {
+  let initialized = false;
+  return {
+    init() {
+      if (initialized) return;
+      initialized = true;
+      // ─── BEGIN hor app code ───
+      const PHRASES = (window.DanskPhrases && window.DanskPhrases.BANK) || [];
+const PROGRESS_KEY = 'danskor:progress:v1';
+const SEEN_KEY     = 'danskor:seen-counts:v1';
+
+// ─── Danish TTS ────────────────────────────────────────────────────
+const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+const synth = window.speechSynthesis;
+let danishVoice = null;
+function pickDanishVoice() {
+  if (!synth) return null;
+  const voices = synth.getVoices();
+  if (!voices.length) return null;
+  for (const name of PREFERRED_DANISH_VOICES) {
+    const v = voices.find(v => v.name === name || v.name.includes(name));
+    if (v) return v;
+  }
+  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
+}
+if (synth) {
+  danishVoice = pickDanishVoice();
+  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
+}
+function speak(text, opts) {
+  opts = opts || {};
+  if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
+  try { synth.cancel(); } catch (_) {}
+  const u = new SpeechSynthesisUtterance(text);
+  if (danishVoice) u.voice = danishVoice;
+  u.lang = 'da-DK';
+  u.rate = opts.rate || 0.9;
+  if (opts.onend) u.onend = opts.onend;
+  if (opts.onerror) u.onerror = opts.onerror;
+  synth.speak(u);
+  return u;
+}
+
+// ─── Web Audio chime / buzz ────────────────────────────────────────
+let _audioCtx = null;
+function audioCtx() {
+  if (_audioCtx) return _audioCtx;
+  try { _audioCtx = new (window.AudioContext || window.webkitAudioContext)(); } catch (_) {}
+  return _audioCtx;
+}
+function playChime() {
+  const ctx = audioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  [{f:523.25,t:0},{f:783.99,t:0.10}].forEach(({f,t}) => {
+    const osc = ctx.createOscillator();
+    const gain = ctx.createGain();
+    osc.type = 'sine';
+    osc.frequency.value = f;
+    gain.gain.setValueAtTime(0.0001, now+t);
+    gain.gain.exponentialRampToValueAtTime(0.18, now+t+0.02);
+    gain.gain.exponentialRampToValueAtTime(0.0001, now+t+0.30);
+    osc.connect(gain).connect(ctx.destination);
+    osc.start(now+t);
+    osc.stop(now+t+0.32);
+  });
+}
+function playBuzz() {
+  const ctx = audioCtx();
+  if (!ctx) return;
+  const now = ctx.currentTime;
+  const osc = ctx.createOscillator();
+  const gain = ctx.createGain();
+  osc.type = 'square';
+  osc.frequency.value = 220;
+  gain.gain.setValueAtTime(0.0001, now);
+  gain.gain.exponentialRampToValueAtTime(0.10, now+0.02);
+  gain.gain.exponentialRampToValueAtTime(0.0001, now+0.18);
+  osc.connect(gain).connect(ctx.destination);
+  osc.start(now); osc.stop(now+0.20);
+}
+
+// ─── Helpers ───────────────────────────────────────────────────────
+function pickRandom(arr, n) {
+  const copy = arr.slice();
+  const out = [];
+  while (out.length < n && copy.length) {
+    const i = Math.floor(Math.random() * copy.length);
+    out.push(copy.splice(i, 1)[0]);
+  }
+  return out;
+}
+function escapeHtml(s) {
+  return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+}
+
+// ─── State ─────────────────────────────────────────────────────────
+function loadProgress() {
+  try { return JSON.parse(localStorage.getItem(PROGRESS_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveProgress(p) { try { localStorage.setItem(PROGRESS_KEY, JSON.stringify(p)); } catch (_) {} }
+function loadSeen() {
+  try { return JSON.parse(localStorage.getItem(SEEN_KEY) || '{}'); } catch (_) { return {}; }
+}
+function saveSeen(s) { try { localStorage.setItem(SEEN_KEY, JSON.stringify(s)); } catch (_) {} }
+
+let progress = loadProgress();
+let seenCounts = loadSeen();
+progress.seen = progress.seen || 0;
+progress.correct = progress.correct || 0;
+
+let sessionScore = 0;
+let sessionTotal = 0;
+
+function pickPhrase() {
+  const weighted = PHRASES.map(p => ({ p, w: 1 / (1 + (seenCounts[p.id] || 0)) }));
+  const total = weighted.reduce((a, b) => a + b.w, 0);
+  let r = Math.random() * total;
+  for (const wp of weighted) {
+    r -= wp.w;
+    if (r <= 0) return wp.p;
+  }
+  return weighted[weighted.length - 1].p;
+}
+function pickDistractors(correct, n) {
+  const sameCat = PHRASES.filter(p => p.cat === correct.cat && p.id !== correct.id);
+  const pool = sameCat.length >= n ? sameCat : PHRASES.filter(p => p.id !== correct.id);
+  return pickRandom(pool, n);
+}
+
+const host = document.getElementById('hor-card-host');
+const skipBtn = document.getElementById('hor-skip-btn');
+
+function refreshHeaderStats() {
+  const scoreEl = document.getElementById('hor-score');
+  const accEl   = document.getElementById('hor-accuracy');
+  const accStat = document.getElementById('hor-stat-acc');
+  const playedStat = document.getElementById('hor-stat-played');
+  if (scoreEl) scoreEl.textContent = sessionScore + '/' + sessionTotal;
+  const lifePct = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : null;
+  if (accEl) accEl.textContent = lifePct === null ? '—' : (lifePct + '%');
+  if (accStat) accStat.textContent = lifePct === null ? '—' : (lifePct + '%');
+  if (playedStat) playedStat.textContent = progress.seen;
+}
+
+function nextQuestion() {
+  const correct = pickPhrase();
+  const distractors = pickDistractors(correct, 3);
+  const options = pickRandom([correct, ...distractors], 4);
+  host.innerHTML =
+    '<div class="listen-card">' +
+      '<span class="badge-cat">' + escapeHtml(correct.cat) + '</span>' +
+      '<span class="badge-score">Session ' + sessionScore + '/' + sessionTotal + '</span>' +
+      '<div class="listen-prompt">What did you hear?</div>' +
+      '<button class="play-btn" id="hor-play-btn" aria-label="Replay Danish audio">▶</button>' +
+      '<div class="answers" id="hor-answers">' +
+        options.map(o => '<button class="answer-btn" data-correct="' + (o.id === correct.id ? '1' : '0') + '" data-id="' + o.id + '">' + escapeHtml(o.en) + '</button>').join('') +
+      '</div>' +
+      '<div class="next-row" id="hor-next-row"></div>' +
+    '</div>';
+  const playBtn = host.querySelector('#hor-play-btn');
+  function playOnce() {
+    playBtn.classList.add('speaking');
+    speak(correct.da, {
+      onend: () => playBtn.classList.remove('speaking'),
+      onerror: () => playBtn.classList.remove('speaking'),
+    });
+  }
+  playBtn.addEventListener('click', playOnce);
+  setTimeout(playOnce, 250);
+
+  const answerBtns = host.querySelectorAll('.answer-btn');
+  const nextRow = host.querySelector('#hor-next-row');
+  answerBtns.forEach(b => {
+    b.addEventListener('click', () => {
+      if (b.disabled) return;
+      const isCorrect = b.dataset.correct === '1';
+      sessionTotal++;
+      progress.seen++;
+      seenCounts[correct.id] = (seenCounts[correct.id] || 0) + 1;
+      if (isCorrect) {
+        sessionScore++;
+        progress.correct++;
+        playChime();
+        b.classList.add('correct');
+      } else {
+        playBuzz();
+        b.classList.add('wrong');
+        answerBtns.forEach(x => { if (x.dataset.correct === '1') x.classList.add('correct'); });
+      }
+      answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
+      saveProgress(progress); saveSeen(seenCounts);
+      const fb = isCorrect ? '<span class="feedback correct">Correct — well heard.</span>' : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
+      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn">Next →</button>';
+      nextRow.querySelector('#hor-next-btn').addEventListener('click', nextQuestion);
+      refreshHeaderStats();
+    });
+  });
+  refreshHeaderStats();
+}
+
+skipBtn.addEventListener('click', nextQuestion);
+nextQuestion();
+      // ─── END hor app code ───
+      
+    }
+  };
+})();
+</script>
+
 
 <script>
 // ─── Hash router ─────────────────────────────────────────────────
@@ -3745,6 +5074,9 @@ const Routes = {
   '': 'home', '/': 'home',
   '/ord': 'ord',
   '/skriv': 'skriv',
+  '/overset': 'overset',
+  '/tale': 'tale',
+  '/hor': 'hor',
 };
 function currentRoute() {
   const h = location.hash.replace(/^#/, '') || '/';
@@ -3757,8 +5089,11 @@ function setActiveView(name) {
   document.querySelectorAll('.portal-nav a').forEach(a => {
     a.classList.toggle('active', a.dataset.route === name);
   });
-  if (name === 'ord' && window.OrdApp) window.OrdApp.init();
-  if (name === 'skriv' && window.SkrivApp) window.SkrivApp.init();
+  if (name === 'ord'     && window.OrdApp)     window.OrdApp.init();
+  if (name === 'skriv'   && window.SkrivApp)   window.SkrivApp.init();
+  if (name === 'overset' && window.OversetApp) window.OversetApp.init();
+  if (name === 'tale'    && window.TaleApp)    window.TaleApp.init();
+  if (name === 'hor'     && window.HorApp)     window.HorApp.init();
   if (name === 'home') refreshLandingSnapshot();
   // Kids-mode body class only makes sense inside Ord. Strip it when leaving.
   if (name !== 'ord') {
@@ -3769,47 +5104,93 @@ window.addEventListener('hashchange', () => setActiveView(currentRoute()));
 
 // ─── Landing-page progress snapshot ──────────────────────────────
 function refreshLandingSnapshot() {
-  // Ord — sum known counts across all three Ord modes (words / verbs / kids).
-  const ordKeys = [
-    { storage: 'dk-known',       totalApprox: 1000 },
-    { storage: 'dk-known-verbs', totalApprox: 80   },
-    { storage: 'dk-known-kids',  totalApprox: 200  },
-  ];
-  let ordKnown = 0, ordTotal = 0;
-  for (const k of ordKeys) {
-    try {
-      const arr = JSON.parse(localStorage.getItem(k.storage) || '[]');
-      ordKnown += Array.isArray(arr) ? arr.length : 0;
-    } catch (_) { /* ignore */ }
-    ordTotal += k.totalApprox;
-  }
+  // ── Ord — Words mode only (matches the card's "1000 words" copy). ────
+  let ordKnown = 0;
+  try {
+    const arr = JSON.parse(localStorage.getItem('dk-known') || '[]');
+    ordKnown = Array.isArray(arr) ? arr.length : 0;
+  } catch (_) { /* ignore */ }
+  const ordTotal = 1000;
   const ordPct = ordTotal ? Math.round((ordKnown / ordTotal) * 100) : 0;
   setText('snap-ord-known', `${ordKnown} / ${ordTotal}`);
   setText('snap-ord-pct', ordPct + '%');
   setWidth('snap-ord-fill', ordPct + '%');
 
-  // Skriv — count cards in current session whose typed text matches the target.
-  let skrivDone = 0, skrivTotal = 0;
+  // ── Skriv — count cards in current session whose typed text matches the target.
+  const skriv = countTypingProgress('danskskriv:session:v1', 5);
+  setText('snap-skriv-done', `${skriv.done} / ${skriv.total}`);
+  setText('snap-skriv-pct', skriv.pct + '%');
+  setWidth('snap-skriv-fill', skriv.pct + '%');
+
+  // ── Overset — same shape as Skriv. ────────────────────────────────
+  const overset = countTypingProgress('danskoverset:session:v1', 5);
+  setText('snap-overset-done', `${overset.done} / ${overset.total}`);
+  setText('snap-overset-pct', overset.pct + '%');
+  setWidth('snap-overset-fill', overset.pct + '%');
+
+  // ── Tale — reviewed today + streak from meta. ─────────────────────
+  let taleReviewed = 0, taleStreak = 0;
   try {
-    const raw = localStorage.getItem('danskskriv:session:v1');
+    const raw = localStorage.getItem('dansktale:meta:v1');
+    if (raw) {
+      const m = JSON.parse(raw);
+      const today = todayStrLocal();
+      if (m && m.lastDate === today) taleReviewed = m.reviewedToday || 0;
+      taleStreak = m && m.streak || 0;
+    }
+  } catch (_) { /* ignore */ }
+  setText('snap-tale-reviewed', taleReviewed);
+  setText('snap-tale-streak', '🔥 ' + taleStreak);
+  // Fill bar uses today-reviewed against an aspirational 10/day target.
+  const taleTarget = 10;
+  const talePct = Math.min(100, Math.round((taleReviewed / taleTarget) * 100));
+  setWidth('snap-tale-fill', talePct + '%');
+
+  // ── Hør — accuracy + played from progress. ────────────────────────
+  let horSeen = 0, horCorrect = 0;
+  try {
+    const raw = localStorage.getItem('danskor:progress:v1');
+    if (raw) {
+      const p = JSON.parse(raw);
+      horSeen = (p && p.seen) || 0;
+      horCorrect = (p && p.correct) || 0;
+    }
+  } catch (_) { /* ignore */ }
+  const horPct = horSeen ? Math.round((horCorrect / horSeen) * 100) : 0;
+  setText('snap-hor-played', horSeen);
+  setText('snap-hor-acc', horSeen ? horPct + '%' : '—');
+  setWidth('snap-hor-fill', horPct + '%');
+}
+function countTypingProgress(storageKey, fallbackTotal) {
+  let done = 0, total = 0;
+  try {
+    const raw = localStorage.getItem(storageKey);
     if (raw) {
       const s = JSON.parse(raw);
       if (s && Array.isArray(s.paragraphs) && Array.isArray(s.typed)) {
-        skrivTotal = s.paragraphs.length;
-        for (let i = 0; i < skrivTotal; i++) {
-          if ((s.typed[i] || '') === s.paragraphs[i]) skrivDone++;
+        total = s.paragraphs.length;
+        for (let i = 0; i < total; i++) {
+          if ((s.typed[i] || '') === s.paragraphs[i]) done++;
         }
       }
     }
   } catch (_) { /* ignore */ }
-  if (!skrivTotal) skrivTotal = 5;
-  const skrivPct = skrivTotal ? Math.round((skrivDone / skrivTotal) * 100) : 0;
-  setText('snap-skriv-done', `${skrivDone} / ${skrivTotal}`);
-  setText('snap-skriv-pct', skrivPct + '%');
-  setWidth('snap-skriv-fill', skrivPct + '%');
+  if (!total) total = fallbackTotal;
+  const pct = total ? Math.round((done / total) * 100) : 0;
+  return { done, total, pct };
+}
+function todayStrLocal() {
+  const d = new Date();
+  return d.getFullYear() + '-' + String(d.getMonth()+1).padStart(2,'0') + '-' + String(d.getDate()).padStart(2,'0');
 }
 function setText(id, v)  { const el = document.getElementById(id); if (el) el.textContent = v; }
 function setWidth(id, w) { const el = document.getElementById(id); if (el) el.style.width  = w; }
+
+// ─── Footer year ─────────────────────────────────────────────────
+(function setFooterYear() {
+  const el = document.getElementById('portal-year');
+  if (el) el.textContent = new Date().getFullYear();
+})();
 
 // ─── Boot ────────────────────────────────────────────────────────
 setActiveView(currentRoute());
