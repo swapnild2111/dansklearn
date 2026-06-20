@@ -19,7 +19,7 @@ How it works:
 - phrases.js is inlined ONCE before the per-app scripts so the shared phrase
   bank (window.DanskPhrases.BANK) is available to dansktale and danskhor
   without duplication.
-- A shared header, landing page, and tiny hash-based router sit on top.
+- A shared header, landing page, and tiny history-based router sit on top.
 
 Re-run this whenever any of the source .html files or phrases.js change.
 """
@@ -37,6 +37,7 @@ TALE_PATH      = SRC / "dansktale.html"
 HOR_PATH       = SRC / "danskhor.html"
 PHRASES_PATH   = SRC / "phrases.js"
 OUT_PATH       = ROOT / "index.html"
+NOT_FOUND_PATH = ROOT / "404.html"
 
 
 def read_source(path: Path) -> str:
@@ -267,6 +268,8 @@ PORTAL_HEAD = """<!DOCTYPE html>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>danskLearn — Learn Danish</title>
+<meta name="description" content="Learn Danish with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one free portal.">
+<link rel="canonical" href="https://swapnild2111.github.io/dansklearn/">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 """
@@ -326,6 +329,7 @@ body {
   font-size: 22px;
   letter-spacing: -0.5px;
   color: var(--text);
+  text-decoration: none;
   cursor: pointer;
   user-select: none;
   flex-shrink: 0;
@@ -697,14 +701,14 @@ body.mode-kids #view-ord .app-toolbar {
 
 PORTAL_HEADER_AND_LANDING = r"""
 <header class="portal-header">
-  <div class="portal-logo" onclick="location.hash='#/'">dansk<span>learn</span></div>
+  <a href="./" class="portal-logo">dansk<span>learn</span></a>
   <nav class="portal-nav">
-    <a href="#/"        data-route="home">Home</a>
-    <a href="#/ord"     data-route="ord">Ord</a>
-    <a href="#/skriv"   data-route="skriv">Skriv</a>
-    <a href="#/overset" data-route="overset">Oversæt</a>
-    <a href="#/tale"    data-route="tale">Tale</a>
-    <a href="#/hor"     data-route="hor">Hør</a>
+    <a href="./"        data-route="home">Home</a>
+    <a href="./ord"     data-route="ord">Ord</a>
+    <a href="./skriv"   data-route="skriv">Skriv</a>
+    <a href="./overset" data-route="overset">Oversæt</a>
+    <a href="./tale"    data-route="tale">Tale</a>
+    <a href="./hor"     data-route="hor">Hør</a>
   </nav>
 </header>
 
@@ -716,7 +720,7 @@ PORTAL_HEADER_AND_LANDING = r"""
 
   <div class="section-label">Modules</div>
   <div class="module-grid">
-    <a class="module-card" href="#/ord">
+    <a class="module-card" href="./ord">
       <div class="module-card-head">
         <div class="module-icon">📚</div>
         <div class="module-title">dansk<span>ord</span></div>
@@ -728,7 +732,7 @@ PORTAL_HEADER_AND_LANDING = r"""
       </div>
       <div class="module-progress"><div id="snap-ord-fill" style="width:0%"></div></div>
     </a>
-    <a class="module-card" href="#/skriv">
+    <a class="module-card" href="./skriv">
       <div class="module-card-head">
         <div class="module-icon">✍️</div>
         <div class="module-title">dansk<span>skriv</span></div>
@@ -740,7 +744,7 @@ PORTAL_HEADER_AND_LANDING = r"""
       </div>
       <div class="module-progress"><div id="snap-skriv-fill" style="width:0%"></div></div>
     </a>
-    <a class="module-card" href="#/overset">
+    <a class="module-card" href="./overset">
       <div class="module-card-head">
         <div class="module-icon">🌐</div>
         <div class="module-title">dansk<span>oversæt</span></div>
@@ -752,7 +756,7 @@ PORTAL_HEADER_AND_LANDING = r"""
       </div>
       <div class="module-progress"><div id="snap-overset-fill" style="width:0%"></div></div>
     </a>
-    <a class="module-card" href="#/tale">
+    <a class="module-card" href="./tale">
       <div class="module-card-head">
         <div class="module-icon">🗣️</div>
         <div class="module-title">dansk<span>tale</span></div>
@@ -764,7 +768,7 @@ PORTAL_HEADER_AND_LANDING = r"""
       </div>
       <div class="module-progress"><div id="snap-tale-fill" style="width:0%"></div></div>
     </a>
-    <a class="module-card" href="#/hor">
+    <a class="module-card" href="./hor">
       <div class="module-card-head">
         <div class="module-icon">👂</div>
         <div class="module-title">dansk<span>hør</span></div>
@@ -787,7 +791,7 @@ PORTAL_HEADER_AND_LANDING = r"""
 
 PORTAL_FOOTER_SCRIPT = r"""
 <script>
-// ─── Hash router ─────────────────────────────────────────────────
+// ─── Router: clean paths on http(s), hash fallback for file:// ────
 const Routes = {
   '': 'home', '/': 'home',
   '/ord': 'ord',
@@ -796,9 +800,96 @@ const Routes = {
   '/tale': 'tale',
   '/hor': 'hor',
 };
+const useHashRouting = location.protocol === 'file:';
+const SITE_ORIGIN = 'https://swapnild2111.github.io';
+const SITE_BASE = '/dansklearn';
+const RouteMeta = {
+  home:    { title: 'danskLearn — Learn Danish', path: '/' },
+  ord:     { title: 'danskord — Danish Vocabulary | danskLearn', path: '/ord' },
+  skriv:   { title: 'danskskriv — Type Along in Danish | danskLearn', path: '/skriv' },
+  overset: { title: 'danskoversæt — Translate to Danish | danskLearn', path: '/overset' },
+  tale:    { title: 'dansktale — Speak Along | danskLearn', path: '/tale' },
+  hor:     { title: 'danskhør — Listen and Pick | danskLearn', path: '/hor' },
+};
+function hrefToRoute(href) {
+  if (!href) return null;
+  if (href.startsWith('#')) {
+    const p = href.replace(/^#/, '') || '/';
+    return Routes[p] !== undefined ? p : null;
+  }
+  let p = href;
+  if (p.startsWith('./')) p = p.slice(1);
+  if (!p.startsWith('/')) p = '/' + p;
+  return Routes[p] !== undefined ? p : null;
+}
+function routeFromLink(a) {
+  if (a.dataset.route) {
+    return a.dataset.route === 'home' ? '/' : '/' + a.dataset.route;
+  }
+  return hrefToRoute(a.getAttribute('href'));
+}
+function basePath() {
+  const raw = location.pathname.replace(/\/index\.html$/i, '');
+  const normalized = raw.endsWith('/') && raw.length > 1 ? raw.slice(0, -1) : raw;
+  for (const routePath of Object.keys(Routes)) {
+    if (!routePath || routePath === '/') continue;
+    if (normalized.endsWith(routePath)) {
+      const base = normalized.slice(0, -routePath.length);
+      return base.replace(/\/$/, '') || '';
+    }
+  }
+  if (location.hostname.endsWith('github.io')) {
+    const parts = normalized.split('/').filter(Boolean);
+    if (parts.length === 1) return '/' + parts[0];
+  }
+  return '';
+}
+function routePath() {
+  const base = basePath();
+  let p = location.pathname.replace(/\/index\.html$/i, '');
+  if (base && p.startsWith(base)) p = p.slice(base.length) || '/';
+  p = p.replace(/\/$/, '') || '/';
+  return p;
+}
 function currentRoute() {
-  const h = location.hash.replace(/^#/, '') || '/';
-  return Routes[h] || 'home';
+  if (useHashRouting) {
+    const h = location.hash.replace(/^#/, '') || '/';
+    return Routes[h] || 'home';
+  }
+  return Routes[routePath()] || 'home';
+}
+function buildUrl(path) {
+  const base = basePath();
+  if (path === '/' || path === '') return base ? base + '/' : '/';
+  return (base || '') + path;
+}
+function navigate(path, replace) {
+  if (useHashRouting) {
+    const hash = path === '/' ? '#/' : '#' + path;
+    if (replace) {
+      const url = location.pathname + location.search + hash;
+      history.replaceState(null, '', url);
+      setActiveView(currentRoute());
+    } else {
+      location.hash = hash;
+    }
+    return;
+  }
+  const url = buildUrl(path);
+  if (replace) history.replaceState(null, '', url);
+  else history.pushState(null, '', url);
+  setActiveView(currentRoute());
+}
+function updateSeo(name) {
+  const meta = RouteMeta[name] || RouteMeta.home;
+  document.title = meta.title;
+  let link = document.querySelector('link[rel="canonical"]');
+  if (!link) {
+    link = document.createElement('link');
+    link.rel = 'canonical';
+    document.head.appendChild(link);
+  }
+  link.href = SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path);
 }
 function setActiveView(name) {
   document.querySelectorAll('.view').forEach(v => v.classList.remove('active'));
@@ -807,6 +898,7 @@ function setActiveView(name) {
   document.querySelectorAll('.portal-nav a').forEach(a => {
     a.classList.toggle('active', a.dataset.route === name);
   });
+  updateSeo(name);
   if (name === 'ord'     && window.OrdApp)     window.OrdApp.init();
   if (name === 'skriv'   && window.SkrivApp)   window.SkrivApp.init();
   if (name === 'overset' && window.OversetApp) window.OversetApp.init();
@@ -818,7 +910,27 @@ function setActiveView(name) {
     document.body.classList.remove('mode-words', 'mode-verbs', 'mode-kids');
   }
 }
-window.addEventListener('hashchange', () => setActiveView(currentRoute()));
+document.addEventListener('click', e => {
+  const a = e.target.closest('a[href]');
+  if (!a || a.target === '_blank' || a.hasAttribute('download')) return;
+  const href = a.getAttribute('href');
+  if (!href || href.startsWith('http') || href.startsWith('mailto:')) return;
+  const path = routeFromLink(a);
+  if (path !== null && Routes[path] !== undefined) {
+    e.preventDefault();
+    navigate(path);
+  }
+});
+if (useHashRouting) {
+  window.addEventListener('hashchange', () => setActiveView(currentRoute()));
+} else {
+  window.addEventListener('popstate', () => setActiveView(currentRoute()));
+  // Upgrade old #/… bookmarks to clean URLs when served over http(s).
+  if (/^#\//.test(location.hash)) {
+    const legacy = location.hash.replace(/^#/, '');
+    history.replaceState(null, '', buildUrl(legacy));
+  }
+}
 
 // ─── Landing-page progress snapshot ──────────────────────────────
 function refreshLandingSnapshot() {
@@ -1031,8 +1143,11 @@ def build() -> None:
         "</html>",
     ]
 
-    OUT_PATH.write_text("\n".join(parts), encoding="utf-8")
+    html = "\n".join(parts)
+    OUT_PATH.write_text(html, encoding="utf-8")
+    NOT_FOUND_PATH.write_text(html, encoding="utf-8")
     print(f"Built {OUT_PATH} ({OUT_PATH.stat().st_size:,} bytes)")
+    print(f"Built {NOT_FOUND_PATH} ({NOT_FOUND_PATH.stat().st_size:,} bytes)")
 
 
 if __name__ == "__main__":

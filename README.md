@@ -12,13 +12,13 @@ Live: https://swapnild2111.github.io/dansklearn/ *(if GitHub Pages is enabled)*
 
 | Module | Route | What it does |
 |---|---|---|
-| **danskord**     | `#/ord`     | Flashcards for the 1000 most essential Danish words, plus verb conjugations and a kids-friendly mode for ages 5–7 |
-| **danskskriv**   | `#/skriv`   | Type along with fresh DR.dk paragraphs. Live colouring catches mistakes; tap any word for an English translation |
-| **danskoversæt** | `#/overset` | Same fresh paragraphs, reversed: read English, type the Danish translation. Hint icon reveals the original |
-| **dansktale**    | `#/tale`    | Listen-and-repeat with Anki-lite spaced repetition. Self-rate Hard / Good / Easy and the deck schedules itself |
-| **danskhør**     | `#/hor`     | Listen to a Danish phrase, pick the English meaning from four choices. Distractors come from the same topic |
+| **danskord**     | `/ord`     | Flashcards for the 1000 most essential Danish words, plus verb conjugations and a kids-friendly mode for ages 5–7 |
+| **danskskriv**   | `/skriv`   | Type along with fresh DR.dk paragraphs. Live colouring catches mistakes; tap any word for an English translation |
+| **danskoversæt** | `/overset` | Same fresh paragraphs, reversed: read English, type the Danish translation. Hint icon reveals the original |
+| **dansktale**    | `/tale`    | Listen-and-repeat with Anki-lite spaced repetition. Self-rate Hard / Good / Easy and the deck schedules itself |
+| **danskhør**     | `/hor`     | Listen to a Danish phrase, pick the English meaning from four choices. Distractors come from the same topic |
 
-The home page (`#/`) lists all five modules with a live progress snapshot
+The home page (`/`) lists all five modules with a live progress snapshot
 read from `localStorage`.
 
 ---
@@ -30,6 +30,7 @@ dansklearn/
 ├── README.md              # this file
 ├── build.py               # assembles index.html from the source files in src/
 ├── index.html             # build output — what users actually open
+├── 404.html               # same SPA shell — GitHub Pages fallback for clean URLs
 └── src/
     ├── danskord.html      # standalone flashcards app (1000 words)
     ├── danskskriv.html    # standalone Danish-typing app
@@ -55,11 +56,11 @@ IIFE, and emits a single `index.html` at the repo root.
 ### Run the merged portal
 
 ```bash
-python3 build.py            # writes index.html
+python3 build.py            # writes index.html + 404.html
 python3 -m http.server 8765 # serve at http://localhost:8765/
 ```
 
-Open `http://localhost:8765/index.html`.
+Open `http://localhost:8765/` — module routes like `/ord` and `/overset` work when served from the repo root.
 
 ### Run a single module standalone
 
