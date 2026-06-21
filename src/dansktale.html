@@ -34,7 +34,7 @@
   .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
   .stat-pill b { color: var(--accent2); font-weight: 500; }
 
-  .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 1180px; margin-left: auto; margin-right: auto; }
   .intro { padding: 6px 4px 18px; }
   .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
   .intro p { color: var(--text-muted); font-size: 13px; }
@@ -44,7 +44,46 @@
   .session-stat .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
   .session-stat .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
 
-  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 280px; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+  .tale-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 380px);
+    gap: 20px;
+    align-items: start;
+    min-height: calc(100vh - var(--header-h) - 210px);
+  }
+
+  .deck-section { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+  .deck-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-shrink: 0; }
+  .deck-toolbar h2 { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; color: var(--text); }
+  .deck-toolbar .deck-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: 6px; }
+  .deck-refresh { padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; transition: all 0.15s; white-space: nowrap; }
+  .deck-refresh:hover { border-color: var(--accent); color: var(--accent); }
+
+  .deck-list {
+    flex: 1;
+    min-height: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    overflow-y: auto;
+  }
+  .deck-item { display: grid; grid-template-columns: 32px minmax(0, 1fr); gap: 2px 10px; width: 100%; padding: 10px 12px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; text-align: left; cursor: pointer; transition: background 0.15s; align-items: start; }
+  .deck-item:last-child { border-bottom: none; }
+  .deck-item:hover { background: rgba(79, 142, 247, 0.06); }
+  .deck-item.active { background: rgba(79, 142, 247, 0.12); box-shadow: inset 3px 0 0 var(--accent); }
+  .deck-item.done { opacity: 0.5; }
+  .deck-item.done.active { opacity: 1; }
+  .deck-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); padding-top: 2px; }
+  .deck-text { min-width: 0; }
+  .deck-da { display: block; font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.35; }
+  .deck-en { display: block; font-size: 12px; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+  .deck-cat { display: inline-block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: var(--accent2); margin-top: 4px; opacity: 0.85; }
+
+  .player-section { position: sticky; top: calc(var(--header-h) + 16px); }
+  .player-section .review-card,
+  .player-section .session-done { min-height: 420px; }
+
+  .review-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 24px 28px; min-height: 280px; display: flex; flex-direction: column; align-items: center; gap: 18px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
   .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
   .badge-progress { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
   .phrase-da { font-family: 'DM Serif Display', serif; font-size: 36px; line-height: 1.25; text-align: center; color: var(--text); margin-top: 28px; padding: 0 8px; }
@@ -66,11 +105,22 @@
   .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; }
   .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 8px; }
   .session-done p { color: var(--text-muted); font-size: 14px; margin-bottom: 16px; }
-  .session-done .btn { padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; }
+  .session-done .btn { padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
   .session-done .btn:hover { border-color: var(--accent); color: var(--accent); }
 
   .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
   .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 900px) {
+    .tale-layout {
+      grid-template-columns: 1fr;
+      min-height: 0;
+    }
+    .player-section { position: static; order: -1; }
+    .player-section .review-card,
+    .player-section .session-done { min-height: 280px; }
+    .deck-list { max-height: 50vh; flex: none; }
+  }
 
   @media (max-width: 700px) {
     .main { padding: 14px; }
@@ -100,12 +150,24 @@
   </div>
 
   <div class="session-stats">
-    <div class="session-stat"><div class="label">In queue</div><div class="value" id="tale-queue-len">—</div></div>
+    <div class="session-stat"><div class="label">Remaining</div><div class="value" id="tale-queue-len">—</div></div>
     <div class="session-stat"><div class="label">Reviewed today</div><div class="value" id="tale-stat-today">0</div></div>
     <div class="session-stat"><div class="label">Streak</div><div class="value" id="tale-stat-streak">0 d</div></div>
   </div>
 
-  <div id="tale-card-host"></div>
+  <div class="tale-layout">
+    <aside class="deck-section">
+      <div class="deck-toolbar">
+        <h2>Full deck<span class="deck-count" id="tale-deck-total"></span></h2>
+        <button type="button" class="deck-refresh" id="tale-refresh-deck">↻ New deck</button>
+      </div>
+      <div class="deck-list" id="tale-deck-list" aria-label="All phrases in deck"></div>
+    </aside>
+
+    <div class="player-section">
+      <div id="tale-card-host"></div>
+    </div>
+  </div>
 </div>
 
 <div class="toast" id="tale-toast"></div>
@@ -192,23 +254,24 @@ let progress = loadProgress();
 let meta = loadMeta();
 saveMeta(meta);
 
-const FRESH_QUOTA = 5;
+function shuffleDeck(list) {
+  const deck = list.slice();
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
 
 function buildQueue() {
-  const today = todayStr();
-  const dueOld = [];
-  const fresh  = [];
-  for (const p of PHRASES) {
-    const st = progress[p.id];
-    if (!st) fresh.push(p);
-    else if (st.due && dayDiff(today, st.due) >= 0) dueOld.push(p);
-  }
-  const queue = dueOld.concat(fresh.slice(0, FRESH_QUOTA));
-  for (let i = queue.length - 1; i > 0; i--) {
-    const j = Math.floor(Math.random() * (i+1));
-    [queue[i], queue[j]] = [queue[j], queue[i]];
-  }
-  return queue;
+  return shuffleDeck(PHRASES);
+}
+
+function newDeck() {
+  queue = buildQueue();
+  qIdx = 0;
+  renderCard();
+  showToast('Deck shuffled — ' + queue.length + ' phrases');
 }
 
 function applyRating(p, rating) {
@@ -235,10 +298,15 @@ function applyRating(p, rating) {
 
 // ─── Render ────────────────────────────────────────────────────────
 const host = document.getElementById('tale-card-host');
+const deckList = document.getElementById('tale-deck-list');
+const deckTotal = document.getElementById('tale-deck-total');
+const refreshBtn = document.getElementById('tale-refresh-deck');
 const toast = document.getElementById('tale-toast');
 let queue = [];
 let qIdx = 0;
 let audioUnlocked = false;
+
+if (refreshBtn) refreshBtn.addEventListener('click', newDeck);
 
 function showToast(msg) {
   toast.textContent = msg;
@@ -266,25 +334,45 @@ function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
 
+function renderDeckList() {
+  if (!deckList) return;
+  if (deckTotal) deckTotal.textContent = '(' + queue.length + ')';
+  deckList.innerHTML = queue.map((p, i) => {
+    const cls = ['deck-item'];
+    if (i === qIdx) cls.push('active');
+    else if (i < qIdx) cls.push('done');
+    return (
+      '<button type="button" class="' + cls.join(' ') + '" data-idx="' + i + '">' +
+        '<span class="deck-num">' + (i + 1) + '</span>' +
+        '<span class="deck-text">' +
+          '<span class="deck-da">' + escapeHtml(p.da) + '</span>' +
+          '<span class="deck-en">' + escapeHtml(p.en) + '</span>' +
+          '<span class="deck-cat">' + escapeHtml(p.cat) + '</span>' +
+        '</span>' +
+      '</button>'
+    );
+  }).join('');
+  deckList.querySelectorAll('.deck-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      qIdx = parseInt(btn.dataset.idx, 10);
+      renderCard();
+    });
+  });
+  const active = deckList.querySelector('.deck-item.active');
+  if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
 function renderCard() {
   refreshHeaderStats();
+  renderDeckList();
   if (qIdx >= queue.length) {
     host.innerHTML =
       '<div class="session-done">' +
-        '<h2>You\'re done for now</h2>' +
-        '<p>You reviewed ' + (meta.reviewedToday || 0) + ' phrase' + ((meta.reviewedToday || 0) === 1 ? '' : 's') + ' today. Come back tomorrow for the next round.</p>' +
-        '<button class="btn" id="tale-restart">Force-load fresh deck</button>' +
+        '<h2>Deck complete</h2>' +
+        '<p>You went through all ' + queue.length + ' phrases. Hit New deck to shuffle and start again.</p>' +
+        '<button class="btn" id="tale-restart">↻ New deck</button>' +
       '</div>';
-    host.querySelector('#tale-restart').addEventListener('click', () => {
-      const allFresh = PHRASES.slice();
-      for (let i = allFresh.length - 1; i > 0; i--) {
-        const j = Math.floor(Math.random() * (i+1));
-        [allFresh[i], allFresh[j]] = [allFresh[j], allFresh[i]];
-      }
-      queue = allFresh.slice(0, 10);
-      qIdx = 0;
-      renderCard();
-    });
+    host.querySelector('#tale-restart').addEventListener('click', newDeck);
     return;
   }
   const p = queue[qIdx];

@@ -33,42 +33,100 @@
   .header-right { display: flex; align-items: center; gap: 10px; }
   .stat-pill { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-muted); background: var(--surface); border: 1px solid var(--border); border-radius: 20px; padding: 3px 10px; }
   .stat-pill b { color: var(--accent2); font-weight: 500; }
-  .btn { background: var(--surface); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text-muted); padding: 6px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; transition: all 0.15s; white-space: nowrap; display: inline-flex; align-items: center; gap: 6px; }
-  .btn:hover { border-color: var(--accent); color: var(--accent); }
 
-  .main { margin-top: var(--header-h); padding: 24px; max-width: 760px; margin-left: auto; margin-right: auto; }
+  .main { margin-top: var(--header-h); padding: 24px; max-width: 1180px; margin-left: auto; margin-right: auto; }
   .intro { padding: 6px 4px 18px; }
   .intro h1 { font-family: 'DM Serif Display', serif; font-size: 26px; font-weight: 400; margin-bottom: 4px; }
   .intro p { color: var(--text-muted); font-size: 13px; }
 
-  .listen-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 28px 28px; min-height: 320px; display: flex; flex-direction: column; align-items: center; gap: 22px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
+  .session-stats { display: flex; gap: 10px; margin-bottom: 18px; }
+  .session-stat { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
+  .session-stat .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
+  .session-stat .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+
+  .hor-layout {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) minmax(300px, 400px);
+    gap: 20px;
+    align-items: start;
+    min-height: calc(100vh - var(--header-h) - 210px);
+  }
+
+  .deck-section { display: flex; flex-direction: column; min-height: 0; height: 100%; }
+  .deck-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; margin-bottom: 10px; flex-shrink: 0; }
+  .deck-toolbar h2 { font-family: 'DM Serif Display', serif; font-size: 18px; font-weight: 400; color: var(--text); }
+  .deck-toolbar .deck-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); font-weight: 400; margin-left: 6px; }
+  .deck-refresh { padding: 7px 14px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 12px; transition: all 0.15s; white-space: nowrap; }
+  .deck-refresh:hover { border-color: var(--accent); color: var(--accent); }
+
+  .deck-list {
+    flex: 1;
+    min-height: 0;
+    background: var(--surface);
+    border: 1px solid var(--border);
+    border-radius: var(--card-radius);
+    overflow-y: auto;
+  }
+  .deck-item { display: grid; grid-template-columns: 32px minmax(0, 1fr) auto; gap: 2px 10px; width: 100%; padding: 10px 12px; border: none; border-bottom: 1px solid var(--border); background: transparent; color: inherit; text-align: left; cursor: pointer; transition: background 0.15s; align-items: start; }
+  .deck-item:last-child { border-bottom: none; }
+  .deck-item:hover { background: rgba(79, 142, 247, 0.06); }
+  .deck-item.active { background: rgba(79, 142, 247, 0.12); box-shadow: inset 3px 0 0 var(--accent); }
+  .deck-item.done { opacity: 0.55; }
+  .deck-item.done.active { opacity: 1; }
+  .deck-item.correct { box-shadow: inset 3px 0 0 var(--success); }
+  .deck-item.wrong { box-shadow: inset 3px 0 0 var(--danger); }
+  .deck-num { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); padding-top: 2px; }
+  .deck-text { min-width: 0; }
+  .deck-da { display: block; font-size: 14px; font-weight: 500; color: var(--text); line-height: 1.35; }
+  .deck-en { display: none; font-size: 12px; color: var(--text-muted); line-height: 1.35; margin-top: 2px; }
+  .deck-item.done .deck-en { display: block; }
+  .deck-cat { display: inline-block; font-family: 'Inter', sans-serif; font-size: 10px; font-weight: 600; color: var(--accent2); margin-top: 4px; opacity: 0.85; }
+  .deck-mark { font-size: 14px; line-height: 1; padding-top: 2px; }
+
+  .player-section { position: sticky; top: calc(var(--header-h) + 16px); }
+  .player-section .listen-card,
+  .player-section .session-done { min-height: 420px; }
+
+  .listen-card { background: var(--card); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 36px 24px 28px; min-height: 320px; display: flex; flex-direction: column; align-items: center; gap: 22px; box-shadow: 0 8px 28px rgba(0,0,0,0.25); position: relative; }
   .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
   .badge-score { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
-  .listen-prompt { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text-muted); margin-top: 22px; }
+  .listen-prompt { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text-muted); margin-top: 22px; text-align: center; }
   .play-btn { width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 42px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
   .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
   .play-btn:active { transform: scale(0.96); }
   .play-btn.speaking { animation: horPulse 1.2s ease-in-out infinite; }
   @keyframes horPulse { 0%,100% { box-shadow: 0 8px 24px rgba(79,142,247,0.45); } 50% { box-shadow: 0 8px 36px rgba(79,142,247,0.85); } }
 
-  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; max-width: 580px; margin-top: 8px; }
+  .answers { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; width: 100%; margin-top: 8px; }
   .answer-btn { padding: 14px 12px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text); font-family: 'Inter', sans-serif; font-size: 14px; cursor: pointer; transition: all 0.15s; text-align: left; min-height: 56px; }
   .answer-btn:hover:not(:disabled) { border-color: var(--accent); }
   .answer-btn:disabled { cursor: default; }
   .answer-btn.correct { border-color: var(--success); background: rgba(74,222,128,0.12); color: var(--success); }
   .answer-btn.wrong   { border-color: var(--danger);  background: rgba(248,113,113,0.12); color: var(--danger); }
   .answer-btn.faded   { opacity: 0.45; }
-  .next-row { display: flex; gap: 10px; align-items: center; min-height: 38px; }
-  .next-btn { padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
-  .next-btn:hover { border-color: var(--accent); color: var(--accent); }
+  .next-row { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; justify-content: center; min-height: 38px; width: 100%; }
+  .next-btn, .skip-btn { padding: 9px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
+  .next-btn:hover, .skip-btn:hover { border-color: var(--accent); color: var(--accent); }
   .feedback { font-family: 'Inter', sans-serif; font-size: 13px; }
   .feedback.correct { color: var(--success); }
   .feedback.wrong   { color: var(--danger); }
 
-  .stats-row { display: flex; gap: 10px; margin-top: 18px; }
-  .stat-card { flex: 1; background: var(--surface); border: 1px solid var(--border); border-radius: var(--card-radius); padding: 12px 16px; }
-  .stat-card .label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); letter-spacing: 1.2px; text-transform: uppercase; margin-bottom: 4px; }
-  .stat-card .value { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--accent2); }
+  .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
+  .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 4px; }
+  .session-done p { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
+  .session-done .btn { padding: 8px 18px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--surface); color: var(--text-muted); cursor: pointer; font-family: 'Inter', sans-serif; font-size: 13px; transition: all 0.15s; }
+  .session-done .btn:hover { border-color: var(--accent); color: var(--accent); }
+
+  .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: var(--surface); border: 1px solid var(--border); padding: 10px 18px; border-radius: 24px; font-size: 12px; color: var(--text-muted); opacity: 0; transition: all 0.25s; z-index: 500; pointer-events: none; }
+  .toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+  @media (max-width: 900px) {
+    .hor-layout { grid-template-columns: 1fr; min-height: 0; }
+    .player-section { position: static; order: -1; }
+    .player-section .listen-card,
+    .player-section .session-done { min-height: 320px; }
+    .deck-list { max-height: 50vh; flex: none; }
+  }
 
   @media (max-width: 700px) {
     .main { padding: 14px; }
@@ -89,23 +147,38 @@
   <div class="header-right">
     <div class="stat-pill">Score <b id="hor-score">0/0</b></div>
     <div class="stat-pill">Accuracy <b id="hor-accuracy">—</b></div>
-    <button class="btn" id="hor-skip-btn" title="Skip / new question">↷ New</button>
+    <div class="stat-pill">Bank <b id="hor-bank-count">0</b></div>
   </div>
 </header>
 
 <div class="main">
   <div class="intro">
     <h1>Listen and pick</h1>
-    <p>Tap play, then choose the English meaning of the Danish phrase. Distractors come from the same topic to keep things honest.</p>
+    <p>Tap play, then choose the English meaning. Work through the full deck — English answers stay hidden in the list until you answer.</p>
   </div>
 
-  <div id="hor-card-host"></div>
+  <div class="session-stats">
+    <div class="session-stat"><div class="label">Remaining</div><div class="value" id="hor-queue-len">—</div></div>
+    <div class="session-stat"><div class="label">Session score</div><div class="value" id="hor-stat-session">0/0</div></div>
+    <div class="session-stat"><div class="label">All-time accuracy</div><div class="value" id="hor-stat-acc">—</div></div>
+  </div>
 
-  <div class="stats-row">
-    <div class="stat-card"><div class="label">All-time accuracy</div><div class="value" id="hor-stat-acc">—</div></div>
-    <div class="stat-card"><div class="label">Played</div><div class="value" id="hor-stat-played">0</div></div>
+  <div class="hor-layout">
+    <aside class="deck-section">
+      <div class="deck-toolbar">
+        <h2>Full deck<span class="deck-count" id="hor-deck-total"></span></h2>
+        <button type="button" class="deck-refresh" id="hor-refresh-deck">↻ New deck</button>
+      </div>
+      <div class="deck-list" id="hor-deck-list" aria-label="All phrases in deck"></div>
+    </aside>
+
+    <div class="player-section">
+      <div id="hor-card-host"></div>
+    </div>
   </div>
 </div>
+
+<div class="toast" id="hor-toast"></div>
 
 <script src="phrases.js"></script>
 
@@ -199,6 +272,14 @@ function pickRandom(arr, n) {
 function escapeHtml(s) {
   return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
 }
+function shuffleDeck(list) {
+  const deck = list.slice();
+  for (let i = deck.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [deck[i], deck[j]] = [deck[j], deck[i]];
+  }
+  return deck;
+}
 
 // ─── State ─────────────────────────────────────────────────────────
 function loadProgress() {
@@ -217,18 +298,11 @@ progress.correct = progress.correct || 0;
 
 let sessionScore = 0;
 let sessionTotal = 0;
+let sessionResults = {};
+let queue = [];
+let qIdx = 0;
 let audioUnlocked = false;
 
-function pickPhrase() {
-  const weighted = PHRASES.map(p => ({ p, w: 1 / (1 + (seenCounts[p.id] || 0)) }));
-  const total = weighted.reduce((a, b) => a + b.w, 0);
-  let r = Math.random() * total;
-  for (const wp of weighted) {
-    r -= wp.w;
-    if (r <= 0) return wp.p;
-  }
-  return weighted[weighted.length - 1].p;
-}
 function pickDistractors(correct, n) {
   const sameCat = PHRASES.filter(p => p.cat === correct.cat && p.id !== correct.id);
   const pool = sameCat.length >= n ? sameCat : PHRASES.filter(p => p.id !== correct.id);
@@ -236,35 +310,116 @@ function pickDistractors(correct, n) {
 }
 
 const host = document.getElementById('hor-card-host');
-const skipBtn = document.getElementById('hor-skip-btn');
+const deckList = document.getElementById('hor-deck-list');
+const deckTotal = document.getElementById('hor-deck-total');
+const refreshBtn = document.getElementById('hor-refresh-deck');
+const toast = document.getElementById('hor-toast');
+
+if (refreshBtn) refreshBtn.addEventListener('click', newDeck);
+
+function showToast(msg) {
+  toast.textContent = msg;
+  toast.classList.add('show');
+  clearTimeout(showToast._t);
+  showToast._t = setTimeout(() => toast.classList.remove('show'), 2400);
+}
 
 function refreshHeaderStats() {
   const scoreEl = document.getElementById('hor-score');
   const accEl   = document.getElementById('hor-accuracy');
+  const bankEl  = document.getElementById('hor-bank-count');
+  const queueLenEl = document.getElementById('hor-queue-len');
+  const sessionStat = document.getElementById('hor-stat-session');
   const accStat = document.getElementById('hor-stat-acc');
-  const playedStat = document.getElementById('hor-stat-played');
   if (scoreEl) scoreEl.textContent = sessionScore + '/' + sessionTotal;
+  if (sessionStat) sessionStat.textContent = sessionScore + '/' + sessionTotal;
+  if (queueLenEl) queueLenEl.textContent = Math.max(0, queue.length - qIdx);
+  if (bankEl) bankEl.textContent = PHRASES.length;
   const lifePct = progress.seen ? Math.round((progress.correct / progress.seen) * 100) : null;
   if (accEl) accEl.textContent = lifePct === null ? '—' : (lifePct + '%');
   if (accStat) accStat.textContent = lifePct === null ? '—' : (lifePct + '%');
-  if (playedStat) playedStat.textContent = progress.seen;
 }
 
-function nextQuestion() {
-  const correct = pickPhrase();
+function renderDeckList() {
+  if (!deckList) return;
+  if (deckTotal) deckTotal.textContent = '(' + queue.length + ')';
+  deckList.innerHTML = queue.map((p, i) => {
+    const cls = ['deck-item'];
+    const result = sessionResults[p.id];
+    if (i === qIdx) cls.push('active');
+    if (result) {
+      cls.push('done', result);
+    }
+    const mark = result === 'correct' ? '✓' : (result === 'wrong' ? '✗' : '');
+    return (
+      '<button type="button" class="' + cls.join(' ') + '" data-idx="' + i + '">' +
+        '<span class="deck-num">' + (i + 1) + '</span>' +
+        '<span class="deck-text">' +
+          '<span class="deck-da">' + escapeHtml(p.da) + '</span>' +
+          '<span class="deck-en">' + escapeHtml(p.en) + '</span>' +
+          '<span class="deck-cat">' + escapeHtml(p.cat) + '</span>' +
+        '</span>' +
+        '<span class="deck-mark" aria-hidden="true">' + mark + '</span>' +
+      '</button>'
+    );
+  }).join('');
+  deckList.querySelectorAll('.deck-item').forEach(btn => {
+    btn.addEventListener('click', () => {
+      qIdx = parseInt(btn.dataset.idx, 10);
+      renderQuestion();
+    });
+  });
+  const active = deckList.querySelector('.deck-item.active');
+  if (active) active.scrollIntoView({ block: 'nearest', behavior: 'smooth' });
+}
+
+function newDeck() {
+  queue = shuffleDeck(PHRASES);
+  qIdx = 0;
+  sessionScore = 0;
+  sessionTotal = 0;
+  sessionResults = {};
+  renderQuestion();
+  showToast('Deck shuffled — ' + queue.length + ' phrases');
+}
+
+function skipQuestion() {
+  qIdx++;
+  renderQuestion();
+}
+
+function renderQuestion() {
+  refreshHeaderStats();
+  renderDeckList();
+  if (qIdx >= queue.length) {
+    const pct = sessionTotal ? Math.round((sessionScore / sessionTotal) * 100) : 0;
+    host.innerHTML =
+      '<div class="session-done">' +
+        '<h2>Deck complete</h2>' +
+        '<p>You scored ' + sessionScore + '/' + sessionTotal + ' (' + pct + '%) this round.</p>' +
+        '<button class="btn" id="hor-restart">↻ New deck</button>' +
+      '</div>';
+    host.querySelector('#hor-restart').addEventListener('click', newDeck);
+    return;
+  }
+
+  const correct = queue[qIdx];
   const distractors = pickDistractors(correct, 3);
   const options = pickRandom([correct, ...distractors], 4);
   host.innerHTML =
     '<div class="listen-card">' +
       '<span class="badge-cat">' + escapeHtml(correct.cat) + '</span>' +
-      '<span class="badge-score">Session ' + sessionScore + '/' + sessionTotal + '</span>' +
+      '<span class="badge-score">' + (qIdx + 1) + ' / ' + queue.length + '</span>' +
       '<div class="listen-prompt">What did you hear?</div>' +
       '<button class="play-btn" id="hor-play-btn" aria-label="Replay Danish audio">▶</button>' +
       '<div class="answers" id="hor-answers">' +
         options.map(o => '<button class="answer-btn" data-correct="' + (o.id === correct.id ? '1' : '0') + '" data-id="' + o.id + '">' + escapeHtml(o.en) + '</button>').join('') +
       '</div>' +
-      '<div class="next-row" id="hor-next-row"></div>' +
+      '<div class="next-row" id="hor-next-row">' +
+        '<button class="skip-btn" id="hor-skip-btn" type="button">Skip →</button>' +
+      '</div>' +
     '</div>';
+
   const playBtn = host.querySelector('#hor-play-btn');
   function playOnce() {
     audioUnlocked = true;
@@ -277,6 +432,8 @@ function nextQuestion() {
   playBtn.addEventListener('click', playOnce);
   if (audioUnlocked) setTimeout(playOnce, 250);
 
+  host.querySelector('#hor-skip-btn').addEventListener('click', skipQuestion);
+
   const answerBtns = host.querySelectorAll('.answer-btn');
   const nextRow = host.querySelector('#hor-next-row');
   answerBtns.forEach(b => {
@@ -286,6 +443,7 @@ function nextQuestion() {
       sessionTotal++;
       progress.seen++;
       seenCounts[correct.id] = (seenCounts[correct.id] || 0) + 1;
+      sessionResults[correct.id] = isCorrect ? 'correct' : 'wrong';
       if (isCorrect) {
         sessionScore++;
         progress.correct++;
@@ -298,17 +456,24 @@ function nextQuestion() {
       }
       answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
       saveProgress(progress); saveSeen(seenCounts);
-      const fb = isCorrect ? '<span class="feedback correct">Correct — well heard.</span>' : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
-      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn">Next →</button>';
-      nextRow.querySelector('#hor-next-btn').addEventListener('click', nextQuestion);
+      const fb = isCorrect
+        ? '<span class="feedback correct">Correct — well heard.</span>'
+        : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
+      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn" type="button">Next →</button>';
+      nextRow.querySelector('#hor-next-btn').addEventListener('click', () => {
+        qIdx++;
+        renderQuestion();
+      });
       refreshHeaderStats();
+      renderDeckList();
     });
   });
   refreshHeaderStats();
 }
 
-skipBtn.addEventListener('click', nextQuestion);
-nextQuestion();
+queue = shuffleDeck(PHRASES);
+qIdx = 0;
+renderQuestion();
 </script>
 
 </body>

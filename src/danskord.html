@@ -24,13 +24,16 @@
     --radius: 12px;
     --card-radius: 16px;
     --sidebar-w: 220px;
-    --header-h: 58px;
+    --toolbar-main-h: 58px;
+    --subbar-h: 0px;
+    --header-h: calc(var(--toolbar-main-h) + var(--subbar-h));
   }
   * { box-sizing: border-box; margin: 0; padding: 0; }
   body { background: var(--bg); color: var(--text); font-family: 'Inter', sans-serif; font-size: 15px; line-height: 1.6; min-height: 100vh; display: flex; flex-direction: column; }
 
   /* HEADER */
-  header { height: var(--header-h); border-bottom: 1px solid var(--border); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; }
+  header { border-bottom: 1px solid var(--border); position: fixed; top: 0; left: 0; right: 0; background: rgba(14,17,23,0.95); backdrop-filter: blur(12px); z-index: 200; display: flex; flex-direction: column; align-items: stretch; }
+  .toolbar-main { height: var(--toolbar-main-h); padding: 0 24px; display: flex; align-items: center; justify-content: space-between; flex-shrink: 0; }
   .logo { font-family: 'DM Serif Display', serif; font-size: 22px; letter-spacing: -0.5px; color: var(--text); }
   .logo span { color: var(--accent); }
   .header-right { display: flex; align-items: center; gap: 10px; }
@@ -64,12 +67,17 @@
 
   /* MAIN */
   .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
-  .topbar { position: sticky; top: var(--header-h); z-index: 90; background: var(--surface); border-bottom: 1px solid var(--border); padding: 12px 24px; display: flex; align-items: center; gap: 10px; }
+  .topbar { background: var(--surface); border-top: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
   .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none; }
   input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 7px 10px 7px 32px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
   input[type="text"]:focus { border-color: var(--accent); }
   input[type="text"]::placeholder { color: var(--text-dim); }
+
+  /* Category picker — mobile dropdown (sidebar on desktop) */
+  .cat-select { display: none; }
+  header .topbar { display: none; }
+  .main > .topbar { display: flex; position: sticky; top: var(--header-h); z-index: 90; border-top: none; border-bottom: 1px solid var(--border); padding: 12px 24px; }
 
   /* PROGRESS */
   .progress-bar-wrap { padding: 8px 24px 0; background: var(--surface); border-bottom: 1px solid var(--border); }
@@ -87,20 +95,57 @@
 
   /* FLIP CARD */
   .card-wrap { perspective: 800px; height: 148px; cursor: pointer; }
+  body:not(.mode-kids):not(.mode-verbs) .card-wrap { height: 178px; }
   .card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1); }
   .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
   .card-face { position: absolute; width: 100%; height: 100%; border-radius: var(--card-radius); backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 14px; border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s; }
   .card-wrap:hover .card-face { border-color: #3a4a66; box-shadow: 0 4px 20px rgba(0,0,0,0.3); }
   .card-front { background: var(--card-front); }
-  .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; }
+  .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; justify-content: flex-start; padding: 28px 12px 12px; }
   .card-wrap.flipped .card-back { border-color: var(--accent); }
   .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
   .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
   .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
-  .adult-speaker-btn { position: absolute; top: 7px; left: 9px; width: 24px; height: 24px; border-radius: 50%; background: transparent; border: 1px solid var(--border); color: var(--text-dim); font-size: 11px; cursor: pointer; display: flex; align-items: center; justify-content: center; padding: 0; transition: all 0.15s; line-height: 1; }
-  .adult-speaker-btn:hover { border-color: var(--accent); color: var(--accent2); transform: scale(1.1); }
-  .adult-speaker-btn:active { transform: scale(0.92); }
-  .english-word { font-size: 17px; font-weight: 500; color: var(--accent2); text-align: center; }
+  .card-cat-icon {
+    position: absolute;
+    top: 8px;
+    right: 10px;
+    font-size: 24px;
+    line-height: 1;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.35));
+  }
+  .adult-speaker-btn {
+    position: absolute;
+    top: 8px;
+    left: 8px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(79, 142, 247, 0.18);
+    border: 1px solid rgba(79, 142, 247, 0.55);
+    color: var(--accent2);
+    font-size: 14px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    transition: all 0.15s;
+    line-height: 1;
+    z-index: 2;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+  }
+  .card-back .adult-speaker-btn {
+    background: rgba(125, 211, 252, 0.16);
+    border-color: rgba(125, 211, 252, 0.5);
+    color: #b8e4ff;
+  }
+  .adult-speaker-btn:hover { border-color: var(--accent2); background: rgba(79, 142, 247, 0.28); transform: scale(1.08); }
+  .adult-speaker-btn:active { transform: scale(0.94); }
+  .english-word { font-size: 16px; font-weight: 500; color: var(--accent2); text-align: center; line-height: 1.25; margin-bottom: 6px; }
+  .word-example { width: 100%; text-align: center; padding: 0 2px; }
+  .example-da { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--text); line-height: 1.35; font-style: italic; }
+  .example-en { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--text-muted); margin-top: 3px; line-height: 1.3; }
   .known-dot { position: absolute; bottom: 9px; right: 11px; width: 16px; height: 16px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #0a2010; opacity: 0; transition: opacity 0.25s; }
   .card-wrap.known .known-dot { opacity: 1; }
 
@@ -204,8 +249,9 @@
   body.mode-kids .streak-badge.celebrate { animation: streakPop 0.6s cubic-bezier(0.34, 1.56, 0.64, 1); }
   @keyframes streakPop { 0% { transform: scale(1); } 40% { transform: scale(1.35) rotate(-8deg); } 70% { transform: scale(1.1) rotate(4deg); } 100% { transform: scale(1) rotate(0); } }
 
-  /* Confetti */
+  /* Confetti — also defined globally in portal build (particles live on body). */
   .confetti-piece { position: fixed; width: 10px; height: 14px; pointer-events: none; z-index: 9999; will-change: transform, opacity; }
+  .confetti-piece.confetti-star { width: auto; height: auto; line-height: 1; background: transparent !important; }
   @keyframes confettiFall { 0% { transform: translate3d(0,0,0) rotate(0); opacity: 1; } 100% { transform: translate3d(var(--cx,40px), var(--cy,300px), 0) rotate(720deg); opacity: 0; } }
 
   /* FAB hidden in kids mode (kids tap cards directly) */
@@ -233,11 +279,55 @@
   .modal-confirm:hover { opacity: 0.85; }
 
   @media (max-width: 700px) {
-    :root { --sidebar-w: 0px; }
+    :root {
+      --sidebar-w: 0px;
+      --subbar-h: 44px;
+      --header-h: calc(var(--toolbar-main-h) + var(--subbar-h));
+    }
     .sidebar { display: none; }
+    .main > .topbar { display: none; }
+    header .topbar { display: flex; }
+    .toolbar-main { padding: 0 12px; min-height: 48px; }
+    .toolbar-main .stat-pill { display: none; }
+    .toolbar-main .logo { font-size: 18px; }
+    .toolbar-main .header-right { gap: 4px; flex-wrap: nowrap; }
+    .toolbar-main .mode-toggle button { padding: 4px 10px; font-size: 11px; }
+    .cat-select {
+      display: block;
+      flex: 0 1 auto;
+      width: auto;
+      min-width: 0;
+      max-width: 42%;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      color: var(--text);
+      padding: 7px 28px 7px 10px;
+      font-family: 'Inter', sans-serif;
+      font-size: 13px;
+      outline: none;
+      cursor: pointer;
+      appearance: none;
+      -webkit-appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%238b9cb8' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 8px center;
+    }
+    .cat-select:focus { border-color: var(--accent); }
+    body.mode-kids .cat-select {
+      background-color: #fff;
+      border: 2px solid #ffd9a8;
+      border-radius: 14px;
+      font-family: 'Fredoka', sans-serif;
+      color: #2d2a4a;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' fill='none' stroke='%23ff7a59' stroke-width='2' viewBox='0 0 24 24'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+    }
     .main { margin-left: 0; }
+    header .topbar { padding: 6px 12px 8px; gap: 8px; background: rgba(0, 0, 0, 0.12); }
+    body.mode-kids header .topbar { background: rgba(255, 255, 255, 0.35); }
+    .search-wrap { flex: 1; max-width: none; min-width: 0; }
+    input[type="text"] { padding: 8px 10px 8px 32px; font-size: 16px; }
     .grid-container { padding: 10px 12px 80px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
-    .topbar { padding: 10px 12px; }
     .section-heading { padding: 14px 12px 2px; }
     .progress-bar-wrap { padding: 6px 12px 0; }
     .stat-pill { display: none; }
@@ -247,20 +337,31 @@
 <body>
 
 <header>
-  <div class="logo">dansk<span>ord</span></div>
-  <div class="header-right">
-    <div class="mode-toggle">
-      <button id="mode-words-btn" class="active" onclick="setMode('words')">Words</button>
-      <button id="mode-verbs-btn" onclick="setMode('verbs')">Verbs</button>
-      <button id="mode-kids-btn" onclick="setMode('kids')">🌟 Kids</button>
+  <div class="toolbar-main">
+    <div class="logo">dansk<span>ord</span></div>
+    <div class="header-right">
+      <div class="mode-toggle">
+        <button id="mode-words-btn" class="active" onclick="setMode('words')">Words</button>
+        <button id="mode-verbs-btn" onclick="setMode('verbs')">Verbs</button>
+        <button id="mode-kids-btn" onclick="setMode('kids')">🌟 Kids</button>
+      </div>
+      <div class="streak-badge" id="streak-badge"><span>🔥</span><span id="streak-count">0</span></div>
+      <div class="stat-pill">Total <b id="total-count">1000</b></div>
+      <div class="stat-pill">Showing <b id="showing-count">1000</b></div>
+      <div class="stat-pill">Known <b id="known-count">0</b></div>
+      <button class="btn btn-shuffle" onclick="shuffle()">⇄ Shuffle</button>
+      <button class="btn" id="known-filter-btn" onclick="toggleKnownFilter()">★ Known</button>
+      <button class="btn btn-reset" onclick="openResetModal()">↺ Reset</button>
     </div>
-    <div class="streak-badge" id="streak-badge"><span>🔥</span><span id="streak-count">0</span></div>
-    <div class="stat-pill">Total <b id="total-count">1000</b></div>
-    <div class="stat-pill">Showing <b id="showing-count">1000</b></div>
-    <div class="stat-pill">Known <b id="known-count">0</b></div>
-    <button class="btn btn-shuffle" onclick="shuffle()">⇄ Shuffle</button>
-    <button class="btn" id="known-filter-btn" onclick="toggleKnownFilter()">★ Known</button>
-    <button class="btn btn-reset" onclick="openResetModal()">↺ Reset</button>
+  </div>
+  <div class="topbar">
+    <select id="cat-select" class="cat-select" aria-label="Category" onchange="selectCat(this.value)"></select>
+    <div class="search-wrap">
+      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
+      </svg>
+      <input type="text" id="search" placeholder="Search Danish or English…">
+    </div>
   </div>
 </header>
 
@@ -286,7 +387,7 @@
         <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
-        <input type="text" id="search" placeholder="Search Danish or English…">
+        <input type="text" id="search-desktop" placeholder="Search Danish or English…">
       </div>
     </div>
     <div class="progress-bar-wrap">
@@ -2304,12 +2405,198 @@ function itemLabel() {
   return 'word';
 }
 
+function cap(s) {
+  return s.charAt(0).toUpperCase() + s.slice(1);
+}
+
+function enForSentence(en, type) {
+  let s = en.split('/')[0].split(',')[0].trim();
+  s = s.replace(/\([^)]*\)/g, '').trim();
+  if (type === 'verb') s = s.replace(/^to\s+/i, '');
+  return s;
+}
+
+function daForSentence(da, type) {
+  if (type === 'verb') return da.replace(/^at\s+/, '');
+  if (da.includes(' / ')) return da.split(' / ')[0].trim();
+  return da;
+}
+
+const WORD_EXAMPLES = {
+  // pronouns
+  'jeg': ['Jeg bor i Danmark.', 'I live in Denmark.'],
+  'du': ['Du er sød.', 'You are sweet.'],
+  'han': ['Han arbejder her.', 'He works here.'],
+  'hun': ['Hun er læge.', 'She is a doctor.'],
+  'det': ['Det regner.', 'It is raining.'],
+  'den': ['Den er fin.', 'It is nice.'],
+  'vi': ['Vi spiser nu.', 'We are eating now.'],
+  'I': ['I skal komme i morgen.', 'You must come tomorrow.'],
+  'de': ['De kommer snart.', 'They are coming soon.'],
+  'mig': ['Han ser mig.', 'He sees me.'],
+  'dig': ['Jeg elsker dig.', 'I love you.'],
+  'ham': ['Jeg kender ham.', 'I know him.'],
+  'hende': ['Jeg kender hende.', 'I know her.'],
+  'dem': ['Jeg kender dem.', 'I know them.'],
+  'os': ['De inviterer os.', 'They invite us.'],
+  'jer': ['Jeg ser jer.', 'I see you.'],
+  'min': ['Det er min bil.', 'It is my car.'],
+  'din': ['Det er din bog.', 'It is your book.'],
+  'hans': ['Det er hans hus.', 'It is his house.'],
+  'hendes': ['Det er hendes taske.', 'It is her bag.'],
+  'vores': ['Det er vores hund.', 'It is our dog.'],
+  'deres': ['Det er deres problem.', 'It is their problem.'],
+  'sin / sit': ['Hun elsker sin hund.', 'She loves her dog.'],
+  'denne': ['Denne bog er god.', 'This book is good.'],
+  'dette': ['Dette er mit hjem.', 'This is my home.'],
+  'disse': ['Disse sko er nye.', 'These shoes are new.'],
+  'selv': ['Jeg gør det selv.', 'I do it myself.'],
+  'hinanden': ['De hjælper hinanden.', 'They help each other.'],
+  'man': ['Man skal være høflig.', 'One should be polite.'],
+  'enhver': ['Enhver er velkommen.', 'Everyone is welcome.'],
+  'begge': ['Begge er klar.', 'Both are ready.'],
+  'alle': ['Alle er her.', 'Everyone is here.'],
+  'ingen': ['Ingen er hjemme.', 'Nobody is home.'],
+  'noget': ['Jeg har noget til dig.', 'I have something for you.'],
+  'nogen': ['Er der nogen hjemme?', 'Is anyone home?'],
+  'intet': ['Der er intet problem.', 'There is no problem.'],
+  'sig': ['Hun vasker sig.', 'She washes herself.'],
+  'hvad': ['Hvad er det?', 'What is it?'],
+  'hvem': ['Hvem er det?', 'Who is it?'],
+  // conjunctions
+  'og': ['Jeg kan lide kaffe og te.', 'I like coffee and tea.'],
+  'eller': ['Kaffe eller te?', 'Coffee or tea?'],
+  'men': ['Jeg er træt, men glad.', 'I am tired but happy.'],
+  'fordi': ['Jeg er glad, fordi det er fredag.', "I'm happy because it's Friday."],
+  'hvis': ['Jeg kommer, hvis jeg kan.', 'I will come if I can.'],
+  'når': ['Jeg ringer, når jeg er klar.', "I'll call when I'm ready."],
+  'at': ['Jeg ved, at du kommer.', 'I know that you are coming.'],
+  'som': ['Hun er læge, som jeg kender.', 'She is a doctor whom I know.'],
+  'selvom': ['Jeg går, selvom det regner.', 'I go even though it is raining.'],
+  'mens': ['Jeg læser, mens hun sover.', 'I read while she sleeps.'],
+  // prepositions
+  'i': ['Jeg er i København.', 'I am in Copenhagen.'],
+  'på': ['Bogen ligger på bordet.', 'The book is on the table.'],
+  'til': ['Jeg går til arbejde.', 'I go to work.'],
+  'fra': ['Jeg kommer fra Danmark.', 'I come from Denmark.'],
+  'med': ['Jeg går med dig.', 'I go with you.'],
+  'uden': ['Kaffe uden sukker.', 'Coffee without sugar.'],
+  'over': ['Fuglen flyver over huset.', 'The bird flies over the house.'],
+  'under': ['Katten er under bordet.', 'The cat is under the table.'],
+  'ved': ['Jeg bor ved havet.', 'I live by the sea.'],
+  'mellem': ['Bussen er mellem husene.', 'The bus is between the houses.'],
+  'bag': ['Haven er bag huset.', 'The garden is behind the house.'],
+  'foran': ['Bilen står foran huset.', 'The car is in front of the house.'],
+  'inden': ['Kom inden klokken otte.', 'Come before eight o\'clock.'],
+  'uden for': ['De venter uden for.', 'They are waiting outside.'],
+  'mod': ['Vi går mod centrum.', 'We walk towards the centre.'],
+  'efter': ['Vi spiser efter filmen.', 'We eat after the film.'],
+  'om': ['Vi taler om vejret.', 'We talk about the weather.'],
+  'af': ['Det er lavet af træ.', 'It is made of wood.'],
+  'langs': ['Vi går langs floden.', 'We walk along the river.'],
+  'gennem': ['Vi kører gennem byen.', 'We drive through the city.'],
+  // common adverbs & particles
+  'ikke': ['Det er ikke rigtigt.', 'That is not right.'],
+  'også': ['Jeg kommer også.', 'I am coming too.'],
+  'bare': ['Det er bare en idé.', 'It is just an idea.'],
+  'meget': ['Det er meget godt.', 'It is very good.'],
+  'lidt': ['Det er lidt koldt.', 'It is a little cold.'],
+  'mere': ['Jeg vil have mere.', 'I want more.'],
+  'mindre': ['Det er mindre end før.', 'It is less than before.'],
+  'her': ['Jeg er her.', 'I am here.'],
+  'der': ['Der er mange mennesker.', 'There are many people.'],
+  'hvor': ['Hvor bor du?', 'Where do you live?'],
+  'hvordan': ['Hvordan har du det?', 'How are you?'],
+  'hvorfor': ['Hvorfor græder du?', 'Why are you crying?'],
+  'hvornår': ['Hvornår kommer du?', 'When are you coming?'],
+  'ja': ['Ja, tak!', 'Yes, please!'],
+  'nej': ['Nej, tak.', 'No, thank you.'],
+  'måske': ['Måske kommer jeg.', 'Maybe I will come.'],
+  'selvfølgelig': ['Selvfølgelig kommer jeg.', 'Of course I am coming.'],
+  'desværre': ['Desværre kan jeg ikke.', 'Unfortunately I cannot.'],
+  'heldigvis': ['Heldigvis er det tørt.', 'Fortunately it is dry.'],
+  // phrases
+  'hej': ['Hej!', 'Hi!'],
+  'godmorgen': ['Godmorgen!', 'Good morning!'],
+  'goddag': ['Goddag!', 'Good day!'],
+  'godaften': ['Godaften!', 'Good evening!'],
+  'godnat': ['Godnat!', 'Good night!'],
+  'farvel': ['Farvel!', 'Goodbye!'],
+  'hej hej': ['Hej hej!', 'Bye bye!'],
+  'tak': ['Tak!', 'Thank you!'],
+  'mange tak': ['Mange tak!', 'Thank you very much!'],
+  'værsgo': ['Værsgo!', 'Here you go!'],
+  'undskyld': ['Undskyld!', 'Excuse me!'],
+  'det er okay': ['Det er okay.', "That's okay."],
+  'hvad hedder du?': ['Hvad hedder du?', "What's your name?"],
+  'jeg hedder…': ['Jeg hedder Anna.', 'My name is Anna.'],
+  'hvordan har du det?': ['Hvordan har du det?', 'How are you?'],
+  'godt, tak': ['Godt, tak.', 'Fine, thanks.'],
+  'skål': ['Skål!', 'Cheers!'],
+  'tillykke': ['Tillykke!', 'Congratulations!'],
+  'held og lykke': ['Held og lykke!', 'Good luck!'],
+  'på gensyn': ['På gensyn!', 'See you again!'],
+  'velbekomme': ['Velbekomme!', 'Enjoy your meal!'],
+  'det ved jeg ikke': ['Det ved jeg ikke.', "I don't know."],
+  'kan du hjælpe mig?': ['Kan du hjælpe mig?', 'Can you help me?'],
+  'forstår du?': ['Forstår du?', 'Do you understand?'],
+  'jeg forstår ikke': ['Jeg forstår ikke.', "I don't understand."],
+};
+
+const TIME_ADV = new Set([
+  'i dag', 'i går', 'i morgen', 'nu', 'snart', 'allerede', 'endnu',
+  'for nylig', 'tidligere', 'siden', 'derefter', 'derfor',
+]);
+const FREQ_ADV = new Set([
+  'ofte', 'altid', 'aldrig', 'nogle gange', 'næsten', 'kun', 'alligevel',
+  'egentlig', 'faktisk', 'helt', 'ellers',
+]);
+
+function buildWordExample(w) {
+  if (w.exDa && w.exEn) return { da: w.exDa, en: w.exEn };
+  const key = w.da;
+  if (WORD_EXAMPLES[key]) return { da: WORD_EXAMPLES[key][0], en: WORD_EXAMPLES[key][1] };
+
+  const daWord = daForSentence(w.da, w.type);
+  const enWord = enForSentence(w.en, w.type);
+
+  switch (w.type) {
+    case 'verb':
+      return { da: `Jeg kan ${daWord}.`, en: `I can ${enWord}.` };
+    case 'adj':
+      return { da: `Det er meget ${daWord}.`, en: `It is very ${enWord}.` };
+    case 'adv':
+      if (TIME_ADV.has(w.da))
+        return { da: `Jeg gør det ${daWord}.`, en: `I'll do it ${enWord}.` };
+      if (FREQ_ADV.has(w.da))
+        return { da: `Jeg går ${daWord} en tur.`, en: `I ${enWord} go for a walk.` };
+      return { da: `Det er ${daWord} interessant.`, en: `It is ${enWord} interesting.` };
+    case 'phrase':
+      return { da: cap(daWord) + '!', en: cap(enWord) + '!' };
+    default:
+      if (w.cat === 'Days & Months')
+        return { da: `Vi ses ${daWord}.`, en: `See you on ${enWord}.` };
+      return { da: `Jeg kan lide ${daWord}.`, en: `I like ${enWord}.` };
+  }
+}
+
+function bindAdultSpeaker(wrap, spoken) {
+  wrap.querySelectorAll('.adult-speaker-btn').forEach(btn => {
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      speak(spoken);
+    });
+  });
+}
+
 // ── BUILD SIDEBAR ─────────────────────────────────────────────────
 const sidebar = document.getElementById('sidebar');
+const catSelect = document.getElementById('cat-select');
 
 function buildSidebar() {
   // Clear all but the title row
   [...sidebar.querySelectorAll('.cat-item, .cat-divider')].forEach(n => n.remove());
+  if (catSelect) catSelect.innerHTML = '';
   const data = dataset();
   const cats = ['All', ...[...new Set(data.map(w => w.cat))]];
   cats.forEach((cat, i) => {
@@ -2326,19 +2613,28 @@ function buildSidebar() {
     item.innerHTML = `<span class="cat-icon">${meta.icon}</span><span class="cat-name">${cat}</span><span class="cat-count">${count}</span>`;
     item.addEventListener('click', () => selectCat(cat));
     sidebar.appendChild(item);
+    if (catSelect) {
+      const opt = document.createElement('option');
+      opt.value = cat;
+      opt.textContent = `${meta.icon} ${cat} (${count})`;
+      catSelect.appendChild(opt);
+    }
   });
+  if (catSelect) catSelect.value = activeCat;
 }
 
 function selectCat(cat) {
   activeCat = cat;
   document.querySelectorAll('.cat-item').forEach(el =>
     el.classList.toggle('active', el.dataset.cat === cat));
+  if (catSelect && catSelect.value !== cat) catSelect.value = cat;
   allFlipped = false;
   applyFilters();
 }
 
 // ── MODE TOGGLE ───────────────────────────────────────────────────
 function setMode(newMode) {
+  if (document.body.classList.contains('portal-kids') && newMode !== 'kids') return;
   if (newMode === mode) {
     applyModeClasses();
     return;
@@ -2352,7 +2648,7 @@ function setMode(newMode) {
   searchTerm = '';
   onlyKnown = false;
   allFlipped = false;
-  document.getElementById('search').value = '';
+  clearSearchInputs();
   document.getElementById('known-filter-btn').classList.remove('active');
   applyModeClasses();
   refreshStreakBadge();
@@ -2450,12 +2746,11 @@ function renderCards(list) {
             <div class="verb-en">${w.en}</div>
           </div>
         </div>`;
-      wrap.querySelector('.adult-speaker-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        speak(spoken);
-      });
+      bindAdultSpeaker(wrap, spoken);
       wrap.addEventListener('click', () => toggleCard(wrap, w));
     } else {
+      const ex = buildWordExample(w);
+      const catIcon = (catMeta()[w.cat] || { icon: '📁' }).icon;
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
@@ -2466,14 +2761,17 @@ function renderCards(list) {
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
-            <span class="card-num">${w.type}</span>
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <span class="card-cat-icon" aria-hidden="true">${catIcon}</span>
             <div class="english-word">${w.en}</div>
+            <div class="word-example">
+              <div class="example-da">${ex.da}</div>
+              <div class="example-en">${ex.en}</div>
+            </div>
+            <div class="known-dot">✓</div>
           </div>
         </div>`;
-      wrap.querySelector('.adult-speaker-btn').addEventListener('click', e => {
-        e.stopPropagation();
-        speak(w.da);
-      });
+      bindAdultSpeaker(wrap, w.da);
       wrap.addEventListener('click', () => toggleCard(wrap, w));
     }
     grid.appendChild(wrap);
@@ -2557,9 +2855,18 @@ function updateStats() {
   document.getElementById('progress-fill').style.width = pct + '%';
 }
 
-document.getElementById('search').addEventListener('input', e => {
-  searchTerm = e.target.value;
-  applyFilters();
+function clearSearchInputs() {
+  document.querySelectorAll('.topbar input[type="text"]').forEach(el => { el.value = ''; });
+}
+
+document.querySelectorAll('.topbar input[type="text"]').forEach(el => {
+  el.addEventListener('input', e => {
+    searchTerm = e.target.value;
+    document.querySelectorAll('.topbar input[type="text"]').forEach(other => {
+      if (other !== e.target) other.value = searchTerm;
+    });
+    applyFilters();
+  });
 });
 
 // ════════════════════════════════════════════════════════════════════
@@ -2628,25 +2935,32 @@ function playChime() {
 
 // ── CONFETTI ──────────────────────────────────────────────────────
 const CONFETTI_COLORS = ['#ff7a59','#ffd966','#7accc7','#c799f5','#88b8e8','#a8d995','#ff9bcc'];
+const CONFETTI_STARS = ['⭐', '✨', '🌟'];
 function fireConfetti(originEl) {
   const rect = originEl.getBoundingClientRect();
   const cx = rect.left + rect.width / 2;
   const cy = rect.top + rect.height / 2;
-  const N = 18;
+  const N = 24;
   for (let i = 0; i < N; i++) {
     const piece = document.createElement('div');
     piece.className = 'confetti-piece';
     const angle = (Math.PI * 2 * i) / N + (Math.random() - 0.5) * 0.4;
-    const dist = 90 + Math.random() * 80;
+    const dist = 90 + Math.random() * 100;
     const dx = Math.cos(angle) * dist;
-    const dy = Math.sin(angle) * dist - 30; // upward bias
+    const dy = Math.sin(angle) * dist - 40;
     piece.style.left = cx + 'px';
     piece.style.top = cy + 'px';
     piece.style.setProperty('--cx', dx + 'px');
     piece.style.setProperty('--cy', dy + 'px');
-    piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
     piece.style.animation = `confettiFall ${800 + Math.random() * 400}ms ease-out forwards`;
-    piece.style.borderRadius = (Math.random() > 0.5 ? '50%' : '2px');
+    if (i % 3 === 0) {
+      piece.classList.add('confetti-star');
+      piece.textContent = CONFETTI_STARS[i % CONFETTI_STARS.length];
+      piece.style.fontSize = (16 + Math.random() * 12) + 'px';
+    } else {
+      piece.style.background = CONFETTI_COLORS[i % CONFETTI_COLORS.length];
+      piece.style.borderRadius = (Math.random() > 0.5 ? '50%' : '2px');
+    }
     document.body.appendChild(piece);
     setTimeout(() => piece.remove(), 1300);
   }
