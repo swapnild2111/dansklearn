@@ -11,7 +11,7 @@ Live: https://swapnild2111.github.io/dansklearn/
 ## SEO, analytics & Search Console
 
 The portal ships with built-in SEO and optional Google integrations. Configure
-them in `site.config.json` (copy from `site.config.example.json`), then rebuild:
+them in `site.config.json`, then rebuild:
 
 ```bash
 python3 build.py
@@ -70,8 +70,7 @@ read from `localStorage`.
 dansklearn/
 ├── README.md              # this file
 ├── build.py               # assembles index.html from the source files in src/
-├── site.config.json       # GA4 + Search Console tokens (not committed with secrets if you prefer)
-├── site.config.example.json
+├── site.config.json       # GA4 + Search Console tokens
 ├── index.html             # build output — what users actually open
 ├── 404.html               # same SPA shell — GitHub Pages fallback for clean URLs
 ├── robots.txt             # build output — crawler rules + sitemap link
