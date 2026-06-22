@@ -4,7 +4,48 @@ A growing portal for learning Danish — vocabulary, writing, listening,
 speaking, and translation. Five modules in one single-page app, no
 framework, no build step beyond a small Python script.
 
-Live: https://swapnild2111.github.io/dansklearn/ *(if GitHub Pages is enabled)*
+Live: https://swapnild2111.github.io/dansklearn/
+
+---
+
+## SEO, analytics & Search Console
+
+The portal ships with built-in SEO and optional Google integrations. Configure
+them in `site.config.json` (copy from `site.config.example.json`), then rebuild:
+
+```bash
+python3 build.py
+```
+
+| Key | Purpose |
+|---|---|
+| `gaMeasurementId` | GA4 measurement ID (`G-XXXXXXXXXX`) for traffic analytics |
+| `gscVerification` | HTML-tag verification token from Google Search Console |
+
+### What the build generates
+
+- **Per-route meta** — title, description, canonical URL (updated on SPA navigation)
+- **Open Graph & Twitter Card** tags for link previews
+- **JSON-LD** structured data (`WebSite` + `WebApplication`)
+- **`robots.txt`** — allows crawlers and points to the sitemap
+- **`sitemap.xml`** — all six public routes (`/`, `/ord`, `/skriv`, …)
+- **`og-image.svg`** — social preview image (1200×630)
+
+### Google Analytics 4
+
+1. In [Google Analytics](https://analytics.google.com/), create a **GA4 property**.
+2. Add a **Web** data stream for `https://swapnild2111.github.io/dansklearn/`.
+3. Copy the **Measurement ID** (`G-…`) into `site.config.json` → `gaMeasurementId`.
+4. Run `python3 build.py`, commit, and push. Page views are tracked on each route change.
+
+### Google Search Console
+
+1. Open [Google Search Console](https://search.google.com/search-console).
+2. Add a **URL-prefix** property: `https://swapnild2111.github.io/dansklearn/`
+3. Choose **HTML tag** verification and copy the `content="…"` value.
+4. Paste it into `site.config.json` → `gscVerification`.
+5. Rebuild, push, then click **Verify** in Search Console.
+6. Submit the sitemap: `https://swapnild2111.github.io/dansklearn/sitemap.xml`
 
 ---
 
@@ -29,8 +70,14 @@ read from `localStorage`.
 dansklearn/
 ├── README.md              # this file
 ├── build.py               # assembles index.html from the source files in src/
+├── site.config.json       # GA4 + Search Console tokens (not committed with secrets if you prefer)
+├── site.config.example.json
 ├── index.html             # build output — what users actually open
 ├── 404.html               # same SPA shell — GitHub Pages fallback for clean URLs
+├── robots.txt             # build output — crawler rules + sitemap link
+├── sitemap.xml            # build output — all public routes
+├── favicon.svg
+├── og-image.svg           # social preview image
 └── src/
     ├── danskord.html      # standalone flashcards app (1000 words)
     ├── danskskriv.html    # standalone Danish-typing app

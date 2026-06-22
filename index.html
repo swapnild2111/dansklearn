@@ -4,12 +4,36 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>danskLearn — Learn Danish</title>
-<meta name="description" content="Learn Danish with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one free portal.">
+<meta name="description" content="Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="danskLearn">
 <link rel="canonical" href="https://swapnild2111.github.io/dansklearn/">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="icon" href="./favicon.svg" sizes="any">
 <link rel="apple-touch-icon" href="./favicon.svg">
 <meta name="theme-color" content="#0e1117">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="danskLearn">
+<meta property="og:title" content="danskLearn — Learn Danish">
+<meta property="og:description" content="Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.">
+<meta property="og:url" content="https://swapnild2111.github.io/dansklearn/">
+<meta property="og:image" content="https://swapnild2111.github.io/dansklearn/og-image.svg">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="danskLearn — Learn Danish">
+<meta name="twitter:description" content="Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.">
+<meta name="twitter:image" content="https://swapnild2111.github.io/dansklearn/og-image.svg">
+
+<meta name="google-site-verification" content="1ufKYs6cMk2ZvBoFX1uZUQ5yGcK9OUPkWnTqvWwnMJE">
+<script type="application/ld+json">{"@context": "https://schema.org", "@graph": [{"@type": "WebSite", "@id": "https://swapnild2111.github.io/dansklearn/#website", "url": "https://swapnild2111.github.io/dansklearn/", "name": "danskLearn", "description": "Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.", "inLanguage": "en"}, {"@type": "WebApplication", "@id": "https://swapnild2111.github.io/dansklearn/#app", "name": "danskLearn", "url": "https://swapnild2111.github.io/dansklearn/", "description": "Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.", "applicationCategory": "EducationalApplication", "operatingSystem": "Any", "browserRequirements": "Requires JavaScript", "isAccessibleForFree": true, "offers": {"@type": "Offer", "price": "0", "priceCurrency": "USD"}}]}</script>
+
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-9V5FWBNZCK"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){dataLayer.push(arguments);}
+  gtag('js', new Date());
+  gtag('config', 'G-9V5FWBNZCK', { send_page_view: false });
+</script>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 
@@ -6588,14 +6612,27 @@ const Routes = {
 const useHashRouting = location.protocol === 'file:';
 const SITE_ORIGIN = 'https://swapnild2111.github.io';
 const SITE_BASE = '/dansklearn';
-const RouteMeta = {
-  home:    { title: 'danskLearn — Learn Danish', path: '/' },
-  ord:     { title: 'danskord — Danish Vocabulary | danskLearn', path: '/ord' },
-  skriv:   { title: 'danskskriv — Type Along in Danish | danskLearn', path: '/skriv' },
-  overset: { title: 'danskoversæt — Translate to Danish | danskLearn', path: '/overset' },
-  tale:    { title: 'dansktale — Speak Along | danskLearn', path: '/tale' },
-  hor:     { title: 'danskhør — Listen and Pick | danskLearn', path: '/hor' },
-};
+const GA_MEASUREMENT_ID = 'G-9V5FWBNZCK';
+const RouteMeta = {"home": {"title": "danskLearn — Learn Danish", "path": "/", "description": "Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app."}, "ord": {"title": "danskord — Danish Vocabulary | danskLearn", "path": "/ord", "description": "Learn 1000 essential Danish words and verb conjugations with flashcards. Includes a kids mode for young learners."}, "skriv": {"title": "danskskriv — Type Along in Danish | danskLearn", "path": "/skriv", "description": "Type along with fresh Danish news paragraphs. Live feedback highlights mistakes as you write."}, "overset": {"title": "danskoversæt — Translate to Danish | danskLearn", "path": "/overset", "description": "Read English paragraphs and type the Danish translation. Hints reveal the original Danish when you need help."}, "tale": {"title": "dansktale — Speak Along | danskLearn", "path": "/tale", "description": "Listen to Danish phrases and practice speaking out loud. Spaced repetition schedules what to review next."}, "hor": {"title": "danskhør — Listen and Pick | danskLearn", "path": "/hor", "description": "Listening comprehension quiz: hear a Danish phrase and pick the correct English meaning from four choices."}};
+function setMetaTag(name, content, attr) {
+  attr = attr || 'name';
+  if (!content) return;
+  let el = document.querySelector('meta[' + attr + '="' + name + '"]');
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+function trackPageView(meta) {
+  if (typeof gtag !== 'function' || !GA_MEASUREMENT_ID) return;
+  gtag('event', 'page_view', {
+    page_title: meta.title,
+    page_location: SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path),
+    page_path: meta.path,
+  });
+}
 function hrefToRoute(href) {
   if (!href) return null;
   if (href.startsWith('#')) {
@@ -6667,6 +6704,7 @@ function navigate(path, replace) {
 }
 function updateSeo(name) {
   const meta = RouteMeta[name] || RouteMeta.home;
+  const url = SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path);
   document.title = meta.title;
   let link = document.querySelector('link[rel="canonical"]');
   if (!link) {
@@ -6674,7 +6712,14 @@ function updateSeo(name) {
     link.rel = 'canonical';
     document.head.appendChild(link);
   }
-  link.href = SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path);
+  link.href = url;
+  setMetaTag('description', meta.description);
+  setMetaTag('og:title', meta.title, 'property');
+  setMetaTag('og:description', meta.description, 'property');
+  setMetaTag('og:url', url, 'property');
+  setMetaTag('twitter:title', meta.title);
+  setMetaTag('twitter:description', meta.description);
+  trackPageView(meta);
 }
 function openPortalNav() {
   document.body.classList.add('portal-nav-open');

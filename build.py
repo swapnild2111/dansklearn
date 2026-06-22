@@ -24,8 +24,10 @@ How it works:
 Re-run this whenever any of the source .html files or phrases.js change.
 """
 from __future__ import annotations
+import json
 import re
 import sys
+from datetime import date
 from pathlib import Path
 
 ROOT = Path(__file__).parent
@@ -36,8 +38,78 @@ OVERSET_PATH   = SRC / "danskoverset.html"
 TALE_PATH      = SRC / "dansktale.html"
 HOR_PATH       = SRC / "danskhor.html"
 PHRASES_PATH   = SRC / "phrases.js"
+SITE_CONFIG_PATH = ROOT / "site.config.json"
 OUT_PATH       = ROOT / "index.html"
 NOT_FOUND_PATH = ROOT / "404.html"
+ROBOTS_PATH    = ROOT / "robots.txt"
+SITEMAP_PATH   = ROOT / "sitemap.xml"
+
+SITE_ORIGIN = "https://swapnild2111.github.io"
+SITE_BASE = "/dansklearn"
+SITE_NAME = "danskLearn"
+
+ROUTES = [
+    {
+        "id": "home",
+        "path": "/",
+        "title": "danskLearn — Learn Danish",
+        "description": "Free Danish learning portal with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one app.",
+    },
+    {
+        "id": "ord",
+        "path": "/ord",
+        "title": "danskord — Danish Vocabulary | danskLearn",
+        "description": "Learn 1000 essential Danish words and verb conjugations with flashcards. Includes a kids mode for young learners.",
+    },
+    {
+        "id": "skriv",
+        "path": "/skriv",
+        "title": "danskskriv — Type Along in Danish | danskLearn",
+        "description": "Type along with fresh Danish news paragraphs. Live feedback highlights mistakes as you write.",
+    },
+    {
+        "id": "overset",
+        "path": "/overset",
+        "title": "danskoversæt — Translate to Danish | danskLearn",
+        "description": "Read English paragraphs and type the Danish translation. Hints reveal the original Danish when you need help.",
+    },
+    {
+        "id": "tale",
+        "path": "/tale",
+        "title": "dansktale — Speak Along | danskLearn",
+        "description": "Listen to Danish phrases and practice speaking out loud. Spaced repetition schedules what to review next.",
+    },
+    {
+        "id": "hor",
+        "path": "/hor",
+        "title": "danskhør — Listen and Pick | danskLearn",
+        "description": "Listening comprehension quiz: hear a Danish phrase and pick the correct English meaning from four choices.",
+    },
+]
+
+
+def load_site_config() -> dict:
+    default = {"gaMeasurementId": "", "gscVerification": ""}
+    if not SITE_CONFIG_PATH.exists():
+        return default
+    try:
+        data = json.loads(SITE_CONFIG_PATH.read_text(encoding="utf-8"))
+        if not isinstance(data, dict):
+            return default
+        return {**default, **data}
+    except (json.JSONDecodeError, OSError):
+        return default
+
+
+def site_url(path: str = "/") -> str:
+    base = SITE_ORIGIN + SITE_BASE
+    if path in ("", "/"):
+        return base + "/"
+    return base + path
+
+
+def home_route() -> dict:
+    return ROUTES[0]
 
 
 def read_source(path: Path) -> str:
@@ -262,21 +334,120 @@ def handle_at_rule(chunk: str, scope: str, *, drop_root: bool) -> str:
 
 # ─── Build the merged document ──────────────────────────────────────────────
 
-PORTAL_HEAD = """<!DOCTYPE html>
+def build_portal_head(config: dict) -> str:
+    home = home_route()
+    ga_id = (config.get("gaMeasurementId") or "").strip()
+    gsc = (config.get("gscVerification") or "").strip()
+    canonical = site_url("/")
+    og_image = site_url("/og-image.svg")
+
+    ga_block = ""
+    if ga_id:
+        ga_block = f"""
+<script async src="https://www.googletagmanager.com/gtag/js?id={ga_id}"></script>
+<script>
+  window.dataLayer = window.dataLayer || [];
+  function gtag(){{dataLayer.push(arguments);}}
+  gtag('js', new Date());
+  gtag('config', '{ga_id}', {{ send_page_view: false }});
+</script>"""
+
+    gsc_block = (
+        f'\n<meta name="google-site-verification" content="{gsc}">' if gsc else ""
+    )
+
+    json_ld = json.dumps(
+        {
+            "@context": "https://schema.org",
+            "@graph": [
+                {
+                    "@type": "WebSite",
+                    "@id": canonical + "#website",
+                    "url": canonical,
+                    "name": SITE_NAME,
+                    "description": home["description"],
+                    "inLanguage": "en",
+                },
+                {
+                    "@type": "WebApplication",
+                    "@id": canonical + "#app",
+                    "name": SITE_NAME,
+                    "url": canonical,
+                    "description": home["description"],
+                    "applicationCategory": "EducationalApplication",
+                    "operatingSystem": "Any",
+                    "browserRequirements": "Requires JavaScript",
+                    "isAccessibleForFree": True,
+                    "offers": {
+                        "@type": "Offer",
+                        "price": "0",
+                        "priceCurrency": "USD",
+                    },
+                },
+            ],
+        },
+        ensure_ascii=False,
+    )
+
+    return f"""<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>danskLearn — Learn Danish</title>
-<meta name="description" content="Learn Danish with flashcards, typing practice, translation, speaking, and listening exercises — five modules in one free portal.">
-<link rel="canonical" href="https://swapnild2111.github.io/dansklearn/">
+<title>{home["title"]}</title>
+<meta name="description" content="{home["description"]}">
+<meta name="robots" content="index, follow, max-image-preview:large">
+<meta name="author" content="{SITE_NAME}">
+<link rel="canonical" href="{canonical}">
 <link rel="icon" href="./favicon.svg" type="image/svg+xml">
 <link rel="icon" href="./favicon.svg" sizes="any">
 <link rel="apple-touch-icon" href="./favicon.svg">
 <meta name="theme-color" content="#0e1117">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="{SITE_NAME}">
+<meta property="og:title" content="{home["title"]}">
+<meta property="og:description" content="{home["description"]}">
+<meta property="og:url" content="{canonical}">
+<meta property="og:image" content="{og_image}">
+<meta property="og:locale" content="en_US">
+<meta name="twitter:card" content="summary_large_image">
+<meta name="twitter:title" content="{home["title"]}">
+<meta name="twitter:description" content="{home["description"]}">
+<meta name="twitter:image" content="{og_image}">
+{gsc_block}
+<script type="application/ld+json">{json_ld}</script>
+{ga_block}
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=Fredoka:wght@500;600;700&family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 """
+
+
+def write_robots_txt() -> None:
+    ROBOTS_PATH.write_text(
+        "User-agent: *\nAllow: /\n\nSitemap: " + site_url("/sitemap.xml") + "\n",
+        encoding="utf-8",
+    )
+
+
+def write_sitemap_xml() -> None:
+    today = date.today().isoformat()
+    urls = "\n".join(
+        "  <url>\n"
+        f"    <loc>{site_url(route['path'])}</loc>\n"
+        f"    <lastmod>{today}</lastmod>\n"
+        f"    <changefreq>{'weekly' if route['id'] == 'home' else 'monthly'}</changefreq>\n"
+        f"    <priority>{'1.0' if route['id'] == 'home' else '0.8'}</priority>\n"
+        "  </url>"
+        for route in ROUTES
+    )
+    SITEMAP_PATH.write_text(
+        '<?xml version="1.0" encoding="UTF-8"?>\n'
+        '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n'
+        f"{urls}\n"
+        "</urlset>\n",
+        encoding="utf-8",
+    )
+
 
 # Shared CSS: palette + portal header + landing page + view container.
 PORTAL_STYLE = r"""
@@ -1749,16 +1920,29 @@ const Routes = {
   '/hor': 'hor',
 };
 const useHashRouting = location.protocol === 'file:';
-const SITE_ORIGIN = 'https://swapnild2111.github.io';
-const SITE_BASE = '/dansklearn';
-const RouteMeta = {
-  home:    { title: 'danskLearn — Learn Danish', path: '/' },
-  ord:     { title: 'danskord — Danish Vocabulary | danskLearn', path: '/ord' },
-  skriv:   { title: 'danskskriv — Type Along in Danish | danskLearn', path: '/skriv' },
-  overset: { title: 'danskoversæt — Translate to Danish | danskLearn', path: '/overset' },
-  tale:    { title: 'dansktale — Speak Along | danskLearn', path: '/tale' },
-  hor:     { title: 'danskhør — Listen and Pick | danskLearn', path: '/hor' },
-};
+const SITE_ORIGIN = '__SITE_ORIGIN__';
+const SITE_BASE = '__SITE_BASE__';
+const GA_MEASUREMENT_ID = '__GA_MEASUREMENT_ID__';
+const RouteMeta = __ROUTE_META_JSON__;
+function setMetaTag(name, content, attr) {
+  attr = attr || 'name';
+  if (!content) return;
+  let el = document.querySelector('meta[' + attr + '="' + name + '"]');
+  if (!el) {
+    el = document.createElement('meta');
+    el.setAttribute(attr, name);
+    document.head.appendChild(el);
+  }
+  el.setAttribute('content', content);
+}
+function trackPageView(meta) {
+  if (typeof gtag !== 'function' || !GA_MEASUREMENT_ID) return;
+  gtag('event', 'page_view', {
+    page_title: meta.title,
+    page_location: SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path),
+    page_path: meta.path,
+  });
+}
 function hrefToRoute(href) {
   if (!href) return null;
   if (href.startsWith('#')) {
@@ -1830,6 +2014,7 @@ function navigate(path, replace) {
 }
 function updateSeo(name) {
   const meta = RouteMeta[name] || RouteMeta.home;
+  const url = SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path);
   document.title = meta.title;
   let link = document.querySelector('link[rel="canonical"]');
   if (!link) {
@@ -1837,7 +2022,14 @@ function updateSeo(name) {
     link.rel = 'canonical';
     document.head.appendChild(link);
   }
-  link.href = SITE_ORIGIN + SITE_BASE + (meta.path === '/' ? '/' : meta.path);
+  link.href = url;
+  setMetaTag('description', meta.description);
+  setMetaTag('og:title', meta.title, 'property');
+  setMetaTag('og:description', meta.description, 'property');
+  setMetaTag('og:url', url, 'property');
+  setMetaTag('twitter:title', meta.title);
+  setMetaTag('twitter:description', meta.description);
+  trackPageView(meta);
 }
 function openPortalNav() {
   document.body.classList.add('portal-nav-open');
@@ -2150,8 +2342,28 @@ def build() -> None:
     # to the source apps that need them (see INLINE_ONCLICK_EXPORTS).
     app_scripts = [wrap_app_script(a["name"], a["script"]) for a in apps]
 
+    site_config = load_site_config()
+    ga_id = (site_config.get("gaMeasurementId") or "").strip()
+    route_meta_json = json.dumps(
+        {
+            route["id"]: {
+                "title": route["title"],
+                "path": route["path"],
+                "description": route["description"],
+            }
+            for route in ROUTES
+        },
+        ensure_ascii=False,
+    )
+    footer_script = (
+        PORTAL_FOOTER_SCRIPT.replace("__SITE_ORIGIN__", SITE_ORIGIN)
+        .replace("__SITE_BASE__", SITE_BASE)
+        .replace("__GA_MEASUREMENT_ID__", ga_id)
+        .replace("__ROUTE_META_JSON__", route_meta_json)
+    )
+
     parts = [
-        PORTAL_HEAD,
+        build_portal_head(site_config),
         PORTAL_STYLE,
         *style_blocks,
         LAYOUT_FIXES,
@@ -2167,7 +2379,7 @@ def build() -> None:
         # and inline the bank's contents here instead.)
         f'<script id="phrases-bank">\n{phrases_js}\n</script>',
         *app_scripts,
-        PORTAL_FOOTER_SCRIPT,
+        footer_script,
         "</body>",
         "</html>",
     ]
@@ -2175,8 +2387,16 @@ def build() -> None:
     html = "\n".join(parts)
     OUT_PATH.write_text(html, encoding="utf-8")
     NOT_FOUND_PATH.write_text(html, encoding="utf-8")
+    write_robots_txt()
+    write_sitemap_xml()
     print(f"Built {OUT_PATH} ({OUT_PATH.stat().st_size:,} bytes)")
     print(f"Built {NOT_FOUND_PATH} ({NOT_FOUND_PATH.stat().st_size:,} bytes)")
+    print(f"Built {ROBOTS_PATH}")
+    print(f"Built {SITEMAP_PATH}")
+    if not ga_id:
+        print("Note: GA4 disabled — set gaMeasurementId in site.config.json")
+    if not (site_config.get("gscVerification") or "").strip():
+        print("Note: Search Console tag missing — set gscVerification in site.config.json")
 
 
 if __name__ == "__main__":
