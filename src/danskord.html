@@ -79,6 +79,69 @@
   header .topbar { display: none; }
   .main > .topbar { display: flex; position: sticky; top: var(--header-h); z-index: 90; border-top: none; border-bottom: 1px solid var(--border); padding: 12px 24px; }
 
+  /* SORT DROPDOWN */
+  .sort-select {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    border-radius: 18px;
+    color: var(--text);
+    font-family: 'Inter', sans-serif;
+    font-size: 12px;
+    padding: 6px 28px 6px 12px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%238896ae' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+    background-repeat: no-repeat;
+    background-position: right 10px center;
+    background-size: 9px 9px;
+    transition: border-color 0.15s, color 0.15s;
+    flex-shrink: 0;
+  }
+  .sort-select:hover, .sort-select:focus { border-color: var(--accent); color: var(--text); outline: none; }
+  .sort-select option { background: var(--surface); color: var(--text); }
+  header .topbar .sort-select { flex: 1; }
+
+  /* ALPHA STRIP — sits in-row next to sort dropdown.
+     Flex-wraps onto extra rows if there's no width left (e.g. on smaller
+     desktop widths). Mobile media query below converts to horizontal scroll. */
+  .alpha-strip {
+    display: flex;
+    gap: 6px;
+    flex-wrap: wrap;
+    align-items: center;
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+  .alpha-chip {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    background: var(--bg);
+    color: var(--text-muted);
+    border: 1px solid var(--border);
+    border-radius: 14px;
+    padding: 4px 11px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+    flex-shrink: 0;
+  }
+  .alpha-chip:hover { border-color: var(--accent); color: var(--accent); }
+  .alpha-chip.active { background: var(--accent); border-color: var(--accent); color: #fff; }
+  body.mode-kids .alpha-chip {
+    background: #fff;
+    border-color: #ffd9a8;
+    color: #c9876a;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    font-size: 12px;
+    border-radius: 16px;
+    padding: 5px 13px;
+  }
+  body.mode-kids .alpha-chip:hover { border-color: #ff7a59; color: #ff7a59; }
+  body.mode-kids .alpha-chip.active { background: #ff7a59; border-color: #ff7a59; color: #fff; }
+
   /* PROGRESS */
   .progress-bar-wrap { padding: 8px 24px 0; background: var(--surface); border-bottom: 1px solid var(--border); }
   .progress-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
@@ -118,13 +181,12 @@
     position: absolute;
     top: 8px;
     left: 8px;
-    width: 30px;
-    height: 30px;
+    width: 32px;
+    height: 32px;
     border-radius: 50%;
-    background: rgba(79, 142, 247, 0.18);
-    border: 1px solid rgba(79, 142, 247, 0.55);
-    color: var(--accent2);
-    font-size: 14px;
+    background: rgba(125, 211, 252, 0.22);
+    border: 1px solid rgba(125, 211, 252, 0.55);
+    color: #e8f5ff;
     cursor: pointer;
     display: flex;
     align-items: center;
@@ -133,19 +195,64 @@
     transition: all 0.15s;
     line-height: 1;
     z-index: 2;
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.25);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.35);
+  }
+  .adult-speaker-btn svg {
+    width: 16px;
+    height: 16px;
+    display: block;
+    pointer-events: none;
   }
   .card-back .adult-speaker-btn {
-    background: rgba(125, 211, 252, 0.16);
-    border-color: rgba(125, 211, 252, 0.5);
-    color: #b8e4ff;
+    background: rgba(125, 211, 252, 0.18);
+    border-color: rgba(125, 211, 252, 0.55);
+    color: #e8f5ff;
   }
-  .adult-speaker-btn:hover { border-color: var(--accent2); background: rgba(79, 142, 247, 0.28); transform: scale(1.08); }
+  .adult-speaker-btn:hover {
+    border-color: var(--accent2);
+    background: rgba(125, 211, 252, 0.35);
+    color: #ffffff;
+    transform: scale(1.08);
+  }
   .adult-speaker-btn:active { transform: scale(0.94); }
-  .english-word { font-size: 16px; font-weight: 500; color: var(--accent2); text-align: center; line-height: 1.25; margin-bottom: 6px; }
-  .word-example { width: 100%; text-align: center; padding: 0 2px; }
-  .example-da { font-family: 'Inter', sans-serif; font-size: 11px; color: var(--text); line-height: 1.35; font-style: italic; }
-  .example-en { font-family: 'Inter', sans-serif; font-size: 10px; color: var(--text-muted); margin-top: 3px; line-height: 1.3; }
+  /* English translation (anchor) */
+  .english-word {
+    font-size: 18px;
+    font-weight: 500;
+    color: var(--accent2);
+    text-align: center;
+    line-height: 1.25;
+    margin-top: 4px;
+    padding: 0 6px;
+    letter-spacing: 0.1px;
+  }
+  /* Example block: subtle divider above, breathing room, clear da/en hierarchy. */
+  .word-example {
+    width: calc(100% - 16px);
+    margin: 10px auto 0;
+    padding-top: 10px;
+    border-top: 1px solid rgba(125, 211, 252, 0.16);
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    text-align: center;
+  }
+  /* Danish example: serif (matches front-of-card Danish), brighter so it reads first. */
+  .example-da {
+    font-family: 'DM Serif Display', serif;
+    font-size: 13px;
+    line-height: 1.35;
+    color: var(--text);
+    overflow-wrap: anywhere;
+  }
+  /* English example: subordinate — sans, muted, smaller. */
+  .example-en {
+    font-family: 'Inter', sans-serif;
+    font-size: 11px;
+    line-height: 1.4;
+    color: var(--text-muted);
+    overflow-wrap: anywhere;
+  }
   .known-dot { position: absolute; bottom: 9px; right: 11px; width: 16px; height: 16px; border-radius: 50%; background: var(--success); display: flex; align-items: center; justify-content: center; font-size: 9px; color: #0a2010; opacity: 0; transition: opacity 0.25s; }
   .card-wrap.known .known-dot { opacity: 1; }
 
@@ -164,6 +271,7 @@
   /* MODE TOGGLE */
   .mode-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px; margin-right: 4px; }
   .mode-toggle button { background: transparent; border: none; color: var(--text-muted); padding: 5px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; border-radius: 18px; transition: all 0.18s; }
+  .mode-toggle button:hover:not(.active) { color: var(--accent2); background: rgba(125, 211, 252, 0.08); }
   .mode-toggle button.active { background: var(--accent); color: #fff; }
 
   /* ════════════════════════════════════════════════════════════════════
@@ -175,12 +283,36 @@
   body.mode-kids .logo span { color: #ff7a59; }
   body.mode-kids .stat-pill { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
   body.mode-kids .stat-pill b { color: #ff7a59; }
+  /* Sort dropdown in kids mode — match the warm palette (was dark-on-cream). */
+  body.mode-kids .sort-select {
+    background-color: #fff;
+    border-color: #ffd9a8;
+    color: #a4533a;
+    font-family: 'Fredoka', sans-serif;
+    font-weight: 500;
+    /* Replace the cool-grey chevron with a peach one matching the kids palette. */
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23ff7a59' stroke-width='3' stroke-linecap='round' stroke-linejoin='round'><polyline points='6 9 12 15 18 9'/></svg>");
+  }
+  body.mode-kids .sort-select:hover, body.mode-kids .sort-select:focus { border-color: #ff7a59; color: #ff7a59; }
+  body.mode-kids .sort-select option { background: #fff; color: #2d2a4a; }
+
   body.mode-kids .btn { background: #fff; border-color: #ffd9a8; color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
-  body.mode-kids .btn:hover { border-color: #ff7a59; color: #ff7a59; }
-  body.mode-kids .btn-shuffle { background: linear-gradient(135deg, #ff9a7a, #ff7a59); color: #fff; }
+  body.mode-kids .btn:hover { border-color: #ff7a59; color: #ff7a59; background: #fff5e9; }
+  body.mode-kids .btn-shuffle { background: linear-gradient(135deg, #ff9a7a, #ff7a59); color: #fff; border: 1px solid transparent; }
+  /* Higher-specificity hover for the gradient Shuffle btn — otherwise the
+     generic `body.mode-kids .btn:hover` paints orange-on-orange (unreadable). */
+  body.mode-kids .btn-shuffle:hover {
+    background: linear-gradient(135deg, #ff7a59, #ff5a37);
+    color: #ffffff;
+    border-color: transparent;
+    box-shadow: 0 3px 10px rgba(255, 122, 89, 0.4);
+  }
   body.mode-kids .mode-toggle { background: #fff; border-color: #ffd9a8; }
-  body.mode-kids .mode-toggle button { color: #6b5b8a; font-family: 'Fredoka', sans-serif; font-weight: 500; }
-  body.mode-kids .mode-toggle button.active { background: #ff7a59; color: #fff; }
+  /* Inactive Words/Verbs buttons in kids mode — warm-brown default; hover
+     pulls the text to near-black for high contrast on the cream pill. */
+  body.mode-kids .mode-toggle button { color: #a4533a !important; font-family: 'Fredoka', sans-serif; font-weight: 600; }
+  body.mode-kids .mode-toggle button:hover:not(.active) { color: #2d2a4a !important; background: rgba(255, 122, 89, 0.18) !important; }
+  body.mode-kids .mode-toggle button.active { background: #ff7a59 !important; color: #fff !important; }
 
   body.mode-kids .sidebar { background: #fff; border-right: 2px solid #ffd9a8; }
   body.mode-kids .sidebar-title { color: #b8a0c0; }
@@ -237,7 +369,8 @@
   body.mode-kids .kid-da { font-family: 'Fredoka', sans-serif; font-weight: 600; font-size: 22px; color: #2d2a4a; text-align: center; line-height: 1.1; }
   body.mode-kids .kid-en { font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 14px; color: #6b5b8a; text-align: center; opacity: 0; transition: opacity 0.25s; min-height: 18px; }
   body.mode-kids .card-wrap.flipped .kid-en { opacity: 1; }
-  body.mode-kids .speaker-btn { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.85); border: none; cursor: pointer; font-size: 16px; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; padding: 0; }
+  body.mode-kids .speaker-btn { position: absolute; top: 8px; right: 8px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.92); border: none; cursor: pointer; color: #ff7a59; display: flex; align-items: center; justify-content: center; transition: transform 0.15s; padding: 0; }
+  body.mode-kids .speaker-btn svg { width: 17px; height: 17px; }
   body.mode-kids .speaker-btn:hover { transform: scale(1.15); }
   body.mode-kids .speaker-btn:active { transform: scale(0.92); }
   body.mode-kids .card-wrap.known .card-face::before { content: "⭐"; position: absolute; top: 8px; left: 10px; font-size: 18px; }
@@ -331,6 +464,29 @@
     .section-heading { padding: 14px 12px 2px; }
     .progress-bar-wrap { padding: 6px 12px 0; }
     .stat-pill { display: none; }
+    /* Mobile alpha-strip lives next to sort dropdown in the topbar.
+       At this width the topbar wraps; let alpha-strip take its own row
+       and scroll horizontally if needed. */
+    .alpha-strip {
+      flex-basis: 100%;
+      flex-wrap: nowrap;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      padding: 4px 0;
+      margin-top: 4px;
+      order: 99;  /* push to last position so it wraps onto its own line */
+    }
+    .alpha-strip::-webkit-scrollbar { display: none; }
+    /* Mobile sort-select inside header topbar */
+    header .topbar .sort-select {
+      flex: 0 1 auto;
+      min-width: 0;
+      padding: 6px 24px 6px 10px;
+      font-size: 12px;
+    }
+    /* Allow header topbar to wrap so alpha-strip can land on its own row. */
+    header .topbar { flex-wrap: wrap; row-gap: 4px; }
   }
 </style>
 </head>
@@ -362,6 +518,14 @@
       </svg>
       <input type="text" id="search" placeholder="Search Danish or English…">
     </div>
+    <select id="sort-select-mobile" class="sort-select" aria-label="Sort" onchange="setSortMode(this.value)">
+      <option value="default">Default</option>
+      <option value="alpha">A → Z</option>
+      <option value="not-learned">Not learned</option>
+      <option value="known">Known first</option>
+      <option value="random">Random</option>
+    </select>
+    <div class="alpha-strip" id="alpha-strip-mobile" role="tablist" aria-label="Filter by initial letter"></div>
   </div>
 </header>
 
@@ -389,6 +553,14 @@
         </svg>
         <input type="text" id="search-desktop" placeholder="Search Danish or English…">
       </div>
+      <select id="sort-select" class="sort-select" aria-label="Sort" onchange="setSortMode(this.value)">
+        <option value="default">Sort: Default</option>
+        <option value="alpha">Sort: A → Z</option>
+        <option value="not-learned">Sort: Not learned</option>
+        <option value="known">Sort: Known first</option>
+        <option value="random">Sort: Random</option>
+      </select>
+      <div class="alpha-strip" id="alpha-strip" role="tablist" aria-label="Filter by initial letter"></div>
     </div>
     <div class="progress-bar-wrap">
       <div class="progress-info">
@@ -442,95 +614,95 @@ const words = [
   {da:"begge",en:"both",type:"pron",cat:"Pronouns"},
 
   // ── CORE VERBS (70) ──────────────────────────────────────────────
-  {da:"at være",en:"to be",type:"verb",cat:"Core Verbs"},
-  {da:"at have",en:"to have",type:"verb",cat:"Core Verbs"},
-  {da:"at gøre",en:"to do / make",type:"verb",cat:"Core Verbs"},
-  {da:"at sige",en:"to say",type:"verb",cat:"Core Verbs"},
-  {da:"at gå",en:"to go / walk",type:"verb",cat:"Core Verbs"},
-  {da:"at komme",en:"to come",type:"verb",cat:"Core Verbs"},
-  {da:"at se",en:"to see / look",type:"verb",cat:"Core Verbs"},
-  {da:"at vide",en:"to know (fact)",type:"verb",cat:"Core Verbs"},
-  {da:"at tage",en:"to take",type:"verb",cat:"Core Verbs"},
-  {da:"at få",en:"to get / receive",type:"verb",cat:"Core Verbs"},
-  {da:"at ville",en:"to want / will",type:"verb",cat:"Core Verbs"},
-  {da:"at skulle",en:"to shall / must",type:"verb",cat:"Core Verbs"},
-  {da:"at kunne",en:"to be able to",type:"verb",cat:"Core Verbs"},
-  {da:"at synes",en:"to think / seem",type:"verb",cat:"Core Verbs"},
-  {da:"at tænke",en:"to think",type:"verb",cat:"Core Verbs"},
-  {da:"at spørge",en:"to ask",type:"verb",cat:"Core Verbs"},
-  {da:"at svare",en:"to answer",type:"verb",cat:"Core Verbs"},
-  {da:"at blive",en:"to become / stay",type:"verb",cat:"Core Verbs"},
-  {da:"at give",en:"to give",type:"verb",cat:"Core Verbs"},
-  {da:"at bruge",en:"to use",type:"verb",cat:"Core Verbs"},
-  {da:"at arbejde",en:"to work",type:"verb",cat:"Core Verbs"},
-  {da:"at bo",en:"to live / reside",type:"verb",cat:"Core Verbs"},
-  {da:"at spise",en:"to eat",type:"verb",cat:"Core Verbs"},
-  {da:"at drikke",en:"to drink",type:"verb",cat:"Core Verbs"},
-  {da:"at sove",en:"to sleep",type:"verb",cat:"Core Verbs"},
-  {da:"at købe",en:"to buy",type:"verb",cat:"Core Verbs"},
-  {da:"at sælge",en:"to sell",type:"verb",cat:"Core Verbs"},
-  {da:"at læse",en:"to read / study",type:"verb",cat:"Core Verbs"},
-  {da:"at skrive",en:"to write",type:"verb",cat:"Core Verbs"},
-  {da:"at høre",en:"to hear / listen",type:"verb",cat:"Core Verbs"},
-  {da:"at forstå",en:"to understand",type:"verb",cat:"Core Verbs"},
-  {da:"at lære",en:"to learn / teach",type:"verb",cat:"Core Verbs"},
-  {da:"at prøve",en:"to try",type:"verb",cat:"Core Verbs"},
-  {da:"at hjælpe",en:"to help",type:"verb",cat:"Core Verbs"},
-  {da:"at starte",en:"to start",type:"verb",cat:"Core Verbs"},
-  {da:"at stoppe",en:"to stop",type:"verb",cat:"Core Verbs"},
-  {da:"at åbne",en:"to open",type:"verb",cat:"Core Verbs"},
-  {da:"at lukke",en:"to close",type:"verb",cat:"Core Verbs"},
-  {da:"at vente",en:"to wait",type:"verb",cat:"Core Verbs"},
-  {da:"at møde",en:"to meet",type:"verb",cat:"Core Verbs"},
-  {da:"at elske",en:"to love",type:"verb",cat:"Core Verbs"},
-  {da:"at huske",en:"to remember",type:"verb",cat:"Core Verbs"},
-  {da:"at glemme",en:"to forget",type:"verb",cat:"Core Verbs"},
-  {da:"at køre",en:"to drive / ride",type:"verb",cat:"Core Verbs"},
-  {da:"at rejse",en:"to travel",type:"verb",cat:"Core Verbs"},
-  {da:"at betale",en:"to pay",type:"verb",cat:"Core Verbs"},
-  {da:"at kende",en:"to know (person)",type:"verb",cat:"Core Verbs"},
-  {da:"at lade",en:"to let / allow",type:"verb",cat:"Core Verbs"},
-  {da:"at lege",en:"to play (child)",type:"verb",cat:"Core Verbs"},
-  {da:"at spille",en:"to play (game/music)",type:"verb",cat:"Core Verbs"},
-  {da:"at løbe",en:"to run",type:"verb",cat:"Core Verbs"},
-  {da:"at sidde",en:"to sit",type:"verb",cat:"Core Verbs"},
-  {da:"at stå",en:"to stand",type:"verb",cat:"Core Verbs"},
-  {da:"at ligge",en:"to lie (down)",type:"verb",cat:"Core Verbs"},
-  {da:"at finde",en:"to find",type:"verb",cat:"Core Verbs"},
-  {da:"at miste",en:"to lose",type:"verb",cat:"Core Verbs"},
-  {da:"at sende",en:"to send",type:"verb",cat:"Core Verbs"},
-  {da:"at modtage",en:"to receive",type:"verb",cat:"Core Verbs"},
-  {da:"at vise",en:"to show",type:"verb",cat:"Core Verbs"},
-  {da:"at tro",en:"to believe",type:"verb",cat:"Core Verbs"},
-  {da:"at ønske",en:"to wish",type:"verb",cat:"Core Verbs"},
-  {da:"at håbe",en:"to hope",type:"verb",cat:"Core Verbs"},
-  {da:"at føle",en:"to feel",type:"verb",cat:"Core Verbs"},
-  {da:"at tale",en:"to speak / talk",type:"verb",cat:"Core Verbs"},
-  {da:"at fortælle",en:"to tell",type:"verb",cat:"Core Verbs"},
-  {da:"at forklare",en:"to explain",type:"verb",cat:"Core Verbs"},
-  {da:"at beslutte",en:"to decide",type:"verb",cat:"Core Verbs"},
-  {da:"at vælge",en:"to choose",type:"verb",cat:"Core Verbs"},
-  {da:"at ændre",en:"to change",type:"verb",cat:"Core Verbs"},
-  {da:"at flytte",en:"to move",type:"verb",cat:"Core Verbs"},
-  {da:"at bygge",en:"to build",type:"verb",cat:"Core Verbs"},
-  {da:"at bryde",en:"to break",type:"verb",cat:"Core Verbs"},
-  {da:"at bære",en:"to carry / wear",type:"verb",cat:"Core Verbs"},
-  {da:"at slå",en:"to hit / beat",type:"verb",cat:"Core Verbs"},
-  {da:"at trække",en:"to pull / draw",type:"verb",cat:"Core Verbs"},
-  {da:"at skubbe",en:"to push",type:"verb",cat:"Core Verbs"},
-  {da:"at kaste",en:"to throw",type:"verb",cat:"Core Verbs"},
-  {da:"at fange",en:"to catch",type:"verb",cat:"Core Verbs"},
-  {da:"at holde",en:"to hold / keep",type:"verb",cat:"Core Verbs"},
-  {da:"at lægge",en:"to put / lay",type:"verb",cat:"Core Verbs"},
-  {da:"at sætte",en:"to put / set",type:"verb",cat:"Core Verbs"},
-  {da:"at stille",en:"to place / set",type:"verb",cat:"Core Verbs"},
-  {da:"at samle",en:"to collect / gather",type:"verb",cat:"Core Verbs"},
-  {da:"at dele",en:"to share / divide",type:"verb",cat:"Core Verbs"},
-  {da:"at tilbyde",en:"to offer",type:"verb",cat:"Core Verbs"},
-  {da:"at acceptere",en:"to accept",type:"verb",cat:"Core Verbs"},
-  {da:"at afvise",en:"to reject",type:"verb",cat:"Core Verbs"},
-  {da:"at invitere",en:"to invite",type:"verb",cat:"Core Verbs"},
-  {da:"at besøge",en:"to visit",type:"verb",cat:"Core Verbs"},
+  {da:"at være",en:"to be",type:"verb",cat:"Common Verbs"},
+  {da:"at have",en:"to have",type:"verb",cat:"Common Verbs"},
+  {da:"at gøre",en:"to do / make",type:"verb",cat:"Common Verbs"},
+  {da:"at sige",en:"to say",type:"verb",cat:"Common Verbs"},
+  {da:"at gå",en:"to go / walk",type:"verb",cat:"Common Verbs"},
+  {da:"at komme",en:"to come",type:"verb",cat:"Common Verbs"},
+  {da:"at se",en:"to see / look",type:"verb",cat:"Common Verbs"},
+  {da:"at vide",en:"to know (fact)",type:"verb",cat:"Common Verbs"},
+  {da:"at tage",en:"to take",type:"verb",cat:"Common Verbs"},
+  {da:"at få",en:"to get / receive",type:"verb",cat:"Common Verbs"},
+  {da:"at ville",en:"to want / will",type:"verb",cat:"Common Verbs"},
+  {da:"at skulle",en:"to shall / must",type:"verb",cat:"Common Verbs"},
+  {da:"at kunne",en:"to be able to",type:"verb",cat:"Common Verbs"},
+  {da:"at synes",en:"to think / seem",type:"verb",cat:"Common Verbs"},
+  {da:"at tænke",en:"to think",type:"verb",cat:"Common Verbs"},
+  {da:"at spørge",en:"to ask",type:"verb",cat:"Common Verbs"},
+  {da:"at svare",en:"to answer",type:"verb",cat:"Common Verbs"},
+  {da:"at blive",en:"to become / stay",type:"verb",cat:"Common Verbs"},
+  {da:"at give",en:"to give",type:"verb",cat:"Common Verbs"},
+  {da:"at bruge",en:"to use",type:"verb",cat:"Common Verbs"},
+  {da:"at arbejde",en:"to work",type:"verb",cat:"Common Verbs"},
+  {da:"at bo",en:"to live / reside",type:"verb",cat:"Common Verbs"},
+  {da:"at spise",en:"to eat",type:"verb",cat:"Common Verbs"},
+  {da:"at drikke",en:"to drink",type:"verb",cat:"Common Verbs"},
+  {da:"at sove",en:"to sleep",type:"verb",cat:"Common Verbs"},
+  {da:"at købe",en:"to buy",type:"verb",cat:"Common Verbs"},
+  {da:"at sælge",en:"to sell",type:"verb",cat:"Common Verbs"},
+  {da:"at læse",en:"to read / study",type:"verb",cat:"Common Verbs"},
+  {da:"at skrive",en:"to write",type:"verb",cat:"Common Verbs"},
+  {da:"at høre",en:"to hear / listen",type:"verb",cat:"Common Verbs"},
+  {da:"at forstå",en:"to understand",type:"verb",cat:"Common Verbs"},
+  {da:"at lære",en:"to learn / teach",type:"verb",cat:"Common Verbs"},
+  {da:"at prøve",en:"to try",type:"verb",cat:"Common Verbs"},
+  {da:"at hjælpe",en:"to help",type:"verb",cat:"Common Verbs"},
+  {da:"at starte",en:"to start",type:"verb",cat:"Common Verbs"},
+  {da:"at stoppe",en:"to stop",type:"verb",cat:"Common Verbs"},
+  {da:"at åbne",en:"to open",type:"verb",cat:"Common Verbs"},
+  {da:"at lukke",en:"to close",type:"verb",cat:"Common Verbs"},
+  {da:"at vente",en:"to wait",type:"verb",cat:"Common Verbs"},
+  {da:"at møde",en:"to meet",type:"verb",cat:"Common Verbs"},
+  {da:"at elske",en:"to love",type:"verb",cat:"Common Verbs"},
+  {da:"at huske",en:"to remember",type:"verb",cat:"Common Verbs"},
+  {da:"at glemme",en:"to forget",type:"verb",cat:"Common Verbs"},
+  {da:"at køre",en:"to drive / ride",type:"verb",cat:"Common Verbs"},
+  {da:"at rejse",en:"to travel",type:"verb",cat:"Common Verbs"},
+  {da:"at betale",en:"to pay",type:"verb",cat:"Common Verbs"},
+  {da:"at kende",en:"to know (person)",type:"verb",cat:"Common Verbs"},
+  {da:"at lade",en:"to let / allow",type:"verb",cat:"Common Verbs"},
+  {da:"at lege",en:"to play (child)",type:"verb",cat:"Common Verbs"},
+  {da:"at spille",en:"to play (game/music)",type:"verb",cat:"Common Verbs"},
+  {da:"at løbe",en:"to run",type:"verb",cat:"Common Verbs"},
+  {da:"at sidde",en:"to sit",type:"verb",cat:"Common Verbs"},
+  {da:"at stå",en:"to stand",type:"verb",cat:"Common Verbs"},
+  {da:"at ligge",en:"to lie (down)",type:"verb",cat:"Common Verbs"},
+  {da:"at finde",en:"to find",type:"verb",cat:"Common Verbs"},
+  {da:"at miste",en:"to lose",type:"verb",cat:"Common Verbs"},
+  {da:"at sende",en:"to send",type:"verb",cat:"Common Verbs"},
+  {da:"at modtage",en:"to receive",type:"verb",cat:"Common Verbs"},
+  {da:"at vise",en:"to show",type:"verb",cat:"Common Verbs"},
+  {da:"at tro",en:"to believe",type:"verb",cat:"Common Verbs"},
+  {da:"at ønske",en:"to wish",type:"verb",cat:"Common Verbs"},
+  {da:"at håbe",en:"to hope",type:"verb",cat:"Common Verbs"},
+  {da:"at føle",en:"to feel",type:"verb",cat:"Common Verbs"},
+  {da:"at tale",en:"to speak / talk",type:"verb",cat:"Common Verbs"},
+  {da:"at fortælle",en:"to tell",type:"verb",cat:"Common Verbs"},
+  {da:"at forklare",en:"to explain",type:"verb",cat:"Common Verbs"},
+  {da:"at beslutte",en:"to decide",type:"verb",cat:"Common Verbs"},
+  {da:"at vælge",en:"to choose",type:"verb",cat:"Common Verbs"},
+  {da:"at ændre",en:"to change",type:"verb",cat:"Common Verbs"},
+  {da:"at flytte",en:"to move",type:"verb",cat:"Common Verbs"},
+  {da:"at bygge",en:"to build",type:"verb",cat:"Common Verbs"},
+  {da:"at bryde",en:"to break",type:"verb",cat:"Common Verbs"},
+  {da:"at bære",en:"to carry / wear",type:"verb",cat:"Common Verbs"},
+  {da:"at slå",en:"to hit / beat",type:"verb",cat:"Common Verbs"},
+  {da:"at trække",en:"to pull / draw",type:"verb",cat:"Common Verbs"},
+  {da:"at skubbe",en:"to push",type:"verb",cat:"Common Verbs"},
+  {da:"at kaste",en:"to throw",type:"verb",cat:"Common Verbs"},
+  {da:"at fange",en:"to catch",type:"verb",cat:"Common Verbs"},
+  {da:"at holde",en:"to hold / keep",type:"verb",cat:"Common Verbs"},
+  {da:"at lægge",en:"to put / lay",type:"verb",cat:"Common Verbs"},
+  {da:"at sætte",en:"to put / set",type:"verb",cat:"Common Verbs"},
+  {da:"at stille",en:"to place / set",type:"verb",cat:"Common Verbs"},
+  {da:"at samle",en:"to collect / gather",type:"verb",cat:"Common Verbs"},
+  {da:"at dele",en:"to share / divide",type:"verb",cat:"Common Verbs"},
+  {da:"at tilbyde",en:"to offer",type:"verb",cat:"Common Verbs"},
+  {da:"at acceptere",en:"to accept",type:"verb",cat:"Common Verbs"},
+  {da:"at afvise",en:"to reject",type:"verb",cat:"Common Verbs"},
+  {da:"at invitere",en:"to invite",type:"verb",cat:"Common Verbs"},
+  {da:"at besøge",en:"to visit",type:"verb",cat:"Common Verbs"},
 
   // ── NUMBERS (25) ─────────────────────────────────────────────────
   {da:"nul",en:"zero",type:"num",cat:"Numbers"},
@@ -1345,44 +1517,44 @@ const words = [
   {da:"intet",en:"nothing (neuter)",type:"pron",cat:"Pronouns"},
 
   // ── EXTRA WORDS — Core Verbs (35) ────────────────────────────────
-  {da:"at hente",en:"to fetch / pick up",type:"verb",cat:"Core Verbs"},
-  {da:"at lave",en:"to make / do",type:"verb",cat:"Core Verbs"},
-  {da:"at række",en:"to reach / pass",type:"verb",cat:"Core Verbs"},
-  {da:"at pakke",en:"to pack",type:"verb",cat:"Core Verbs"},
-  {da:"at gemme",en:"to hide / save",type:"verb",cat:"Core Verbs"},
-  {da:"at glæde",en:"to please / delight",type:"verb",cat:"Core Verbs"},
-  {da:"at savne",en:"to miss",type:"verb",cat:"Core Verbs"},
-  {da:"at undgå",en:"to avoid",type:"verb",cat:"Core Verbs"},
-  {da:"at hvile",en:"to rest",type:"verb",cat:"Core Verbs"},
-  {da:"at smile",en:"to smile",type:"verb",cat:"Core Verbs"},
-  {da:"at græde",en:"to cry",type:"verb",cat:"Core Verbs"},
-  {da:"at grine",en:"to laugh",type:"verb",cat:"Core Verbs"},
-  {da:"at synge",en:"to sing",type:"verb",cat:"Core Verbs"},
-  {da:"at danse",en:"to dance",type:"verb",cat:"Core Verbs"},
-  {da:"at tegne",en:"to draw",type:"verb",cat:"Core Verbs"},
-  {da:"at male",en:"to paint",type:"verb",cat:"Core Verbs"},
-  {da:"at ringe",en:"to call (phone)",type:"verb",cat:"Core Verbs"},
-  {da:"at fortsætte",en:"to continue",type:"verb",cat:"Core Verbs"},
-  {da:"at gentage",en:"to repeat",type:"verb",cat:"Core Verbs"},
-  {da:"at undersøge",en:"to investigate",type:"verb",cat:"Core Verbs"},
-  {da:"at undervise",en:"to teach",type:"verb",cat:"Core Verbs"},
-  {da:"at oversætte",en:"to translate",type:"verb",cat:"Core Verbs"},
-  {da:"at fejre",en:"to celebrate",type:"verb",cat:"Core Verbs"},
-  {da:"at klage",en:"to complain",type:"verb",cat:"Core Verbs"},
-  {da:"at takke",en:"to thank",type:"verb",cat:"Core Verbs"},
-  {da:"at undskylde",en:"to apologise",type:"verb",cat:"Core Verbs"},
-  {da:"at flyve",en:"to fly",type:"verb",cat:"Core Verbs"},
-  {da:"at svømme",en:"to swim",type:"verb",cat:"Core Verbs"},
-  {da:"at klatre",en:"to climb",type:"verb",cat:"Core Verbs"},
-  {da:"at hoppe",en:"to jump",type:"verb",cat:"Core Verbs"},
-  {da:"at smage",en:"to taste",type:"verb",cat:"Core Verbs"},
-  {da:"at lugte",en:"to smell",type:"verb",cat:"Core Verbs"},
-  {da:"at vaske",en:"to wash",type:"verb",cat:"Core Verbs"},
-  {da:"at tabe",en:"to lose / drop",type:"verb",cat:"Core Verbs"},
-  {da:"at låne",en:"to borrow / lend",type:"verb",cat:"Core Verbs"},
-  {da:"at klare",en:"to manage / handle",type:"verb",cat:"Core Verbs"},
-  {da:"at kysse",en:"to kiss",type:"verb",cat:"Core Verbs"},
-  {da:"at investere",en:"to invest",type:"verb",cat:"Core Verbs"},
+  {da:"at hente",en:"to fetch / pick up",type:"verb",cat:"Common Verbs"},
+  {da:"at lave",en:"to make / do",type:"verb",cat:"Common Verbs"},
+  {da:"at række",en:"to reach / pass",type:"verb",cat:"Common Verbs"},
+  {da:"at pakke",en:"to pack",type:"verb",cat:"Common Verbs"},
+  {da:"at gemme",en:"to hide / save",type:"verb",cat:"Common Verbs"},
+  {da:"at glæde",en:"to please / delight",type:"verb",cat:"Common Verbs"},
+  {da:"at savne",en:"to miss",type:"verb",cat:"Common Verbs"},
+  {da:"at undgå",en:"to avoid",type:"verb",cat:"Common Verbs"},
+  {da:"at hvile",en:"to rest",type:"verb",cat:"Common Verbs"},
+  {da:"at smile",en:"to smile",type:"verb",cat:"Common Verbs"},
+  {da:"at græde",en:"to cry",type:"verb",cat:"Common Verbs"},
+  {da:"at grine",en:"to laugh",type:"verb",cat:"Common Verbs"},
+  {da:"at synge",en:"to sing",type:"verb",cat:"Common Verbs"},
+  {da:"at danse",en:"to dance",type:"verb",cat:"Common Verbs"},
+  {da:"at tegne",en:"to draw",type:"verb",cat:"Common Verbs"},
+  {da:"at male",en:"to paint",type:"verb",cat:"Common Verbs"},
+  {da:"at ringe",en:"to call (phone)",type:"verb",cat:"Common Verbs"},
+  {da:"at fortsætte",en:"to continue",type:"verb",cat:"Common Verbs"},
+  {da:"at gentage",en:"to repeat",type:"verb",cat:"Common Verbs"},
+  {da:"at undersøge",en:"to investigate",type:"verb",cat:"Common Verbs"},
+  {da:"at undervise",en:"to teach",type:"verb",cat:"Common Verbs"},
+  {da:"at oversætte",en:"to translate",type:"verb",cat:"Common Verbs"},
+  {da:"at fejre",en:"to celebrate",type:"verb",cat:"Common Verbs"},
+  {da:"at klage",en:"to complain",type:"verb",cat:"Common Verbs"},
+  {da:"at takke",en:"to thank",type:"verb",cat:"Common Verbs"},
+  {da:"at undskylde",en:"to apologise",type:"verb",cat:"Common Verbs"},
+  {da:"at flyve",en:"to fly",type:"verb",cat:"Common Verbs"},
+  {da:"at svømme",en:"to swim",type:"verb",cat:"Common Verbs"},
+  {da:"at klatre",en:"to climb",type:"verb",cat:"Common Verbs"},
+  {da:"at hoppe",en:"to jump",type:"verb",cat:"Common Verbs"},
+  {da:"at smage",en:"to taste",type:"verb",cat:"Common Verbs"},
+  {da:"at lugte",en:"to smell",type:"verb",cat:"Common Verbs"},
+  {da:"at vaske",en:"to wash",type:"verb",cat:"Common Verbs"},
+  {da:"at tabe",en:"to lose / drop",type:"verb",cat:"Common Verbs"},
+  {da:"at låne",en:"to borrow / lend",type:"verb",cat:"Common Verbs"},
+  {da:"at klare",en:"to manage / handle",type:"verb",cat:"Common Verbs"},
+  {da:"at kysse",en:"to kiss",type:"verb",cat:"Common Verbs"},
+  {da:"at investere",en:"to invest",type:"verb",cat:"Common Verbs"},
 
   // ── EXTRA WORDS — Time (4) ───────────────────────────────────────
   {da:"halv",en:"half",type:"adj",cat:"Time"},
@@ -2350,7 +2522,7 @@ const CAT_META_KIDS = {
 const CAT_META = {
   "All":             { icon:"🇩🇰" },
   "Pronouns":        { icon:"👤" },
-  "Core Verbs":      { icon:"⚡" },
+  "Common Verbs":      { icon:"⚡" },
   "Numbers":         { icon:"🔢" },
   "Time":            { icon:"🕐" },
   "Days & Months":   { icon:"📅" },
@@ -2380,6 +2552,23 @@ const CAT_META = {
 
 // ── STATE ──────────────────────────────────────────────────────────
 const KNOWN_KEY = { words: 'dk-known', verbs: 'dk-known-verbs', kids: 'dk-known-kids' };
+// Alpha filter ranges. Last bucket covers Q–Z plus Danish-specific letters
+// (Æ, Ø, Å) which collate after Z. `null` means "All".
+const ALPHA_RANGES = [
+  { key: 'all',  label: 'All', test: () => true },
+  { key: 'A-D',  label: 'A–D', test: c => c >= 'a' && c <= 'd' },
+  { key: 'E-H',  label: 'E–H', test: c => c >= 'e' && c <= 'h' },
+  { key: 'I-L',  label: 'I–L', test: c => c >= 'i' && c <= 'l' },
+  { key: 'M-P',  label: 'M–P', test: c => c >= 'm' && c <= 'p' },
+  { key: 'Q-T',  label: 'Q–T', test: c => c >= 'q' && c <= 't' },
+  { key: 'U-Å',  label: 'U–Å', test: c => (c >= 'u' && c <= 'z') || c === 'æ' || c === 'ø' || c === 'å' },
+];
+function firstSortChar(w) {
+  // Strip leading "at " (verb infinitive marker) so verbs sort by their stem.
+  const s = (w.da || '').replace(/^at\s+/i, '').toLowerCase();
+  return s.charAt(0);
+}
+
 let mode       = localStorage.getItem('dk-mode') || 'words';
 if (!KNOWN_KEY[mode]) mode = 'words'; // guard against stale values
 let known      = new Set(JSON.parse(localStorage.getItem(KNOWN_KEY[mode]) || '[]'));
@@ -2387,6 +2576,8 @@ let activeCat  = 'All';
 let searchTerm = '';
 let onlyKnown  = false;
 let allFlipped = false;
+let sortMode   = localStorage.getItem('dk-sort') || 'default';
+let alphaRange = 'all';
 
 // ── DATASET ACCESSORS ─────────────────────────────────────────────
 function dataset() {
@@ -2580,6 +2771,12 @@ function buildWordExample(w) {
   }
 }
 
+// Inline speaker glyph: rendered at 16x16, strokes use currentColor so the
+// icon brightens with the button on hover. Used by both adult cards
+// (.adult-speaker-btn) and kids cards (.speaker-btn) — emoji was hard to
+// read at small sizes on the dark theme.
+const SPEAKER_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" fill-opacity="0.85"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
+
 function bindAdultSpeaker(wrap, spoken) {
   wrap.querySelectorAll('.adult-speaker-btn').forEach(btn => {
     btn.addEventListener('click', e => {
@@ -2648,11 +2845,13 @@ function setMode(newMode) {
   searchTerm = '';
   onlyKnown = false;
   allFlipped = false;
+  alphaRange = 'all';
   clearSearchInputs();
   document.getElementById('known-filter-btn').classList.remove('active');
   applyModeClasses();
   refreshStreakBadge();
   buildSidebar();
+  buildAlphaStrip();
   applyFilters();
 }
 
@@ -2667,6 +2866,7 @@ function applyModeClasses() {
 // ── FILTERS ───────────────────────────────────────────────────────
 function getFiltered() {
   const q = searchTerm.toLowerCase();
+  const alphaTest = (ALPHA_RANGES.find(r => r.key === alphaRange) || ALPHA_RANGES[0]).test;
   return dataset().filter(w => {
     const matchCat = activeCat === 'All' || w.cat === activeCat;
     let matchSearch = !q || w.da.toLowerCase().includes(q) || w.en.toLowerCase().includes(q);
@@ -2677,11 +2877,89 @@ function getFiltered() {
                  || (w.perf && w.perf.toLowerCase().includes(q));
     }
     const matchKnown = !onlyKnown || known.has(w.da);
-    return matchCat && matchSearch && matchKnown;
+    const matchAlpha = alphaTest(firstSortChar(w));
+    return matchCat && matchSearch && matchKnown && matchAlpha;
   });
 }
 
-function applyFilters() { renderCards(getFiltered()); }
+// Locale-aware string compare so Danish letters (æ, ø, å) sort after z.
+const _daCollator = new Intl.Collator('da-DK', { sensitivity: 'base' });
+
+function getSorted(list) {
+  // 'default' = current category order, BUT in Words mode under "All" we
+  // pull "Common Verbs" to the front so beginners see the most useful
+  // verbs first. Preserves original order within each bucket otherwise.
+  if (sortMode === 'default') {
+    if (mode === 'words' && activeCat === 'All') {
+      const verbs = [], rest = [];
+      for (const w of list) (w.cat === 'Common Verbs' ? verbs : rest).push(w);
+      return verbs.concat(rest);
+    }
+    return list;
+  }
+  // Make a copy before sorting in place.
+  const arr = list.slice();
+  if (sortMode === 'alpha') {
+    arr.sort((a, b) => _daCollator.compare(firstSortChar(a) + a.da, firstSortChar(b) + b.da));
+  } else if (sortMode === 'not-learned') {
+    arr.sort((a, b) => {
+      const ka = known.has(a.da) ? 1 : 0;
+      const kb = known.has(b.da) ? 1 : 0;
+      return ka - kb; // unknown (0) first
+    });
+  } else if (sortMode === 'known') {
+    arr.sort((a, b) => {
+      const ka = known.has(a.da) ? 0 : 1;
+      const kb = known.has(b.da) ? 0 : 1;
+      return ka - kb; // known (0) first
+    });
+  } else if (sortMode === 'random') {
+    for (let i = arr.length - 1; i > 0; i--) {
+      const j = Math.floor(Math.random() * (i + 1));
+      [arr[i], arr[j]] = [arr[j], arr[i]];
+    }
+  }
+  return arr;
+}
+
+function applyFilters() { renderCards(getSorted(getFiltered())); }
+
+function setSortMode(m) {
+  sortMode = m;
+  try { localStorage.setItem('dk-sort', m); } catch (_) {}
+  // Keep both sort selects in sync (mobile + desktop).
+  const desk = document.getElementById('sort-select');
+  const mob  = document.getElementById('sort-select-mobile');
+  if (desk && desk.value !== m) desk.value = m;
+  if (mob  && mob.value  !== m) mob.value  = m;
+  applyFilters();
+}
+
+function setAlphaRange(key) {
+  alphaRange = key;
+  // Sync both strips (desktop + mobile) so the active highlight stays consistent.
+  document.querySelectorAll('.alpha-strip .alpha-chip').forEach(el =>
+    el.classList.toggle('active', el.dataset.range === key));
+  applyFilters();
+}
+
+function buildAlphaStrip() {
+  // Populate every .alpha-strip in the document (one in desktop topbar,
+  // one in mobile header topbar). Each gets its own button instances
+  // bound to setAlphaRange.
+  document.querySelectorAll('.alpha-strip').forEach(strip => {
+    strip.innerHTML = '';
+    for (const r of ALPHA_RANGES) {
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'alpha-chip' + (r.key === alphaRange ? ' active' : '');
+      btn.dataset.range = r.key;
+      btn.textContent = r.label;
+      btn.addEventListener('click', () => setAlphaRange(r.key));
+      strip.appendChild(btn);
+    }
+  });
+}
 
 // ── RENDER ────────────────────────────────────────────────────────
 function renderCards(list) {
@@ -2711,7 +2989,7 @@ function renderCards(list) {
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front cat-${w.cat}">
-            <button class="speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <button class="speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <div class="kid-emoji">${w.emoji}</div>
             <div class="kid-da">${w.da}</div>
             <div class="kid-en">${w.en}</div>
@@ -2730,7 +3008,7 @@ function renderCards(list) {
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
             <div class="word-type">verb</div>
@@ -2754,14 +3032,14 @@ function renderCards(list) {
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
             <div class="word-type">${w.type}</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">🔊</button>
+            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-cat-icon" aria-hidden="true">${catIcon}</span>
             <div class="english-word">${w.en}</div>
             <div class="word-example">
@@ -3014,6 +3292,12 @@ function refreshStreakBadge(celebrate) {
 applyModeClasses();
 refreshStreakBadge();
 buildSidebar();
+buildAlphaStrip();
+// Sync both sort-selects to the persisted sort mode.
+['sort-select', 'sort-select-mobile'].forEach(id => {
+  const el = document.getElementById(id);
+  if (el) el.value = sortMode;
+});
 applyFilters();
 </script>
 </body>

@@ -2262,6 +2262,8 @@ INLINE_ONCLICK_EXPORTS = {
         "closeResetModal",
         "confirmReset",
         "flipAll",
+        "setSortMode",
+        "selectCat",
     ],
     "skriv": [],  # uses addEventListener exclusively
 }
