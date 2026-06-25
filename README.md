@@ -203,6 +203,8 @@ typing modules still work without internet.
 
 ## License
 
-© Swapnil Deshpande. All rights reserved.
+MIT — see [LICENSE](LICENSE). Free to use, study, modify, and redistribute,
+including for commercial purposes, as long as the copyright notice stays in
+place. Contributions welcome.
 
-Content is provided for personal educational use only.
+Built by [Swapnil Deshpande](https://github.com/swapnild2111).
