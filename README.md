@@ -1,170 +1,194 @@
-# danskLearn
+<div align="center">
 
-A growing portal for learning Danish — vocabulary, writing, listening,
-speaking, and translation. Five modules in one single-page app, no
-framework, no build step beyond a small Python script.
+# 🇩🇰 danskLearn
 
-Live: https://swapnild2111.github.io/dansklearn/
+**A free, open-source portal for learning Danish — built for actual learners, not for ad revenue.**
+
+[![Live](https://img.shields.io/badge/Live-swapnild2111.github.io%2Fdansklearn-4f8ef7?style=flat-square)](https://swapnild2111.github.io/dansklearn/)
+[![License: MIT](https://img.shields.io/badge/License-MIT-4ade80?style=flat-square)](LICENSE)
+[![No build](https://img.shields.io/badge/Build-Python%20only-7dd3fc?style=flat-square)](#for-developers)
+[![No tracking](https://img.shields.io/badge/Tracking-none*-f87171?style=flat-square)](#privacy)
+
+[**👉 Open the app**](https://swapnild2111.github.io/dansklearn/)
+
+</div>
 
 ---
 
-## SEO, analytics & Search Console
+## What's inside
 
-The portal ships with built-in SEO and optional Google integrations. Configure
-them in `site.config.json`, then rebuild:
+Five focused modules that cover the four ways you actually use a language — reading, writing, listening, and speaking — plus translation between Danish and English. Pick one, learn for ten minutes, come back tomorrow. Your progress is saved locally in your browser.
+
+| Module | Practice | What you do |
+|---|---|---|
+| 📚 **Ord** | Vocabulary | Flip flashcards through the **1000 most essential Danish words**, with verb conjugations and a colourful **Kids mode** for ages 5–7 |
+| ✍️ **Skriv** | Writing | Type along with **fresh news paragraphs from DR.dk**. Live colouring catches mistakes character by character; tap any word for an instant translation |
+| 🌐 **Oversæt** | Translation | The reverse: **read English, type the Danish**. A hint icon reveals the original whenever you're stuck |
+| 🗣️ **Tale** | Speaking | **Listen and repeat** with Anki-style spaced repetition. Rate each phrase Hard / Good / Easy and the deck schedules the next review for you |
+| 👂 **Hør** | Listening | A Danish phrase plays — **pick the right English meaning** from four choices. Distractors come from the same topic to keep things fair |
+
+---
+
+## Why this exists
+
+Most language apps push you toward a paid tier, an account, a daily streak that nags you. **danskLearn doesn't.**
+
+- 🆓 **Completely free** — no ads, no subscriptions, no premium tier
+- 🔐 **No account, no email, no signup** — progress is yours, saved in your browser
+- 🚫 **No tracking on you** — anonymous, aggregate page-view stats only (see [Privacy](#privacy))
+- 📚 **Real content** — vocabulary is the 1000 most useful Danish words; reading practice pulls live from Danmarks Radio
+- 📱 **Works on your phone** — responsive layouts; no app store
+- 🌐 **Works offline-ish** — typing practice falls back to bundled paragraphs when you're without internet
+- 💾 **Your data stays with you** — everything in `localStorage`; nothing leaves your device except API calls for fresh content
+
+It started as two small standalone HTML files I built for myself while learning Danish. It grew into a portal because friends asked for the link.
+
+---
+
+## Standout features
+
+### 🎯 1000 hand-picked words, sorted by usefulness
+
+Not a random word dump. The Ord deck is the **1000 most essential Danish words** — pronouns, common verbs (in their own first-priority bucket), numbers, body, food, daily-life vocabulary, building up to abstract concepts. Search across Danish and English. Filter by initial letter group (A–D, E–H, …). Sort by what you haven't seen, what you've already learned, or shuffle for review.
+
+### 👶 Kids mode for ages 5–7
+
+A separate vocabulary deck of ~200 words paired with friendly emoji, big colourful tap-to-pop cards, a streak counter, and confetti when kids learn a new word. Bright pastel palette, audio-first, no flipping mechanic — just see, hear, tap.
+
+### 📰 Fresh content every day
+
+`Skriv` and `Oversæt` pull live paragraphs from **DR.dk** (Danmarks Radio) — news, politics, culture, sport, tech. Today's headlines, today's vocabulary. Click Refresh whenever you want a fresh set.
+
+### 🎓 Real spaced repetition
+
+`Tale` uses an Anki-lite algorithm. Phrases you find hard come back tomorrow. Phrases you've nailed don't reappear for a week. The deck schedules itself — you just rate each phrase honestly.
+
+### 🔊 Audio for every word
+
+Danish pronunciation matters. Every flashcard, every paragraph, every phrase has a play button that uses your operating system's built-in Danish voice (when installed). No proprietary audio bundles to download.
+
+### 📊 Live progress dashboard
+
+The landing page shows at-a-glance how you're doing in each module — words known, paragraphs completed, phrases reviewed today, listening accuracy, current streak. No nagging, just a quiet "here's where you left off."
+
+---
+
+## Quick start
+
+### Use it (just open the link)
+
+👉 **<https://swapnild2111.github.io/dansklearn/>**
+
+That's it. Bookmark the page, open it whenever, leave it whenever. Your browser remembers where you left off.
+
+### Run it locally
+
+Want to tinker, fork, or run it offline?
 
 ```bash
-python3 build.py
+git clone https://github.com/swapnild2111/dansklearn.git
+cd dansklearn
+python3 -m http.server 8765
+# open http://localhost:8765/
 ```
 
-| Key | Purpose |
-|---|---|
-| `gaMeasurementId` | GA4 measurement ID (`G-XXXXXXXXXX`) for traffic analytics |
-| `gscVerification` | HTML-tag verification token from Google Search Console |
-
-### What the build generates
-
-- **Per-route meta** — title, description, canonical URL (updated on SPA navigation)
-- **Open Graph & Twitter Card** tags for link previews
-- **JSON-LD** structured data (`WebSite` + `WebApplication`)
-- **`robots.txt`** — allows crawlers and points to the sitemap
-- **`sitemap.xml`** — all six public routes (`/`, `/ord`, `/skriv`, …)
-- **`og-image.svg`** — social preview image (1200×630)
-
-### Google Analytics 4
-
-1. In [Google Analytics](https://analytics.google.com/), create a **GA4 property**.
-2. Add a **Web** data stream for `https://swapnild2111.github.io/dansklearn/`.
-3. Copy the **Measurement ID** (`G-…`) into `site.config.json` → `gaMeasurementId`.
-4. Run `python3 build.py`, commit, and push. Page views are tracked on each route change.
-
-### Google Search Console
-
-1. Open [Google Search Console](https://search.google.com/search-console).
-2. Add a **URL-prefix** property: `https://swapnild2111.github.io/dansklearn/`
-3. Choose **HTML tag** verification and copy the `content="…"` value.
-4. Paste it into `site.config.json` → `gscVerification`.
-5. Rebuild, push, then click **Verify** in Search Console.
-6. Submit the sitemap: `https://swapnild2111.github.io/dansklearn/sitemap.xml`
+No npm. No bundler. No build step required to **run** the site — the committed `index.html` works as-is. (To rebuild after editing source files, see [For developers](#for-developers) below.)
 
 ---
 
-## Modules
+## Privacy
 
-| Module | Route | What it does |
-|---|---|---|
-| **danskord**     | `/ord`     | Flashcards for the 1000 most essential Danish words, plus verb conjugations and a kids-friendly mode for ages 5–7 |
-| **danskskriv**   | `/skriv`   | Type along with fresh DR.dk paragraphs. Live colouring catches mistakes; tap any word for an English translation |
-| **danskoversæt** | `/overset` | Same fresh paragraphs, reversed: read English, type the Danish translation. Hint icon reveals the original |
-| **dansktale**    | `/tale`    | Listen-and-repeat with Anki-lite spaced repetition. Self-rate Hard / Good / Easy and the deck schedules itself |
-| **danskhør**     | `/hor`     | Listen to a Danish phrase, pick the English meaning from four choices. Distractors come from the same topic |
+danskLearn collects **no personal data** about you. Specifically:
 
-The home page (`/`) lists all five modules with a live progress snapshot
-read from `localStorage`.
+- **No account** — there's nothing to sign up for.
+- **No cookies** — the site doesn't set any.
+- **Your progress** lives entirely in your browser's `localStorage`. Clear your browser data and it's gone — no copy lives on a server somewhere.
+- **API calls to DR.dk and MyMemory** (for fresh paragraphs and translation) are made directly from your browser. They see your IP like any other website you visit; the danskLearn portal does not.
+- **Anonymous page views** *may* be reported to Google Analytics 4 if the maintainer has configured an analytics ID. This counts visits, not visitors — no advertising IDs, no behavioural profiles.
+
+If you'd rather not have *any* tracking at all, use a content blocker (uBlock Origin, NextDNS, etc.); the site works exactly the same.
 
 ---
 
-## Repository layout
+## Share it
+
+If you find this useful, share the link — that's the only growth channel:
+
+- The live URL is shareable on any platform: <https://swapnild2111.github.io/dansklearn/>
+- Both Facebook and WhatsApp generate a nice preview card when you paste the link (Danish flag + tagline).
+- A friend learning Danish? Just send them the URL — no signup, no friction, no "download the app" pitch.
+
+---
+
+## Contribute
+
+Pull requests are very welcome. Some ideas:
+
+- **More words** — expand the 1000-word list, fix translations, suggest better example sentences (see `src/danskord.html`).
+- **More phrases** — extend the 80-phrase bank used by Tale and Hør (see `src/phrases.js`).
+- **More categories** — the kids-mode taxonomy could double in size.
+- **More modules** — listening to actual DR podcasts? Conjugation drills? A flashcard import/export?
+- **Bug reports & UX feedback** — open an issue with a screenshot if something looks off in your browser.
+
+The project is intentionally **dependency-free**: no npm, no framework, no build server. The only tool is `python3`. Keep that the case in PRs.
+
+---
+
+## For developers
+
+> Skip this section if you're just here to learn Danish.
+
+### Repository layout
 
 ```
 dansklearn/
 ├── README.md              # this file
-├── build.py               # assembles index.html from the source files in src/
-├── site.config.json       # GA4 + Search Console tokens
-├── index.html             # build output — what users actually open
-├── 404.html               # same SPA shell — GitHub Pages fallback for clean URLs
-├── robots.txt             # build output — crawler rules + sitemap link
-├── sitemap.xml            # build output — all public routes
-├── favicon.svg
-├── og-image.svg           # social preview image
+├── LICENSE                # MIT
+├── build.py               # assembles index.html from src/
+├── site.config.json       # optional: GA4 + Search Console tokens
+├── index.html             # build output — what users open
+├── 404.html               # SPA shell fallback for clean URLs
+├── robots.txt             # build output
+├── sitemap.xml            # build output
+├── favicon.svg            # Dannebrog flag
+├── og-image.svg           # social preview (1200×630)
 └── src/
-    ├── danskord.html      # standalone flashcards app (1000 words)
-    ├── danskskriv.html    # standalone Danish-typing app
-    ├── danskoverset.html  # standalone English→Danish typing app
-    ├── dansktale.html     # standalone speaking-practice app
-    ├── danskhor.html      # standalone listening-quiz app
-    └── phrases.js         # shared 80-phrase bank for tale + hor
+    ├── danskord.html      # standalone — 1000-word flashcards
+    ├── danskskriv.html    # standalone — Danish typing
+    ├── danskoverset.html  # standalone — English→Danish typing
+    ├── dansktale.html     # standalone — speaking practice (SR)
+    ├── danskhor.html      # standalone — listening quiz
+    └── phrases.js         # 80-phrase bank shared by tale + hor
 ```
 
-Every file in `src/` is **standalone-runnable** — open any of them directly
-in a browser and you get the same module without the portal chrome. This
-mirrors the behaviour the project started with (`danskord.html` and
-`danskskriv.html` have always been independent apps).
+Every file under `src/` is **standalone-runnable** — open `src/danskord.html` directly in a browser and you get just that module. The merged `index.html` at the repo root is what `build.py` produces.
 
-`build.py` reads the five source files plus `phrases.js`, scopes their CSS
-to the merged document, wraps each script in an init-on-first-activation
-IIFE, and emits a single `index.html` at the repo root.
+### How `build.py` works
 
----
+The build solves three merge challenges:
 
-## Getting started
+1. **CSS isolation.** Each source file's `<style>` block gets every selector prefixed with its view's container id (`#view-ord`, `#view-skriv`, …) so rules can't collide. `body { ... }` styles scope to the view container. `header { ... }` rules retarget to `.app-toolbar` (an in-flow sub-toolbar inside the merged document).
 
-### Run the merged portal
+2. **Script isolation.** Each source's last `<script>` is wrapped in `window.{Name}App = (function(){ let initialized=false; return { init(){ … } }; })()`. The router calls `init()` the first time the view is shown; subsequent visits are no-ops. Sources that use inline `onclick=` (just `danskord.html`) get those handler functions explicitly forwarded to `window`.
 
-```bash
-python3 build.py            # writes index.html + 404.html
-python3 -m http.server 8765 # serve at http://localhost:8765/
-```
+3. **Shared phrase bank.** `phrases.js` defines `window.DanskPhrases.BANK`. Standalone files load it via `<script src="phrases.js">`. The build strips that tag from each body and inlines the bank's contents once at the top of the merged scripts.
 
-Open `http://localhost:8765/` — module routes like `/ord` and `/overset` work when served from the repo root.
+HTML comments are stripped during the merge so comment text containing `<script>` fragments can't trip the script-stripping regex.
 
-### Run a single module standalone
-
-Just open the source HTML directly in a browser — no server needed for
-modules that don't fetch anything (Tale, Hør). For `danskskriv` and
-`danskoversæt` (which fetch RSS) you'll want a local server because some
-browsers refuse `fetch()` on `file://` URLs:
+### Edit and rebuild
 
 ```bash
+# Edit any src/*.html file in your editor
+python3 build.py            # writes index.html + 404.html + robots.txt + sitemap.xml
 python3 -m http.server 8765
-# then open http://localhost:8765/src/dansktale.html
+# open http://localhost:8765/
 ```
 
-### Edit a module
+If you're only tweaking CSS/markup in one module, just open the source file directly — no rebuild needed until you want the merged portal updated.
 
-1. Edit the relevant `src/*.html` file.
-2. Run `python3 build.py` to regenerate `index.html`.
-3. Reload your browser.
+### Storage keys
 
-If you're only editing CSS or markup inside one module, you can just open
-the source file directly to see your changes — no rebuild needed until you
-want the merged portal updated.
-
----
-
-## How `build.py` works
-
-The merge has three challenges, all solved at build time:
-
-1. **CSS isolation.** Each source file's `<style>` block defines rules that
-   would collide if dropped into the merged document as-is. `build.py`
-   parses each stylesheet and prefixes every selector with the view's
-   container id (`#view-ord`, `#view-skriv`, etc.). The source's `body { ... }`
-   styles are scoped to the view container; rules targeting the source's own
-   fixed `<header>` are retargeted at `.app-toolbar` (the merged document's
-   in-view sub-toolbar).
-
-2. **Script isolation.** Each source's last `<script>` block is wrapped in
-   an IIFE: `window.{Name}App = (function(){ let initialized=false; return { init(){ ... } }; })()`.
-   The router (in `PORTAL_FOOTER_SCRIPT`) calls `init()` the first time the
-   user navigates to that view; subsequent navigations are no-ops. Sources
-   that use inline `onclick=` attributes (just `danskord.html`) get their
-   handler functions explicitly forwarded to `window` after init.
-
-3. **Shared phrase bank.** `phrases.js` defines `window.DanskPhrases.BANK`.
-   Standalone files load it with a `<script src="phrases.js">` tag. When
-   merged, `build.py` strips that tag from each body and inlines the bank's
-   contents once via a top-level `<script id="phrases-bank">` block.
-
-Source HTML comments are stripped during the merge so comment text
-containing fragments like `<script>` doesn't trip up the script-stripping
-regex.
-
----
-
-## Storage keys (localStorage)
-
-Modules persist independently. None overlap.
+Each module persists independently. None overlap.
 
 | Key                                  | Module    | Stores |
 |---|---|---|
@@ -173,38 +197,54 @@ Modules persist independently. None overlap.
 | `dk-known-verbs`                     | Ord       | Set of known verb indices |
 | `dk-known-kids`                      | Ord       | Set of known kids-mode word indices |
 | `dk-kids-streak`                     | Ord       | `{count, lastDate}` for kids streak |
+| `dk-sort`                            | Ord       | Persisted sort mode |
 | `danskskriv:session:v1`              | Skriv     | Current 5-paragraph session + typed text |
 | `danskoverset:session:v1`            | Overset   | Same shape as Skriv |
-| `danskoverset:translation-cache:v1`  | Overset   | Persisted da→en translations to dodge mymemory's daily quota |
+| `danskoverset:translation-cache:v1`  | Overset   | Persisted da→en translations (dodges MyMemory's daily quota) |
 | `dansktale:progress:v1`              | Tale      | Per-phrase SR state: `{seen, ease, interval, due}` |
 | `dansktale:meta:v1`                  | Tale      | `{lastDate, streak, reviewedToday}` |
 | `danskor:progress:v1`                | Hør       | `{seen, correct}` (lifetime) |
 | `danskor:seen-counts:v1`             | Hør       | Per-phrase seen counts (used for unseen-weighting) |
 
-To wipe progress for a single module, clear that module's keys in
-DevTools → Application → Local Storage.
+To wipe progress for one module, clear that module's keys in DevTools → Application → Local Storage.
 
----
+### External dependencies (runtime only)
 
-## External dependencies
+- **Google Fonts** — DM Serif Display, Inter, JetBrains Mono, Fredoka (Kids mode).
+- **DR.dk RSS feeds** via `api.rss2json.com` (free tier, no auth) — Skriv and Oversæt.
+- **MyMemory translation API** (free tier) — Skriv (on-demand) and Oversæt (page load + cached).
+- **Web Speech API** (`speechSynthesis`) — pronunciation. Quality depends on the OS's installed Danish voice.
+- **Web Audio API** — Hør's correct/wrong sound effects.
 
-All loaded at runtime — nothing to install:
+Offline fallback paragraphs are bundled in Skriv and Oversæt so the typing modules still work without an internet connection.
 
-- **Google Fonts** — DM Serif Display, Inter, JetBrains Mono, Fredoka (kids mode).
-- **DR.dk RSS feeds** via `api.rss2json.com` (free tier, no auth) — for Skriv and Overset.
-- **mymemory.translated.net** translation API (free tier) — for Skriv (on-demand) and Overset (page load + cached).
-- **Web Speech API** (`speechSynthesis`) — for Skriv, Tale, Hør pronunciation. Quality depends on the OS's installed Danish voice.
-- **Web Audio API** — for Hør's correct/wrong sound effects.
+### SEO, analytics & Search Console
 
-Offline fallback paragraphs are bundled inside Skriv and Overset so the
-typing modules still work without internet.
+Optional. Configure in `site.config.json`, then rebuild:
+
+| Key | Purpose |
+|---|---|
+| `gaMeasurementId` | GA4 measurement ID (`G-XXXXXXXXXX`) for traffic analytics |
+| `gscVerification` | HTML-tag verification token from Google Search Console |
+
+The build automatically generates per-route meta tags (title, description, canonical URL), Open Graph & Twitter Card tags, JSON-LD structured data, `robots.txt`, and `sitemap.xml`. The `og-image.svg` is bundled.
+
+To wire up Google Analytics 4:
+
+1. Create a GA4 property at [analytics.google.com](https://analytics.google.com/) with a Web data stream for `https://swapnild2111.github.io/dansklearn/`.
+2. Paste the Measurement ID into `site.config.json` → `gaMeasurementId`.
+3. Run `python3 build.py`, commit, push.
+
+To wire up Search Console:
+
+1. Open [Search Console](https://search.google.com/search-console), add a URL-prefix property.
+2. Choose HTML-tag verification and paste the `content="…"` value into `site.config.json` → `gscVerification`.
+3. Rebuild, push, click **Verify**, submit the sitemap.
 
 ---
 
 ## License
 
-MIT — see [LICENSE](LICENSE). Free to use, study, modify, and redistribute,
-including for commercial purposes, as long as the copyright notice stays in
-place. Contributions welcome.
+**MIT** — see [LICENSE](LICENSE). Free to use, study, modify, and redistribute, including commercially, as long as the copyright notice stays in place.
 
-Built by [Swapnil Deshpande](https://github.com/swapnild2111).
+Built by [Swapnil Deshpande](https://github.com/swapnild2111). Contributions welcome.
