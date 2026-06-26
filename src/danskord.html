@@ -69,8 +69,32 @@
   .main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-width: 0; }
   .topbar { background: var(--surface); border-top: 1px solid var(--border); padding: 10px 24px; display: flex; align-items: center; gap: 10px; flex-shrink: 0; }
   .search-wrap { position: relative; flex: 1; min-width: 180px; max-width: 300px; }
-  .search-wrap svg { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none; }
-  input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 7px 10px 7px 32px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
+  .search-wrap svg.search-icon { position: absolute; left: 10px; top: 50%; transform: translateY(-50%); color: var(--text-dim); pointer-events: none; }
+  /* Clear (×) button — hidden by default; .has-text class on the .search-wrap
+     (toggled by the input listener) reveals it. Sits on the right edge of
+     the input; clicking clears the value and reapplies filters. */
+  .search-wrap .search-clear {
+    position: absolute;
+    right: 6px;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 22px;
+    height: 22px;
+    border: none;
+    background: transparent;
+    color: var(--text-dim);
+    cursor: pointer;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    padding: 0;
+    transition: background 0.15s, color 0.15s;
+  }
+  .search-wrap.has-text .search-clear { display: inline-flex; }
+  .search-wrap .search-clear:hover { background: rgba(248, 113, 113, 0.15); color: var(--danger); }
+  .search-wrap .search-clear svg { width: 12px; height: 12px; pointer-events: none; }
+  input[type="text"] { width: 100%; background: var(--bg); border: 1px solid var(--border); border-radius: var(--radius); color: var(--text); padding: 7px 32px 7px 32px; font-family: 'Inter', sans-serif; font-size: 13px; outline: none; transition: border-color 0.2s; }
   input[type="text"]:focus { border-color: var(--accent); }
   input[type="text"]::placeholder { color: var(--text-dim); }
 
@@ -160,8 +184,13 @@
   .grid-container { padding: 12px 24px 80px; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
 
   /* FLIP CARD */
-  .card-wrap { perspective: 800px; height: 148px; cursor: pointer; }
-  body:not(.mode-kids):not(.mode-verbs) .card-wrap { height: 178px; }
+  /* Default 178px works for Words mode (Danish + word-type + back: English +
+     IPA + example). Verbs and Kids override below — Verbs needs 220px for
+     three conjugation rows + IPA + English; Kids is 220px for big tap target.
+     Note: the previous `body:not(...):not(...)` rule broke under build.py's
+     CSS scoping (the :not got attached to #view-ord, not to body), so we
+     keep this rule positive-only. */
+  .card-wrap { perspective: 800px; height: 178px; cursor: pointer; }
   .card-inner { width: 100%; height: 100%; position: relative; transform-style: preserve-3d; transition: transform 0.42s cubic-bezier(0.4, 0, 0.2, 1); }
   .card-wrap.flipped .card-inner { transform: rotateY(180deg); }
   .card-face { position: absolute; width: 100%; height: 100%; border-radius: var(--card-radius); backface-visibility: hidden; display: flex; flex-direction: column; justify-content: center; align-items: center; padding: 14px; border: 1px solid var(--border); transition: border-color 0.2s, box-shadow 0.2s; }
@@ -170,11 +199,11 @@
   .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; justify-content: flex-start; padding: 28px 12px 12px; }
   .card-wrap.flipped .card-back { border-color: var(--accent); }
   .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
-  /* IPA transcription — visual fallback when TTS audio is poor. */
-  .ipa { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: -2px; margin-bottom: 6px; text-align: center; letter-spacing: 0.2px; }
+  /* IPA transcription — shown on the BACK of cards (next to the English
+     meaning, or aligned with each verb conjugation form). Visual fallback
+     when the OS's Danish TTS voice is rough. */
+  .ipa { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: 2px; margin-bottom: 6px; text-align: center; letter-spacing: 0.2px; }
   .ipa:empty { display: none; }
-  .kid-ipa { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #b8a0c0; text-align: center; margin-top: -2px; }
-  .kid-ipa:empty { display: none; }
   .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
   .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
   .card-cat-icon {
@@ -265,7 +294,10 @@
   .card-wrap.known .known-dot { opacity: 1; }
 
   /* VERB MODE — taller cards with conjugation block on back */
-  body.mode-verbs .card-wrap { height: 200px; }
+  /* Verbs mode: taller cards to fit Danish + IPA + 3 conjugation rows + English
+     meaning on the back without overflow. Some long English glosses ("to
+     become / stay") wrap to two lines so we keep generous headroom here. */
+  body.mode-verbs .card-wrap { height: 230px; }
   body.mode-verbs .grid-container { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .verb-conj { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 4px; font-size: 12px; width: 100%; padding: 0 4px; margin-top: 6px; }
   .verb-conj-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; text-align: right; align-self: center; }
@@ -523,10 +555,13 @@
   <div class="topbar">
     <select id="cat-select" class="cat-select" aria-label="Category" onchange="selectCat(this.value)"></select>
     <div class="search-wrap">
-      <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+      <svg class="search-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
         <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
       </svg>
       <input type="text" id="search" placeholder="Search Danish or English…">
+      <button class="search-clear" type="button" aria-label="Clear search" data-clear-for="search">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+      </button>
     </div>
     <select id="sort-select-mobile" class="sort-select" aria-label="Sort" onchange="setSortMode(this.value)">
       <option value="default">Default</option>
@@ -558,10 +593,13 @@
   <div class="main">
     <div class="topbar">
       <div class="search-wrap">
-        <svg width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+        <svg class="search-icon" width="13" height="13" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
           <circle cx="11" cy="11" r="8"/><path d="m21 21-4.35-4.35"/>
         </svg>
         <input type="text" id="search-desktop" placeholder="Search Danish or English…">
+        <button class="search-clear" type="button" aria-label="Clear search" data-clear-for="search-desktop">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
       </div>
       <select id="sort-select" class="sort-select" aria-label="Sort" onchange="setSortMode(this.value)">
         <option value="default">Sort: Default</option>
@@ -3009,15 +3047,14 @@ function renderCards(list) {
     wrap.className = 'card-wrap' + (isKnown ? ' known' : '');
 
     if (mode === 'kids') {
-      // Kid card: emoji-first, audio-first, no flip — tap pops + speaks
-      const kidIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
+      // Kid card: emoji-first, audio-first, no flip — tap pops + speaks.
+      // No IPA — phonetic symbols are meaningless to 5–7 year olds.
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front cat-${w.cat}">
             <button class="speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <div class="kid-emoji">${w.emoji}</div>
             <div class="kid-da">${w.da}</div>
-            <div class="kid-ipa">${kidIpa}</div>
             <div class="kid-en">${w.en}</div>
           </div>
         </div>`;
@@ -3031,20 +3068,23 @@ function renderCards(list) {
       const auxClass = (w.perf && w.perf.startsWith('er ')) ? 'aux-er' : '';
       // Strip leading "at " for speech — TTS pronounces the verb cleaner without the infinitive marker
       const spoken = w.da.replace(/^at\s+/, '');
-      const verbIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
+      // Show only the infinitive's IPA on the back. The bank's multi-IPA
+      // entries are sometimes inflections and sometimes synonyms — we can't
+      // tell apart, so we never assume positions 1/2/3 are pres/past/perf.
+      // The conjugation forms themselves are already visible as text.
+      const ipaInf = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
-            <div class="ipa">${verbIpa}</div>
             <div class="word-type">verb</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
             <div class="danish-word" style="font-size:18px;">${w.da}</div>
-            <div class="ipa">${verbIpa}</div>
+            <div class="ipa">${ipaInf}</div>
             <div class="verb-conj">
               <span class="verb-conj-label">pres</span><span class="verb-conj-form">${w.pres}</span>
               <span class="verb-conj-label">past</span><span class="verb-conj-form">${w.past}</span>
@@ -3058,6 +3098,10 @@ function renderCards(list) {
     } else {
       const ex = buildWordExample(w);
       const catIcon = (catMeta()[w.cat] || { icon: '📁' }).icon;
+      // IPA lives on the BACK of the card so the front stays clean
+      // (Danish word + word-type only). The back pairs it with the
+      // English meaning so the user sees translation + pronunciation
+      // together when they flip.
       const wordIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
@@ -3065,7 +3109,6 @@ function renderCards(list) {
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
-            <div class="ipa">${wordIpa}</div>
             <div class="word-type">${w.type}</div>
             <div class="known-dot">✓</div>
           </div>
@@ -3073,6 +3116,7 @@ function renderCards(list) {
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-cat-icon" aria-hidden="true">${catIcon}</span>
             <div class="english-word">${w.en}</div>
+            <div class="ipa">${wordIpa}</div>
             <div class="word-example">
               <div class="example-da">${ex.da}</div>
               <div class="example-en">${ex.en}</div>
@@ -3166,6 +3210,16 @@ function updateStats() {
 
 function clearSearchInputs() {
   document.querySelectorAll('.topbar input[type="text"]').forEach(el => { el.value = ''; });
+  document.querySelectorAll('.topbar .search-wrap').forEach(w => w.classList.remove('has-text'));
+}
+
+// Helper: keep the .has-text marker on each .search-wrap in sync with its
+// input. CSS shows/hides the × button off that class.
+function syncSearchClearVisibility() {
+  document.querySelectorAll('.topbar .search-wrap').forEach(w => {
+    const inp = w.querySelector('input[type="text"]');
+    w.classList.toggle('has-text', !!(inp && inp.value));
+  });
 }
 
 document.querySelectorAll('.topbar input[type="text"]').forEach(el => {
@@ -3174,7 +3228,22 @@ document.querySelectorAll('.topbar input[type="text"]').forEach(el => {
     document.querySelectorAll('.topbar input[type="text"]').forEach(other => {
       if (other !== e.target) other.value = searchTerm;
     });
+    syncSearchClearVisibility();
     applyFilters();
+  });
+});
+
+// Clear (×) button — wipe both inputs, re-apply filters, refocus the input.
+document.querySelectorAll('.topbar .search-clear').forEach(btn => {
+  btn.addEventListener('click', () => {
+    searchTerm = '';
+    const targetId = btn.dataset.clearFor;
+    document.querySelectorAll('.topbar input[type="text"]').forEach(inp => { inp.value = ''; });
+    syncSearchClearVisibility();
+    applyFilters();
+    // Refocus the input the button belongs to (so keyboard users stay in flow).
+    const target = targetId ? document.getElementById(targetId) : null;
+    if (target) target.focus();
   });
 });
 

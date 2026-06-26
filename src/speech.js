@@ -395,14 +395,30 @@
   }
 
   // ── IPA lookup (uses window.DanskIPA.BANK if available) ────────────
-  // Returns the IPA string for a Danish word/phrase, or '' if not found.
+  // Returns ONLY the first bracketed IPA form for a Danish word, or ''
+  // if not found. The bank entries can contain multiple comma-separated
+  // IPAs (different inflections or synonyms picked up during scrape) —
+  // most card layouts only have room for one, so we default to the
+  // headword form. Callers that need every form can use lookupIpaList().
+  //
   // Strips the verb infinitive marker "at " so callers can pass words
   // either as "være" or "at være".
   function lookupIpa(text) {
-    if (!text || !window.DanskIPA || !window.DanskIPA.BANK) return '';
+    const list = lookupIpaList(text);
+    return list.length ? list[0] : '';
+  }
+
+  // Returns an array of IPA forms for a Danish word (or [] if none).
+  // Useful for verb conjugation rows where each form has its own IPA.
+  function lookupIpaList(text) {
+    if (!text || !window.DanskIPA || !window.DanskIPA.BANK) return [];
     const bank = window.DanskIPA.BANK;
     const norm = String(text).toLowerCase().trim().replace(/^at\s+/i, '');
-    return bank[norm] || '';
+    const raw = bank[norm];
+    if (!raw) return [];
+    // The raw value can be "[ˈha], [ˈhɑˀ], [ˈhæːðə], [ˈhɑfd]" or just "[ˈha]".
+    const matches = raw.match(/\[[^\]]+\]/g);
+    return matches || [];
   }
 
   // ── Public surface ────────────────────────────────────────────────
@@ -415,7 +431,8 @@
     installSteps,
     mountOnboardingBanner,
     mountVoiceIndicator,
-    openModal,    // exposed so other UIs can deep-link to the install help
-    lookupIpa,    // optional IPA lookup; returns '' if no data
+    openModal,        // exposed so other UIs can deep-link to the install help
+    lookupIpa,        // single IPA for a word, '' if none
+    lookupIpaList,    // all IPA forms for a word, [] if none
   };
 })();
