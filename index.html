@@ -609,9 +609,10 @@ body.mode-kids #view-ord .alpha-chip.active { background: #ff7a59; border-color:
 #view-ord .progress-info { display: flex; justify-content: space-between; font-size: 11px; color: var(--text-muted); margin-bottom: 5px; }
 #view-ord .progress-track { height: 3px; background: var(--border); border-radius: 3px; overflow: hidden; margin-bottom: 10px; }
 #view-ord .progress-fill { height: 100%; background: linear-gradient(90deg, var(--accent), var(--accent2)); border-radius: 3px; transition: width 0.35s ease; }
-#view-ord .section-heading { padding: 18px 24px 4px; display: flex; align-items: baseline; gap: 12px; }
+#view-ord .section-heading { padding: 18px 24px 4px; display: flex; align-items: baseline; gap: 12px; flex-wrap: wrap; }
 #view-ord .section-heading h2 { font-family: 'DM Serif Display', serif; font-size: 22px; color: var(--text); font-weight: 400; }
 #view-ord .section-count { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); }
+#view-ord .section-hint { font-family: 'Inter', sans-serif; font-size: 12.5px; color: var(--text-muted); margin-left: auto; }
 #view-ord .grid-container { padding: 12px 24px 80px; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: 14px; }
 #view-ord .card-wrap { perspective: 800px; height: 148px; cursor: pointer; }
 body #view-ord :not(.mode-kids):not(.mode-verbs) .card-wrap { height: 178px; }
@@ -772,6 +773,7 @@ body.mode-kids #view-ord .progress-track { background: #ffe9d4; height: 8px; bor
 body.mode-kids #view-ord .progress-fill { background: linear-gradient(90deg, #ff9a7a, #ff7a59); border-radius: 8px; }
 body.mode-kids #view-ord .section-heading h2 { font-family: 'Fredoka', sans-serif; font-weight: 700; color: #2d2a4a; font-size: 28px; }
 body.mode-kids #view-ord .section-count { color: #b8a0c0; font-family: 'Fredoka', sans-serif; }
+body.mode-kids #view-ord .section-hint { color: #a4533a; font-family: 'Fredoka', sans-serif; font-weight: 500; font-size: 13px; }
 body.mode-kids #view-ord .grid-container { grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 18px; padding: 16px 24px 80px; }
 body.mode-kids #view-ord .card-wrap { height: 220px; perspective: none; }
 body.mode-kids #view-ord .card-inner { transition: transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1); transform-style: flat; }
@@ -873,6 +875,7 @@ body.mode-kids #view-ord .app-toolbar .topbar { background: rgba(255, 255, 255, 
 #view-ord input[type="text"] { padding: 8px 10px 8px 32px; font-size: 16px; }
 #view-ord .grid-container { padding: 10px 12px 80px; grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); }
 #view-ord .section-heading { padding: 14px 12px 2px; }
+#view-ord .section-hint { font-size: 11.5px; margin-left: 0; flex-basis: 100%; }
 #view-ord .progress-bar-wrap { padding: 6px 12px 0; }
 #view-ord .stat-pill { display: none; }
 #view-ord .alpha-strip {
@@ -2386,6 +2389,7 @@ body.portal-kids #view-hor .skip-btn:hover { border-color: #ff7a59; color: #ff7a
     <div class="section-heading">
       <h2 id="section-title">All Words</h2>
       <span class="section-count" id="section-count"></span>
+      <span class="section-hint" id="section-hint">Click any card to see the English meaning and an example.</span>
     </div>
     <div class="grid-container" id="grid"></div>
   </div>
@@ -4988,6 +4992,13 @@ function applyModeClasses() {
   document.getElementById('mode-kids-btn').classList.toggle('active',  mode === 'kids');
   document.body.classList.toggle('mode-verbs', mode === 'verbs');
   document.body.classList.toggle('mode-kids',  mode === 'kids');
+  // Refresh the inline section hint so it reflects the active mode's interaction.
+  const hint = document.getElementById('section-hint');
+  if (hint) {
+    if (mode === 'kids')      hint.textContent = 'Tap a card to hear the Danish word out loud — keep tapping to learn it.';
+    else if (mode === 'verbs') hint.textContent = 'Click any card to see its present, past, and perfect forms.';
+    else                       hint.textContent = 'Click any card to see the English meaning and an example.';
+  }
 }
 
 // ── FILTERS ───────────────────────────────────────────────────────
