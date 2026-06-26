@@ -110,6 +110,9 @@
   .feedback { font-family: 'Inter', sans-serif; font-size: 13px; }
   .feedback.correct { color: var(--success); }
   .feedback.wrong   { color: var(--danger); }
+  /* Post-answer reveal: shows the Danish word + IPA only AFTER the user picks. */
+  .reveal-da { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; width: 100%; text-align: center; }
+  .reveal-ipa { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); letter-spacing: 0.2px; margin-left: 6px; }
 
   .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
   .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 4px; }
@@ -181,6 +184,8 @@
 <div class="toast" id="hor-toast"></div>
 
 <script src="phrases.js"></script>
+<script src="speech.js"></script>
+<script src="ipa.js"></script>
 
 <script>
 const PHRASES = (window.DanskPhrases && window.DanskPhrases.BANK) || [];
@@ -188,30 +193,17 @@ const PROGRESS_KEY = 'danskor:progress:v1';
 const SEEN_KEY     = 'danskor:seen-counts:v1';
 
 // ─── Danish TTS ────────────────────────────────────────────────────
-const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+// Delegates to window.DanskSpeech; falls back to minimal local TTS.
 const synth = window.speechSynthesis;
-let danishVoice = null;
-function pickDanishVoice() {
-  if (!synth) return null;
-  const voices = synth.getVoices();
-  if (!voices.length) return null;
-  for (const name of PREFERRED_DANISH_VOICES) {
-    const v = voices.find(v => v.name === name || v.name.includes(name));
-    if (v) return v;
-  }
-  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
-}
-if (synth) {
-  danishVoice = pickDanishVoice();
-  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
-}
 function speak(text, opts) {
   opts = opts || {};
+  text = String(text).replace(/\bI\b/g, 'i');
+  if (window.DanskSpeech) return window.DanskSpeech.speak(text, opts);
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
-  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
-  if (danishVoice) u.voice = danishVoice;
+  const v = synth.getVoices().find(v => /^da([-_]|$)/i.test(v.lang));
+  if (v) u.voice = v;
   u.lang = 'da-DK';
   u.rate = opts.rate || 0.9;
   if (opts.onend) u.onend = opts.onend;
@@ -456,10 +448,16 @@ function renderQuestion() {
       }
       answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
       saveProgress(progress); saveSeen(seenCounts);
+      // After the user answers, reveal the Danish word + IPA (it's safe now;
+      // before the answer this would have given away the spelling).
+      const ipa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(correct.da)) || '';
+      const reveal = '<div class="reveal-da">' + escapeHtml(correct.da)
+        + (ipa ? ' <span class="reveal-ipa">' + escapeHtml(ipa) + '</span>' : '')
+        + '</div>';
       const fb = isCorrect
         ? '<span class="feedback correct">Correct — well heard.</span>'
         : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
-      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn" type="button">Next →</button>';
+      nextRow.innerHTML = reveal + fb + ' <button class="next-btn" id="hor-next-btn" type="button">Next →</button>';
       nextRow.querySelector('#hor-next-btn').addEventListener('click', () => {
         qIdx++;
         renderQuestion();
@@ -474,6 +472,12 @@ function renderQuestion() {
 queue = shuffleDeck(PHRASES);
 qIdx = 0;
 renderQuestion();
+
+// Shared voice indicator + one-time onboarding banner.
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
+}
 </script>
 
 </body>

@@ -63,13 +63,31 @@ A separate vocabulary deck of ~200 words paired with friendly emoji, big colourf
 
 `Tale` uses an Anki-lite algorithm. Phrases you find hard come back tomorrow. Phrases you've nailed don't reappear for a week. The deck schedules itself — you just rate each phrase honestly.
 
-### 🔊 Audio for every word
+### 🔊 Audio + IPA for every word
 
-Danish pronunciation matters. Every flashcard, every paragraph, every phrase has a play button that uses your operating system's built-in Danish voice (when installed). No proprietary audio bundles to download.
+Danish pronunciation matters. Every flashcard, every paragraph, every phrase has a play button. Audio uses your operating system's built-in Danish voice — danskLearn detects what you have and shows a small **voice indicator** in the toolbar (green = high-quality, amber = OK, red = no Danish voice installed). Click the indicator to see step-by-step instructions for installing a better Danish voice on your specific OS.
+
+Most cards also display the **IPA transcription** (`[ˈhunˀ]`, `[ˈkad]`, …) so you have a visual reference for tricky sounds — the glottal stop, the soft `d`, the unstressed schwa — even if your device's voice is rough.
 
 ### 📊 Live progress dashboard
 
 The landing page shows at-a-glance how you're doing in each module — words known, paragraphs completed, phrases reviewed today, listening accuracy, current streak. No nagging, just a quiet "here's where you left off."
+
+---
+
+## Improving Danish audio quality
+
+Audio in danskLearn uses your **device's text-to-speech engine** (the Web Speech API). Quality varies wildly: macOS has Sara/Magnus built in, Windows has Microsoft Helle (and the much better "Helle Online (Natural)" on Windows 11), Android has Google's Danish TTS, iOS has a downloadable Danish voice. Linux usually has nothing.
+
+The portal's toolbar shows a **small voice-quality pill** ("Voice: Sara" with a green/amber/red dot). Click it for OS-specific installation instructions:
+
+- **macOS**: Settings → Accessibility → Spoken Content → System voice → add a Danish voice
+- **Windows 10/11**: Settings → Time & language → Language → add Danish → Language options → install Speech (look for "Helle Online (Natural)")
+- **iOS**: Settings → Accessibility → Spoken Content → Voices → Danish → download
+- **Android**: Install/update Google Speech Services from the Play Store, then Settings → Languages → Text-to-speech → Google Speech Services → download Danish
+- **Linux**: Built-in support is limited; Edge or Chrome with a Microsoft account sometimes exposes the Helle Online voice
+
+After installing a Danish voice you may need to reload the page once. The portal also displays the **IPA transcription** under most words (e.g. `[ˈhunˀ]` for "hund") so you have a visual pronunciation reference regardless of audio quality.
 
 ---
 
@@ -158,7 +176,9 @@ dansklearn/
     ├── danskoverset.html  # standalone — English→Danish typing
     ├── dansktale.html     # standalone — speaking practice (SR)
     ├── danskhor.html      # standalone — listening quiz
-    └── phrases.js         # 80-phrase bank shared by tale + hor
+    ├── phrases.js         # 80-phrase bank shared by tale + hor
+    ├── speech.js          # shared TTS (window.DanskSpeech) + voice indicator
+    └── ipa.js             # shared IPA dataset (window.DanskIPA, 816 entries)
 ```
 
 Every file under `src/` is **standalone-runnable** — open `src/danskord.html` directly in a browser and you get just that module. The merged `index.html` at the repo root is what `build.py` produces.
@@ -172,6 +192,8 @@ The build solves three merge challenges:
 2. **Script isolation.** Each source's last `<script>` is wrapped in `window.{Name}App = (function(){ let initialized=false; return { init(){ … } }; })()`. The router calls `init()` the first time the view is shown; subsequent visits are no-ops. Sources that use inline `onclick=` (just `danskord.html`) get those handler functions explicitly forwarded to `window`.
 
 3. **Shared phrase bank.** `phrases.js` defines `window.DanskPhrases.BANK`. Standalone files load it via `<script src="phrases.js">`. The build strips that tag from each body and inlines the bank's contents once at the top of the merged scripts.
+
+4. **Shared TTS + IPA.** `speech.js` and `ipa.js` follow the same standalone-vs-inlined pattern. `speech.js` exposes `window.DanskSpeech` (`speak()`, `pick()` returning `{voice, quality}`, `lookupIpa()`, `mountVoiceIndicator()`, `mountOnboardingBanner()`). `ipa.js` exposes `window.DanskIPA.BANK` — a flat map from lowercase Danish word to IPA string. Each source HTML file loads them via `<script src>` for standalone use; the merged build inlines them once globally.
 
 HTML comments are stripped during the merge so comment text containing `<script>` fragments can't trip the script-stripping regex.
 
@@ -217,6 +239,12 @@ To wipe progress for one module, clear that module's keys in DevTools → Applic
 - **Web Audio API** — Hør's correct/wrong sound effects.
 
 Offline fallback paragraphs are bundled in Skriv and Oversæt so the typing modules still work without an internet connection.
+
+### Credits
+
+- **IPA transcriptions** in `src/ipa.js` (816 entries covering ~51% of the vocabulary) were extracted from the publicly-shared *"Danish Dictionary from Beginner to Fluent"* AnkiWeb deck (deck ID `805471301`). IPA strings are factual linguistic data and not subject to copyright; we use only the IPA values, not the audio that deck also contained.
+- **DR.dk** — danskskriv and danskoversæt fetch fresh paragraphs from Danmarks Radio's public RSS feeds for typing practice.
+- **MyMemory** — translation API used to render English prompts in Oversæt and word-on-tap translations in Skriv.
 
 ### SEO, analytics & Search Console
 

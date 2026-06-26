@@ -38,6 +38,8 @@ OVERSET_PATH   = SRC / "danskoverset.html"
 TALE_PATH      = SRC / "dansktale.html"
 HOR_PATH       = SRC / "danskhor.html"
 PHRASES_PATH   = SRC / "phrases.js"
+SPEECH_PATH    = SRC / "speech.js"
+IPA_PATH       = SRC / "ipa.js"
 SITE_CONFIG_PATH = ROOT / "site.config.json"
 OUT_PATH       = ROOT / "index.html"
 NOT_FOUND_PATH = ROOT / "404.html"
@@ -2337,6 +2339,8 @@ def build() -> None:
         apps.append({"name": name, "scoped": scoped, "body": body, "script": script})
 
     phrases_js = read_source(PHRASES_PATH)
+    speech_js = read_source(SPEECH_PATH)
+    ipa_js = read_source(IPA_PATH)
 
     style_blocks = [
         f'<style id="{a["name"]}-style">\n{a["scoped"]}\n</style>'
@@ -2386,6 +2390,14 @@ def build() -> None:
         # <script src="phrases.js">; we strip that in extract_body_markup
         # and inline the bank's contents here instead.)
         f'<script id="phrases-bank">\n{phrases_js}\n</script>',
+        # Shared IPA dataset (window.DanskIPA.BANK) — same pattern; loaded
+        # BEFORE speech.js because speech.js's lookupIpa() reads it.
+        f'<script id="ipa-bank">\n{ipa_js}\n</script>',
+        # Shared TTS module (window.DanskSpeech) — voice picking, speak,
+        # onboarding banner, voice-quality indicator. Standalone HTML files
+        # load via <script src="speech.js">; we strip those in
+        # extract_body_markup and inline once here.
+        f'<script id="speech-lib">\n{speech_js}\n</script>',
         *app_scripts,
         footer_script,
         "</body>",

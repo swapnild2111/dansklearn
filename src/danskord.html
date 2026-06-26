@@ -170,6 +170,11 @@
   .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; justify-content: flex-start; padding: 28px 12px 12px; }
   .card-wrap.flipped .card-back { border-color: var(--accent); }
   .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
+  /* IPA transcription — visual fallback when TTS audio is poor. */
+  .ipa { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: -2px; margin-bottom: 6px; text-align: center; letter-spacing: 0.2px; }
+  .ipa:empty { display: none; }
+  .kid-ipa { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #b8a0c0; text-align: center; margin-top: -2px; }
+  .kid-ipa:empty { display: none; }
   .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
   .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
   .card-cat-icon {
@@ -584,6 +589,12 @@
 </div>
 
 <div class="fab" onclick="flipAll()">↕ Flip all</div>
+
+<!-- Shared TTS + IPA helpers. Loaded for standalone runs; build.py strips
+     these and inlines the modules' contents once globally in the merged
+     index.html. -->
+<script src="speech.js"></script>
+<script src="ipa.js"></script>
 
 <script>
 const words = [
@@ -2999,12 +3010,14 @@ function renderCards(list) {
 
     if (mode === 'kids') {
       // Kid card: emoji-first, audio-first, no flip — tap pops + speaks
+      const kidIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front cat-${w.cat}">
             <button class="speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <div class="kid-emoji">${w.emoji}</div>
             <div class="kid-da">${w.da}</div>
+            <div class="kid-ipa">${kidIpa}</div>
             <div class="kid-en">${w.en}</div>
           </div>
         </div>`;
@@ -3018,17 +3031,20 @@ function renderCards(list) {
       const auxClass = (w.perf && w.perf.startsWith('er ')) ? 'aux-er' : '';
       // Strip leading "at " for speech — TTS pronounces the verb cleaner without the infinitive marker
       const spoken = w.da.replace(/^at\s+/, '');
+      const verbIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
+            <div class="ipa">${verbIpa}</div>
             <div class="word-type">verb</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
             <div class="danish-word" style="font-size:18px;">${w.da}</div>
+            <div class="ipa">${verbIpa}</div>
             <div class="verb-conj">
               <span class="verb-conj-label">pres</span><span class="verb-conj-form">${w.pres}</span>
               <span class="verb-conj-label">past</span><span class="verb-conj-form">${w.past}</span>
@@ -3042,12 +3058,14 @@ function renderCards(list) {
     } else {
       const ex = buildWordExample(w);
       const catIcon = (catMeta()[w.cat] || { icon: '📁' }).icon;
+      const wordIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
+            <div class="ipa">${wordIpa}</div>
             <div class="word-type">${w.type}</div>
             <div class="known-dot">✓</div>
           </div>
@@ -3165,37 +3183,26 @@ document.querySelectorAll('.topbar input[type="text"]').forEach(el => {
 // ════════════════════════════════════════════════════════════════════
 
 // ── SPEECH ────────────────────────────────────────────────────────
-// Picks first Danish voice once it's available; speaks short utterances.
-// MUST be called synchronously inside a click handler (iOS gesture rule).
-let _daVoice = null;
-function pickDanishVoice() {
-  if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices();
-  // Prefer local (offline) voices first, then any da-* voice
-  const local = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da') && v.localService);
-  if (local) return local;
-  return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) || null;
-}
-if ('speechSynthesis' in window) {
-  // Voices arrive asynchronously
-  _daVoice = pickDanishVoice();
-  speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', () => {
-    _daVoice = pickDanishVoice();
-  });
-}
+// Delegates to window.DanskSpeech (loaded from speech.js) when available;
+// falls back to a minimal local TTS path so the standalone source file
+// still works if speech.js isn't loaded.
 function speak(text) {
+  text = String(text).replace(/\bI\b/g, 'i');
+  if (window.DanskSpeech) {
+    // rate 0.85, pitch 1.05 — kid-learner pace (slightly slower, slightly higher)
+    return window.DanskSpeech.speak(text, { rate: 0.85, pitch: 1.05 });
+  }
+  // Fallback — only used when speech.js failed to load (e.g. file:// without server).
   if (!('speechSynthesis' in window)) return;
   try {
-    text = String(text).replace(/\bI\b/g, 'i');
-    speechSynthesis.cancel(); // Chrome stall fix
-    if (!_daVoice) _daVoice = pickDanishVoice();
+    speechSynthesis.cancel();
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) || null;
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'da-DK';
-    u.rate = 0.85;  // slightly slower for kid learners
-    u.pitch = 1.05;
-    if (_daVoice) u.voice = _daVoice;
+    u.lang = 'da-DK'; u.rate = 0.85; u.pitch = 1.05;
+    if (v) u.voice = v;
     speechSynthesis.speak(u);
-  } catch (e) { /* silent — speech is enhancement, not core */ }
+  } catch (_) {}
 }
 
 // ── CHIME ─────────────────────────────────────────────────────────
@@ -3312,6 +3319,18 @@ buildAlphaStrip();
   if (el) el.value = sortMode;
 });
 applyFilters();
+
+// Mount the shared voice indicator + onboarding banner (no-ops if speech.js
+// didn't load or if the user already dismissed the banner).
+if (window.DanskSpeech) {
+  // Two indicator hosts: one in the desktop toolbar (.header-right inside .toolbar-main),
+  // one in the mobile header (also .header-right). Both render in standalone mode;
+  // in the merged build only one is visible at a time per media query.
+  document.querySelectorAll('.toolbar-main .header-right').forEach(h => {
+    window.DanskSpeech.mountVoiceIndicator(h);
+  });
+  window.DanskSpeech.mountOnboardingBanner();
+}
 </script>
 </body>
 </html>

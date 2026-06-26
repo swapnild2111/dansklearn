@@ -1,0 +1,21 @@
+# Anki shared decks — reference material only, not for redistribution.
+# Audio in these decks is often scraped from copyrighted sources (ordnet.dk,
+# Forvo) without permission, so we never commit the raw .apkg files.
+# Linguistic data (IPA, conjugations) extracted to src/*.json is fine —
+# factual data isn't copyrightable.
+*.apkg
+
+# Editor / OS noise
+.DS_Store
+*.swp
+*.swo
+*~
+
+# Local Python virtualenvs (in case anyone uses one when iterating on build.py)
+.venv/
+venv/
+__pycache__/
+*.pyc
+
+# Local node modules (only created if someone uses Playwright to verify)
+node_modules/

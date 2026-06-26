@@ -261,6 +261,11 @@
   </div>
 </div>
 
+<!-- Shared TTS + IPA helpers (build.py strips these and inlines them once
+     in the merged document; standalone runs use them as <script src>). -->
+<script src="speech.js"></script>
+<script src="ipa.js"></script>
+
 <script>
 /* ─── Categories: 5 cards, one per category, fetched from DR RSS via CORS proxy ─── */
 const CATEGORIES = [
@@ -676,33 +681,11 @@ async function openTranslation(idx) {
 }
 
 /* ─── Danish text-to-speech ─── */
-/* Preferred Danish voices in order. First match wins. Falls back to any da-DK voice. */
-const PREFERRED_DANISH_VOICES = [
-  'Google dansk',      // Chrome — usually highest quality
-  'Sara',              // macOS / iOS — female, native
-  'Magnus',            // macOS / iOS — male, native
-  'Microsoft Helle',   // Windows
-  'Microsoft Helle Online (Natural) - Danish (Denmark)',
-];
+/* Uses window.DanskSpeech (loaded from speech.js) for consistent voice
+   selection across modules. Falls back to a minimal local TTS if speech.js
+   didn't load. */
 const synth = window.speechSynthesis;
-let danishVoice = null;
 let speakingIdx = -1;
-
-function pickDanishVoice() {
-  if (!synth) return null;
-  const voices = synth.getVoices();
-  for (const name of PREFERRED_DANISH_VOICES) {
-    const match = voices.find(v => v.name === name);
-    if (match) return match;
-  }
-  return voices.find(v => v.lang === 'da-DK') ||
-         voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) ||
-         null;
-}
-if (synth) {
-  danishVoice = pickDanishVoice();
-  synth.addEventListener?.('voiceschanged', () => { danishVoice = pickDanishVoice(); });
-}
 
 function setSpeakingButton(idx, on) {
   const btn = document.getElementById(`speak-${idx}`);
@@ -715,25 +698,33 @@ function toggleSpeak(idx) {
     return;
   }
   if (speakingIdx === idx) {
-    synth.cancel();
+    if (window.DanskSpeech) window.DanskSpeech.cancel();
+    else synth.cancel();
     return;
   }
-  if (synth.speaking || synth.pending) synth.cancel();
-
   const text = String(paragraphs[idx]).replace(/\bI\b/g, 'i');
   if (!text) return;
+  const opts = {
+    rate: 0.75,
+    onstart: () => { speakingIdx = idx; setSpeakingButton(idx, true); },
+    onend:   () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); },
+    onerror: () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); },
+  };
+  if (window.DanskSpeech) {
+    if (window.DanskSpeech.pick().quality === 'none') {
+      showToast('No Danish voice installed — using browser default', '');
+    }
+    window.DanskSpeech.speak(text, opts);
+    return;
+  }
+  // Fallback path — only when speech.js failed to load.
+  if (synth.speaking || synth.pending) synth.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'da-DK';
-  if (danishVoice) utter.voice = danishVoice;
   utter.rate = 0.75;
-
-  utter.onstart = () => { speakingIdx = idx; setSpeakingButton(idx, true); };
-  utter.onend = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
-  utter.onerror = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
-
-  if (!danishVoice) {
-    showToast('No Danish voice installed — using browser default', '');
-  }
+  utter.onstart = opts.onstart;
+  utter.onend = opts.onend;
+  utter.onerror = opts.onerror;
   synth.speak(utter);
 }
 
@@ -773,6 +764,12 @@ if (saved) {
   render();
 } else {
   loadParagraphs();
+}
+
+// Shared voice indicator + one-time onboarding banner.
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
 }
 </script>
 

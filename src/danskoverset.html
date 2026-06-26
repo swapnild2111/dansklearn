@@ -176,6 +176,10 @@
   </div>
 </div>
 
+<!-- Shared TTS helpers (this module has no audio playback but mounts the
+     voice-quality indicator so users see consistent settings across modules). -->
+<script src="speech.js"></script>
+
 <script>
 // ─── RSS feeds + offline fallbacks ──────────────────────────────────
 const CATEGORIES = [
@@ -505,6 +509,13 @@ if (saved) {
   }
 } else {
   loadParagraphs();
+}
+
+// Shared voice indicator + one-time onboarding banner (no TTS calls here,
+// but Overset shares the toolbar UI so the setting is reachable here too).
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
 }
 </script>
 

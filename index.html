@@ -624,6 +624,10 @@ body #view-ord :not(.mode-kids):not(.mode-verbs) .card-wrap { height: 178px; }
 #view-ord .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; justify-content: flex-start; padding: 28px 12px 12px; }
 #view-ord .card-wrap.flipped .card-back { border-color: var(--accent); }
 #view-ord .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
+#view-ord .ipa { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: -2px; margin-bottom: 6px; text-align: center; letter-spacing: 0.2px; }
+#view-ord .ipa:empty { display: none; }
+#view-ord .kid-ipa { font-family: 'JetBrains Mono', monospace; font-size: 11px; color: #b8a0c0; text-align: center; margin-top: -2px; }
+#view-ord .kid-ipa:empty { display: none; }
 #view-ord .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
 #view-ord .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
 #view-ord .card-cat-icon {
@@ -1184,6 +1188,7 @@ body #view-tale { background: var(--bg); color: var(--text); font-family: 'Inter
 #view-tale .badge-cat { position: absolute; top: 14px; left: 18px; font-family: 'Inter', sans-serif; font-size: 11px; font-weight: 600; color: var(--accent2); background: rgba(125,211,252,0.1); border: 1px solid rgba(125,211,252,0.3); padding: 2px 10px; border-radius: 12px; letter-spacing: 0.3px; }
 #view-tale .badge-progress { position: absolute; top: 14px; right: 18px; font-family: 'JetBrains Mono', monospace; font-size: 11px; color: var(--text-dim); }
 #view-tale .phrase-da { font-family: 'DM Serif Display', serif; font-size: 36px; line-height: 1.25; text-align: center; color: var(--text); margin-top: 28px; padding: 0 8px; }
+#view-tale .phrase-ipa { font-family: 'JetBrains Mono', monospace; font-size: 14px; color: var(--text-dim); text-align: center; letter-spacing: 0.3px; margin-top: -8px; }
 #view-tale .phrase-en { font-family: 'Inter', sans-serif; font-style: italic; font-size: 16px; color: var(--text-muted); text-align: center; }
 #view-tale .play-btn { margin-top: 6px; width: 92px; height: 92px; border-radius: 50%; background: linear-gradient(135deg, #3b5fc0, #4f8ef7); border: none; color: #fff; font-size: 38px; cursor: pointer; box-shadow: 0 8px 24px rgba(79,142,247,0.45); transition: transform 0.15s, box-shadow 0.15s; display: flex; align-items: center; justify-content: center; }
 #view-tale .play-btn:hover { transform: scale(1.04); box-shadow: 0 10px 28px rgba(79,142,247,0.55); }
@@ -1299,6 +1304,8 @@ body #view-hor { background: var(--bg); color: var(--text); font-family: 'Inter'
 #view-hor .feedback { font-family: 'Inter', sans-serif; font-size: 13px; }
 #view-hor .feedback.correct { color: var(--success); }
 #view-hor .feedback.wrong { color: var(--danger); }
+#view-hor .reveal-da { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; width: 100%; text-align: center; }
+#view-hor .reveal-ipa { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); letter-spacing: 0.2px; margin-left: 6px; }
 #view-hor .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
 #view-hor .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 4px; }
 #view-hor .session-done p { color: var(--text-muted); font-size: 14px; margin-bottom: 8px; }
@@ -2701,6 +2708,1268 @@ window.DanskPhrases = {
     {id:"feel-12",  da:"Det er irriterende",           en:"That's annoying",                    cat:"Feelings"},
   ],
 };
+
+</script>
+<script id="ipa-bank">
+// danskLearn shared IPA dataset for Danish words/verbs/kids vocabulary.
+//
+// Extracted from the publicly-shared "Danish Dictionary from Beginner to
+// Fluent" Anki deck on AnkiWeb (deck ID 805471301). IPA transcriptions
+// are factual linguistic data and not copyrightable. The Anki deck
+// itself contained audio files we did NOT redistribute (some were
+// scraped from ordnet.dk, which forbids redistribution).
+//
+// Keys are lowercase Danish words with the verb infinitive marker
+// "at " stripped (so "være", not "at være"). DanskSpeech.lookupIpa()
+// applies the same normalisation when looking up.
+//
+// Standalone files load this via <script src="ipa.js">; build.py
+// inlines it once at the top of the merged scripts.
+
+window.DanskIPA = {
+  BANK: {
+    "abe": "[ˈæːbə]",
+    "acceptere": "[ɑgsεbˈteˀʌ]",
+    "adskille": "[ˈaðˌsgelˀə], [ˈaðˌsgelˀəlsə], [ˈsεˀɐ̯ˌsgelˀd], [sebɑˈʁɑˀd]",
+    "advare": "[ˈaðˌvɑˀɑ]",
+    "af": "[a], [a]",
+    "afbryde": "[awˌbʁyˀðə]",
+    "afgive": "[ˈɑwˌgiˀ]",
+    "aflevere": "[ˈɑwleˌveˀʌ]",
+    "aflyse": "[ˈɑwˌlyˀsə], [ˈmεlə]",
+    "afskaffe": "[ˈɑw,sgɑfə]",
+    "afslutte": "[ˈɑwˌsludə], [ˈfæɐ̯di], [ˈfæɐ̯di,gɶːʌ], [ˈfulˌføˀʌ], [ˈgεnəmˌføˀʌ], [ˈuð,ʁadə], [ˈtɶɐ̯ˀn]",
+    "aftensmad": "[ˈɑfdəns,mað], [ˈmeda]",
+    "afvise": "[ˈɑwˌviˀsə], [ˈɑwˌslɔˀ]",
+    "agurk": "[aˈguɐ̯g]",
+    "albue": "[ˈalˌbuːə]",
+    "alle": "[ˈalə]",
+    "allerede": "[ˈaləˈʁεːðə]",
+    "altid": "[ˈalˀˌtiðˀ], [ˈɑldʁi]",
+    "ambassade": "[ɑmbaˈsæːðə], [ɑmbasaˈdøˀɐ̯]",
+    "ambulance": "[ɑmbuˈlɑŋsə]",
+    "ananas": "[ˈananas]",
+    "anbefale": "[ˈanbeˌfæˀlə]",
+    "and": "[ˈanˀ], [ˈanˀdʁεg], [ˈεleŋ]",
+    "anholde": "[ˈanˌhʌlˀə]",
+    "ankel": "[ˈɑŋˀgəl]",
+    "ankomme": "[ˈanˌkʌmˀə]",
+    "anse": "[ˈanˌseˀ]",
+    "ansigt": "[ˈansegd], [ˈfjεˀs]",
+    "ansætte": "[ˈanˌsεdə], [ˈhyːʌ]",
+    "ansøgning": "[ˈanˌsøjˀneŋ]",
+    "apotek": "[ɑboˈteˀg]",
+    "appelsin": "[ɑbəlˈsiˀn]",
+    "arbejde": "[ˈɑːˌbɑjˀdə]",
+    "arm": "[ˈɑˀm]",
+    "arrangere": "[ɑɑŋˈɕeˀʌ]",
+    "at": "[ad]",
+    "baby": "[ˈbεjbi]",
+    "badekar": "[ˈbæːðə,kɑ], [ˈbʁuːsʌ], [ˈbað], [ˈbʁuːsʌ,bað], [ˈbæːðə], [ˈbʁuːsə]",
+    "badeværelse": "[ˈbæːðə,væɐ̯ʌlsə], [toaˈlεd]",
+    "bag": "[ˈbæˀj], [ˈbæˀjˌve]",
+    "bage": "[ˈbæːjə], [ˈbɑgdə]",
+    "banan": "[baˈnæˀn]",
+    "band": "[ˈbæːnd]",
+    "bange": "[ˈbɑŋə]",
+    "bank": "[ˈbɑŋˀg]",
+    "banke": "[ˈbɑŋgə]",
+    "bar": "[ˈbɑˀ]",
+    "bare": "[ˈbɑːɑ], [ˈliːə]",
+    "barn": "[ˈbɑˀn], [ˈbɶɐ̯ˀn]",
+    "barndom": "[ˈbɑːnˌdʌmˀ]",
+    "batteri": "[badʌˈʁiˀ]",
+    "begrænse": "[beˈgʁanˀsə]",
+    "begynde": "[beˈgønˀə], [ˈsdɑːdə], [ˈenˌleˀðə], [ˈpʌ,begønˀə]",
+    "behandle": "[beˈhanˀlə]",
+    "beholde": "[beˈhʌlˀə]",
+    "behøve": "[beˈhøˀvə]",
+    "beige": "[ˈbεːɕ]",
+    "beklage": "[beˈklæˀjə], [ˈɔnˌsgylˀə]",
+    "bemærke": "[beˈmæɐ̯gə], [ˈεnsə]",
+    "ben": "[ˈbeˀn], [ˈlεˀg], [ˈlɒˀ]",
+    "beskrive": "[beˈsgʁiˀvə]",
+    "beskytte": "[beˈsgødə]",
+    "bestille": "[beˈsdelˀə], [ˈbugə], [ʁεsæɐ̯ˈveˀʌ]",
+    "bestå": "[beˈsdɔˀ], [ˈʌm,fadə], [enkluˈdeˀʌ], [ˈenəˌhʌlˀə]",
+    "besøge": "[beˈsøˀjə]",
+    "betale": "[beˈtæˀlə]",
+    "betyde": "[beˈtyˀðə]",
+    "bi": "[ˈbiˀ]",
+    "bibliotek": "[biblioˈteˀg]",
+    "bibliotekar": "[bibliotəˈkɑˀ]",
+    "bide": "[ˈbiːðə]",
+    "bidrage": "[ˈbiˌdʁɑˀwə]",
+    "bil": "[ˈbiˀl], [ˈεl,biˀl]",
+    "billede": "[ˈbeləðə], [ˈfoto]",
+    "billet": "[beˈlεd]",
+    "billig": "[ˈbili]",
+    "binde": "[ˈbenə]",
+    "biograf": "[bioˈgʁɑˀf]",
+    "bjerg": "[ˈbjæɐ̯ˀw]",
+    "bjørn": "[ˈbjɶɐ̯ˀn]",
+    "blad": "[ˈblað]",
+    "blande": "[ˈblanə]",
+    "blive": "[ˈbliːə], [ˈbliɐ̯ˀ], [ˈbleˀ], [ˈbleːəð]",
+    "blomst": "[ˈblʌmsd], [ˈblʌmsdʁʌ]",
+    "bo": "[ˈboˀ], [ˈleːvə]",
+    "bord": "[ˈboˀɐ̯]",
+    "borger": "[ˈbɒːwʌ]",
+    "bred": "[ˈbʁεðˀ]",
+    "bringe": "[ˈbʁεŋə]",
+    "bro": "[ˈbʁoˀ]",
+    "bryst": "[ˈbʁœsd], [ˈbʁœsd,kasə], [ˈbɑˀm]",
+    "brød": "[ˈbʁœðˀ], [ˈʁuˌbʁœðˀ]",
+    "brønd": "[ˈbʁɶnˀ]",
+    "bukser": "[ˈbɔgsʌ]",
+    "bus": "[ˈbus]",
+    "busstoppested": "[ˈsdʌbə,sdεð]",
+    "butik": "[buˈtig]",
+    "by": "[ˈbyˀ]",
+    "bygge": "[ˈbygə]",
+    "bytte": "[ˈbydə], [ˈbydneŋ], [ˈʌm,bydə], [ˈʌm,bydneŋ]",
+    "båd": "[ˈbɔˀð]",
+    "bælte": "[ˈbεldə], [ˈʁamˀ], [ˈseːlə], [ˈliw,ʁamˀ], [ˈseːlʌ]",
+    "bære": "[ˈbεːʌ], [ˈbɑˀ], [ˈbɒːɒð]",
+    "café": "[kaˈfeˀ]",
+    "centrum": "[ˈsεntʁɔm]",
+    "chance": "[ˈɕɑŋsə]",
+    "chef": "[ˈɕεˀf]",
+    "citron": "[siˈtʁoˀn]",
+    "computer": "[kʌmˈpjuːdʌ]",
+    "cykel": "[ˈsygəl]",
+    "cykling": "[ˈsygleŋ]",
+    "dag": "[ˈdæˀ]",
+    "dal": "[ˈdæˀl]",
+    "danse": "[ˈdansə], [ˈdanˀs]",
+    "datter": "[ˈdadʌ], [ˈdødʁʌ]",
+    "del": "[ˈdeˀl]",
+    "dele": "[ˈdeːlə]",
+    "delfin": "[dεlˈfiˀn]",
+    "der": "[dɑ]",
+    "derefter": "[ˈdεˀɐ̯ˌεfdʌ]",
+    "desværre": "[deˈsvæɐ̯ʌ]",
+    "digt": "[ˈdegd]",
+    "direkte": "[ˈdiˈʁagdə]",
+    "diskutere": "[disguˈteˀʌ], [ˈdʁœfdə]",
+    "dominere": "[domiˈneˀʌ]",
+    "dreje": "[ˈdʁɑjə]",
+    "dreng": "[ˈdʁaŋˀ]",
+    "drikke": "[ˈdʁεgə], [ˈdʁɑg], [ˈdʁɔgəð]",
+    "dræbe": "[ˈdʁεːbə], [ˈslɒˀ iˈjεl]",
+    "dukke": "[ˈdɔgə]",
+    "dyr": "[ˈdyɐ̯ˀ]",
+    "dække": "[ˈdεgə]",
+    "døgn": "[ˈdʌjˀn]",
+    "dør": "[ˈdɶˀɐ̯]",
+    "edderkop": "[ˈεðˀʌˌkʌb]",
+    "efter": "[ˈεfdʌ]",
+    "egern": "[ˈeˀjʌn]",
+    "eje": "[ˈɑjʌ]",
+    "eksamen": "[εgˈsæːmən]",
+    "eksempel": "[εgˈsεmˀbəl]",
+    "eksistere": "[εgsiˈsdeˀʌ]",
+    "elefant": "[eləˈfanˀd]",
+    "elevator": "[eləˈvæːtʌ]",
+    "elg": "[ˈεlˀj]",
+    "ellers": "[ˈεlˀʌs]",
+    "elske": "[ˈεlsgə]",
+    "en": "[ˈsvɑmˀb]",
+    "ende": "[ˈεnə], [ˈnɔmsə], [ˈʁɶwˀ], [ˈbalə]",
+    "erfaring": "[æɐ̯ˈfɑˀeŋ]",
+    "erstatte": "[æɐ̯ˈsdadə], [ˈsgifdə]",
+    "evne": "[ˈεwnə]",
+    "falde": "[ˈfalə]",
+    "familie": "[faˈmilˀjə]",
+    "fange": "[ˈfɑŋə]",
+    "far": "[ˈfɑː]",
+    "farlig": "[ˈfɑːli], ['ufɑːli], [ˈfɑːɑˌtʁuˀənə], [ˈtʁœg], [ˈuˌtʁœg]",
+    "fart": "[ˈfɑˀd], [ˈhasdiˌheðˀ]",
+    "farve": "[ˈfɑːvə]",
+    "feber": "[ˈfeˀbʌ]",
+    "fejre": "[ˈfɑjʁʌ]",
+    "fersken": "[ˈfæɐ̯sgən]",
+    "fest": "[ˈfεsd]",
+    "fil": "[ˈfiˀl], [ˈlyðfiˀl]",
+    "film": "[ˈfilˀm]",
+    "finde": "[ˈfenə], [ˈfɔnˀ]",
+    "finger": "[ˈfeŋˀʌ]",
+    "fjerne": "[ˈfjæɐ̯nə]",
+    "fjernsyn": "[ˈfjæɐ̯nˌsyˀn], [ˈteˀˌveˀ]",
+    "flagermus": "[ˈflɑwʌˌmuˀs]",
+    "fly": "[ˈflyˀ], [ˈflyːvə,maˈsgiːnə]",
+    "flygte": "[ˈfløgdə]",
+    "flygtning": "[ˈfløgdneŋ]",
+    "flytte": "[ˈflødə]",
+    "flyve": "[ˈflyːvə], [ˈflʌjˀ]",
+    "fod": "[ˈfoˀð]",
+    "fodbold": "[ˈfoðˌbʌlˀd]",
+    "fodre": "[ˈfoðʁʌ]",
+    "foran": "[ˈfɒːˈanˀ]",
+    "forberede": "[ˈfɒːbeˌʁεðˀə]",
+    "forbinde": "[fʌˈbenˀə]",
+    "foregå": "[ˈfɒːɒˌgɔˀ]",
+    "forekomme": "[ˈfɒːɒˌkʌmˀə], [ˈviɐ̯gə], [ˈsynəs], [ˈlɑ]",
+    "foreslå": "[ˈfɒːɒˌslɔˀ]",
+    "foretrække": "[ˈfɒːɒtʁagə], [pʁεfəˈʁεˀʌ]",
+    "forhandle": "[fʌˈhanˀlə]",
+    "forhindre": "[fʌˈhenˀdʁʌ], [ˈhenˀdʁʌ], [ˈfɒːɒˌbygə]",
+    "forhold": "[ˈfɒːˌhʌlˀ], [ʁεlaˈɕoˀn], [ˈpɑ,fɒːˌhʌlˀ]",
+    "forkert": "[fʌˈkeɐ̯ˀd], [ˈgæˀl]",
+    "forklare": "[fʌˈklɑˀɑ]",
+    "forlade": "[fʌˈlæˀðə], [aˈsdεð], [ ‘εfdʌˌlæˀðə]",
+    "form": "[ˈfɒˀm]",
+    "formulere": "[fɒmuˈleˀʌ]",
+    "forsvare": "[fʌˈsvɑˀɑ]",
+    "forsvinde": "[fʌˈsvenˀə]",
+    "fortjene": "[fʌˈtjεˀnə]",
+    "fortov": "[ˈfɒːˌtɒw]",
+    "fortsætte": "[ˈfɒːdˌsεdə]",
+    "forvandle": "[fʌˈvanˀlə]",
+    "forvente": "[fʌˈvεnˀdə], [ˈfɒuðˌsiˀə], [fʌˈvεnˀdneŋ], [ˈfɒuðˌsiˀəlsə]",
+    "forår": "[ˈfɒːˌɒˀ], [ˈεfdʌˌɒˀ]",
+    "frakke": "[ˈfʁɑgə]",
+    "fremmed": "[ˈfʁaməð]",
+    "fremstille": "[ˈfʁamˌsdelˀə]",
+    "frihed": "[ˈfʁiˌheðˀ], [beˈfʁiˀəlsə]",
+    "frugt": "[ˈfʁɔgd]",
+    "frygte": "[ˈfʁœgdə], [ˈbɑŋə], [ˈsgʁamə], [fʌˈsgʁagə]",
+    "fugl": "[ˈfuˀl]",
+    "fuld": "[ˈfulˀ], [ˈmεd]",
+    "fylde": "[ˈfylə]",
+    "fyre": "[ˈfyːʌ]",
+    "få": "[ˈfɔˀ], [ˈsgɑfə], [ˈmoðˌtæˀ], [ˈhεndə], [æɐ̯ˈvæɐ̯ˀvə], [ˈanˌsgɑfə]",
+    "får": "[ˈfɒˀ], [ˈlɑmˀ]",
+    "fængsel": "[ˈfεŋˀsəl]",
+    "færge": "[ˈfæɐ̯wə]",
+    "fætter": "[ˈfεdʌ], [kuˈsiːnə]",
+    "føde": "[ˈføːðə]",
+    "følelse": "[ˈføːləlsə]",
+    "følge": "[ˈføljə]",
+    "føre": "[ˈføːʌ], [ˈanˌføˀʌ]",
+    "gade": "[ˈgæːðə], [ˈvɑjˀ], [buləˈvɑˀd], [avəˈny], [aˈleˀ]",
+    "gammel": "[ˈgɑməl], [ˈεldʁʌ], [ˈεlˀsd]",
+    "gardin": "[gɑˈdiˀn]",
+    "gavmild": "[ˈgɑwˌmilˀ]",
+    "generation": "[genəʁɑˈɕoˀn]",
+    "genere": "[ɕeˈneˀʌ], [iɐ̯iˈteˀʌ], [ˈʌb,hisə], [beˈlεmˀʁʌ], [uˈlɑjˀˌliˀə], [beˈsvεˀʌ]",
+    "generel": "[genəˈʁɑˀl]",
+    "genert": "[ɕeˈneɐ̯ˀd], [ˈsgyˀ]",
+    "gennemføre": "[ˈgεnəmˌføˀʌ]",
+    "gennemgå": "[ˈgεnəmˌgɔˀ]",
+    "gentage": "[ˈgεntæ], [ˈgεntɑˀ], [ˈgεntoˀ], [ˈgεntæəð]",
+    "gide": "[ˈgiːðə]",
+    "giraf": "[giˈʁɑf]",
+    "give": "[ˈgiˀ], [ˈgiɐ̯ˀ], [ˈgæˀ], [ˈgiːəð]",
+    "glemme": "[ˈglεmə]",
+    "glide": "[ˈgliːðə], [ˈslebə]",
+    "god": "[ˈgoˀ], [ˈgʌd], [ˈbεðʁʌ], [ˈbεsd]",
+    "godkende": "[ˈgoðˌkεnˀə], [ɑwtoɐ̯iˈseˀʌ]",
+    "gratis": "[ˈgʁɑːdis], [ˈfʁiˀ]",
+    "gribe": "[ˈgʁiːbə]",
+    "grim": "[ˈgʁεmˀ], [ˈhεsli]",
+    "grine": "[ˈgʁiːnə], [ˈleˀ]",
+    "gris": "[ˈgʁiˀs], [ˈsviˀn]",
+    "græde": "[ˈgʁaːðə], [ˈtuːðə]",
+    "grøntsag": "[ˈgʁɶnˌsæˀj]",
+    "guld": "[ˈgul], [ˈsøl]",
+    "gulerod": "[ˈguləˌʁoˀð]",
+    "gulv": "[ˈgɔl]",
+    "gæst": "[ˈgεsd]",
+    "had": "[ˈhað]",
+    "hade": "[ˈhæːðə]",
+    "hage": "[ˈhæːjə], [ˈpanə]",
+    "hals": "[ˈhalˀs], [ˈnɑgə]",
+    "handle": "[ˈhanlə]",
+    "hat": "[ˈhad]",
+    "hav": "[ˈhɑw]",
+    "have": "[ˈha], [ˈhɑˀ], [ˈhæːðə], [ˈhɑfd]",
+    "havn": "[ˈhɑwˀn]",
+    "heldigvis": "[ˈhεldiˈviˀs]",
+    "helikopter": "[hεliˈkʌbdʌ]",
+    "helligdag": "[ˈhεliˌdæˀ]",
+    "helt": "[ˈhεlˀd]",
+    "hente": "[ˈhεndə]",
+    "henvende sig": "[-ˌvεnˀə]",
+    "her": "[ˈhεˀɐ̯]",
+    "herske": "[ˈhæɐ̯sgə], [ʁεˈgeˀʌ]",
+    "hest": "[ˈhεsd]",
+    "hilse": "[ˈhilsə]",
+    "hinanden": "[hiˈnanən]",
+    "historie": "[hiˈsdoɐ̯ˀiə]",
+    "hjemmeside": "[ˈjεmə,siːðə]",
+    "hjort": "[ˈjɒːd], [ˈdyɐ̯ˀ]",
+    "hjælpe": "[ˈjεlbə]",
+    "hofte": "[ˈhʌfdə]",
+    "holde": "[ˈhʌlə]",
+    "hoppe": "[ˈhʌbə], [ˈsbʁεŋə]",
+    "hospital": "[hɔsbiˈtæˀl]",
+    "hoste": "[ˈhoːsdə]",
+    "hotel": "[hoˈtεlˀ]",
+    "hoved": "[ˈhoːəð], [ˈhoːəð], [ˈhoːðʌ]",
+    "hud": "[ˈhuðˀ]",
+    "hue": "[ˈhuːə]",
+    "hund": "[ˈhunˀ], [ˈvalˀb]",
+    "hus": "[ˈhuˀs]",
+    "huske": "[ˈhusgə]",
+    "hvad hedder du?": "[ˈheðə]",
+    "hval": "[ˈvæˀl]",
+    "hviske": "[ˈvesgə]",
+    "hylde": "[ˈhylə]",
+    "håb": "[ˈhɔˀb]",
+    "håbe": "[ˈhɔːbə]",
+    "hånd": "[ˈhʌnˀ], [ˈhεnˀʌ]",
+    "hår": "[ˈhɒˀ]",
+    "hård": "[ˈhɒˀ], [ˈbløˀð]",
+    "hæl": "[ˈhεˀl]",
+    "hælde": "[ˈhεlə]",
+    "hænge": "[ˈhεŋə], [ˈhɑŋˀ]",
+    "høj": "[ˈlεːsə], [ˈhʌjˀ]",
+    "høne": "[ˈhœːnə], [ˈhæːnə]",
+    "høre": "[ˈhøːʌ]",
+    "i": "[i]",
+    "i aften": "[ˈɑfdən]",
+    "i dag": "[ˈdæˀ], [ˈgɒˀ], [ˈfɒːˌgɒˀs], [ˈmɒɒn], [ˈɒwˀʌˈmɒɒn]",
+    "idé": "[iˈdeˀ]",
+    "indebære": "[ˈenəˌbεˀʌ]",
+    "indeholde": "[ˈenəˌhʌlˀə]",
+    "indføre": "[ˈenˌføˀʌ]",
+    "indrette": "[ˈenˌʁadə]",
+    "indrømme": "[ˈenˀ,ʁɶmˀə], [ˈmεðˌgiˀ]",
+    "ingen": "[ˈeŋən], [ˈendəð]",
+    "insekt": "[enˈsεgd]",
+    "investere": "[envəˈsdeˀʌ], [envəˈsdeˀɐ̯eŋ]",
+    "invitere": "[enviˈteˀʌ]",
+    "irritere": "[iɐ̯iˈteˀʌ]",
+    "is": "[ˈiˀs]",
+    "jakke": "[ˈjɑgə]",
+    "job": "[ˈdjʌb], [ˈɑːˌbɑjˀdə]",
+    "jord": "[ˈjoˀɐ̯]",
+    "jordbær": "[ˈjoɐ̯ˌbæɐ̯], [ˈtʁɑːnəˌbæɐ̯], [ˈhenˌbæɐ̯], [ˈblʌˌbæɐ̯], [ˈbʁɔmˌbæɐ̯], [ˈkiɐ̯səˌbæɐ̯]",
+    "kage": "[ˈkæːjə]",
+    "kalde": "[ˈkalə], [ˈʁεŋə]",
+    "kamera": "[ˈkæˀməʁɑ]",
+    "kanin": "[kaˈniˀn]",
+    "karakter": "[kɑɑgˈteˀɐ̯]",
+    "karriere": "[kɑiˈεːʌ]",
+    "kartoffel": "[kɑˈtʌfəl]",
+    "kat": "[ˈkad], [ˈkileŋ]",
+    "ked af det": "[ˈkeðˀ], [ˈɔnˌsgylˀ]",
+    "kigge": "[ˈkigə], [ˈseˀ], [ˈsøːjə], [ˈleːðə]",
+    "kiks": "[ˈkigs]",
+    "kind": "[ˈkenˀ]",
+    "kirke": "[ˈkiɐ̯gə]",
+    "kjole": "[ˈkjoːlə]",
+    "klare": "[ˈklɑːɑ], [ˈmɑgdə]",
+    "klatre": "[ˈkladʁʌ]",
+    "knogle": "[ˈknɒwlə], [ˈbeˀn]",
+    "knytte": "[ˈknydə]",
+    "knæ": "[ˈknεˀ]",
+    "ko": "[ˈkoˀ], [ˈkalˀv]",
+    "kodeord": "[ˈkoːðə,oˀɐ̯], [ˈpɑːsˌwœːd]",
+    "koge": "[ˈkɔːwə]",
+    "kollega": "[koˈleːga]",
+    "kombinere": "[kʌmbiˈneˀʌ]",
+    "komme": "[ˈkʌmə]",
+    "kommentere": "[kɔmənˈteˀʌ]",
+    "kompleks": "[kʌmbliˈseˀʌ]",
+    "koncert": "[kɔnˈsæɐ̯d]",
+    "konsekvens": "[kʌnsəˈkvεnˀs], [ˈføljə]",
+    "kontakte": "[kɔnˈtɑgdə]",
+    "kontor": "[kɔnˈtoˀɐ̯]",
+    "kontrollere": "[kʌntʁoˈleˀʌ]",
+    "kort": "[ˈkɒːd]",
+    "koste": "[ˈkɔsdə]",
+    "krig": "[ˈkʁiˀ]",
+    "kritisere": "[kʁidiˈseˀʌ], [ˈneð,sæˀblə]",
+    "krop": "[ˈkʁʌb], [beˈvεˀjəlsə]",
+    "kræve": "[ˈkʁεːvə]",
+    "kultur": "[kulˈtuɐ̯ˀ]",
+    "kun": "[ˈkɔn], [ˈbɑːɑ], [ˈblʌd]",
+    "kvarter": "[kvɑˈteˀɐ̯], [ˈnæːboˌlæˀj]",
+    "kvinde": "[ˈkvenə]",
+    "kylling": "[ˈkyleŋ]",
+    "kysse": "[ˈkøsə]",
+    "kyst": "[ˈkøsd]",
+    "kæmpe": "[ˈkεmbə]",
+    "kæreste": "[ˈkæɐ̯ʌsdə]",
+    "kærlighed": "[ˈkæɐ̯liˌheðˀ]",
+    "købe": "[ˈkøːbə]",
+    "kød": "[ˈkøð]",
+    "køkken": "[ˈkøgən]",
+    "køleskab": "[ˈkøːlə,sgæˀb]",
+    "køre": "[ˈkøːʌ]",
+    "lade": "[ˈla], [ˈlɑ], [ˈloðˀ], [ˈlad], [ˈteˌlæˀðə], [ˈte,loðˀ], [ˈte,lad]",
+    "laks": "[ˈlɑgs], [ˈtuˀn]",
+    "land": "[ˈlanˀ]",
+    "langs": "[ˈlɑŋˀs]",
+    "langsom": "[ˈlɑŋˌsʌmˀ], [ˈhoɐ̯di]",
+    "lastbil": "[ˈlasdbiˀl], [pigˈʌb], [ˈlað]",
+    "lav": "[ˈlɑw]",
+    "lave": "[ˈlæːvə], [ˈgɶːʌ]",
+    "lede": "[ˈleːðə]",
+    "leg": "[ˈlɑjˀ], [ˈsbel]",
+    "lege": "[ˈlɑjə]",
+    "legetøj": "[ˈlɑjəˌtʌj]",
+    "lejlighed": "[ˈlɑjliˌheðˀ]",
+    "lektier": "[ˈlεgɕə]",
+    "lette": "[ˈlεdə]",
+    "levende": "[ˈleːvənə]",
+    "lide": "[ˈliːðə]",
+    "lidt": "[ˈlid]",
+    "lighed": "[ˈliːˌheðˀ], [ˈfɒːˌsgεlˀ]",
+    "ligne": "[ˈliːnə]",
+    "loft": "[ˈlʌfd]",
+    "lokke": "[ˈlʌgə]",
+    "love": "[ˈlɔːwə], [ˈløfdə]",
+    "luft": "[ˈlɔfd], [ˈilˀd], [ʌgsyˈgeˀn]",
+    "lufthavn": "[ˈlɔfdˌhɑwˀn]",
+    "lukke": "[ˈlɔgə], [ˈɔːbnə]",
+    "lunge": "[ˈlɔŋə]",
+    "lyde": "[ˈlyːðə], [ˈløðˀ], [ˈlyd]",
+    "lykkes": "[ˈløgəs], [ˈmisˌløgəs]",
+    "lys": "[ˈlyˀs]",
+    "lyserød": "[ˈlysəʁœðˀ], [ˈpeŋg]",
+    "lytte": "[ˈlydə]",
+    "låne": "[ˈlɔːnə]",
+    "læbe": "[ˈlεːbə]",
+    "lægge": "[ˈlεgə], [plaˈseˀʌ], [ˈsdelə], [ˈpudə], [ˈsεdə], [ˈlegə]",
+    "lære": "[ˈlεːʌ]",
+    "lærer": "[ˈlεːʌ], [ˈɔnʌˌviˀsʌ], [pεdaˈgoˀ]",
+    "læse": "[ˈlεːsə]",
+    "løbe": "[ˈløːbə]",
+    "løfte": "[ˈløfdə]",
+    "løgn": "[ˈlʌjˀn], [ˈlʌjnʌ]",
+    "løn": "[ˈlœnˀ]",
+    "løse": "[ˈløːsə]",
+    "løsning": "[ˈløːsneŋ]",
+    "løve": "[ˈløːvə]",
+    "majs": "[ˈmɑjˀs], [ˈmɑjˀs,kʌlbə]",
+    "male": "[ˈmæːlə], [ˈmæːlʌ], [ˌmæːlʌˈʁiˀ], [ˈmæːleŋ], [ˈmæːlə], [ˈmæːləð]",
+    "mand": "[ˈmanˀ], [ˈmεnˀ]",
+    "mangle": "[ˈmɑŋlə]",
+    "mappe": "[ˈmɑbə]",
+    "marked": "[ˈmɑːgəð]",
+    "mave": "[ˈmæːvə]",
+    "med": "[mε]",
+    "medicin": "[mediˈsiˀn]",
+    "mellem": "[ˈmεləm]",
+    "mening": "[ˈmeːneŋ]",
+    "mere": "[ˈmeːʌ]",
+    "metro": "[ˈmeːtʁo], [ˈɔnʌgʁɔns,bæːnə]",
+    "middag": "[ˈmeda]",
+    "midnat": "[ˈmiðˌnad]",
+    "militær": "[miliˈtεˀɐ̯]",
+    "minde": "[ˈmenə], [eˈʁεnˀdʁεŋ]",
+    "minister": "[miˈnisdʌ]",
+    "minut": "[meˈnud]",
+    "mod": "[ˈmoˀð]",
+    "moden": "[ˈmoˀðən]",
+    "mor": "[ˈmoɐ̯], [ˈmøðʁʌ]",
+    "motorcykel": "[ˈmoːtʌˌsygəl]",
+    "mulig": "[ˈmuːli], [uˈmuˀli], [ˈmuːliˈviˀs]",
+    "mulighed": "[ˈmuːliˌheðˀ]",
+    "mund": "[ˈmɔnˀ]",
+    "musik": "[muˈsig], [ˈmuˀsigʌ]",
+    "muskel": "[ˈmusgəl]",
+    "mål": "[ˈmɔˀl]",
+    "måle": "[ˈmɔːlə]",
+    "måne": "[ˈmɔːnə]",
+    "måned": "[ˈmɔːnəð]",
+    "måske": "[mɔˈsgeˀ]",
+    "måtte": "[ˈmɔˀ]",
+    "mælk": "[ˈmεlˀg]",
+    "møde": "[ˈmøːðə]",
+    "nabo": "[ˈnæːbo]",
+    "nat": "[ˈnad], [ˈnεdʌ]",
+    "natur": "[naˈtuɐ̯ˀ]",
+    "navn": "[ˈnɑwˀn]",
+    "nederdel": "[ˈneðʌ,deˀl]",
+    "nedlægge": "[ˈneð,lεgə]",
+    "nem": "[ˈnεmˀ], [ˈlεd], [ˈliːəˈtel], [ˈsemˀbəl], [ˈukʌmbliˌseˀʌð], [ˈεŋˀgəl]",
+    "nevø": "[neˈvø], [niˈεːsə]",
+    "nikke": "[ˈnegə]",
+    "nogen": "[ˈnoən], [ˈnɔːəð], [ˈnoən], [ˈnɔːəð]",
+    "nu": "[ˈnu]",
+    "nummer": "[ˈnɔmˀʌ], [ˈtal]",
+    "ny": "[ˈnyˀ]",
+    "nyde": "[ˈnyːðə], [ˈnøðˀ], [ˈnyd]",
+    "nysgerrig": "[ˈnysˌgæɐ̯ˀi]",
+    "nå": "[ˈnɒˀ]",
+    "når": "[nɒ], [ˈda]",
+    "nægte": "[ˈnεgdə]",
+    "næse": "[ˈnεːsə], [ˈøːʌ]",
+    "næste": "[ˈnεsdə], [ˈsiðən]",
+    "næsten": "[ˈnεsdən]",
+    "nøgle": "[ˈnʌjlə]",
+    "officiel": "[ʌfiˈɕεlˀ]",
+    "ofte": "[ˈʌfdə], [ˈtid], [ˈhybid], [ˈsʌməˈtiðʌ], [ˈnoən ˈgɑŋə], [ˈɕεlənd]",
+    "og": "[ˈɒw]",
+    "også": "[ˈʌs], [ˈliːəˌleːðəs]",
+    "olie": "[ˈoljə]",
+    "opdage": "[ˈʌbˌdæˀjə]",
+    "operation": "[obəʁɑˈɕoˀn], [kiˈʁuɐ̯ˀw]",
+    "operere": "[obəˈʁεˀʌ]",
+    "opfatte": "[ˈʌb,fadə]",
+    "opfinde": "[ˈʌbˌfenˀə]",
+    "opfordre": "[ˈʌbˌfɒˀdʁʌ]",
+    "opfylde": "[ˈʌbˌfylˀə], [en,fʁiˀ], [ˈleːvə]",
+    "opgave": "[ˈʌbˌgæːvə]",
+    "ophæve": "[ˈʌbˌhεˀvə], [ˈʌbˌhεˀvəlsə], [ˈʌbˌsiˀə], [ˈʌbˌsiˀəlsə], [anuˈleˀʌ], [anulaˈɕoˀn], [ˈɑwbeˌsdelˀə], [ˈɑwbeˌsdelˀeŋ], [teˈbæːjəˌkalˀə], [teˈbæːjəˌkaləlsə]",
+    "oplyse": "[ˈʌbˌlyˀsə]",
+    "opnå": "[ˈʌbˌnɔˀ]",
+    "opstå": "[ˈʌbˌsdɔˀ]",
+    "optræde": "[ˈʌbˌtʁεˀðə]",
+    "ord": "[ˈoˀɐ̯]",
+    "ost": "[ˈɔsd]",
+    "over": "[ɒwʌ]",
+    "overholde": "[ˈɒwʌˌhʌlˀə]",
+    "overlade": "[ˈɒwʌˌlæˀðə], [beˈtʁoˀ], [ˈɒwʌˌgiˀ], [ˈɒwʌˌdʁɑˀwə]",
+    "overleve": "[ˈɒwʌˌleˀvə]",
+    "overraske": "[ˈɒwʌˌʁɑsgə], [ˈɒwʌˌʁɑsgəlse], [fʌˈbɑwˀsə], [fʌˈbɑwˀsəlse], [fʌˈbløfə], [fʌˈbløfəlse], [fʌˈɔnˀdʁʌ]",
+    "overtage": "[-ˌtæˀ]",
+    "overveje": "[ˈɒwʌˌvɑjˀə], [ˈɒwʌˌvɑjˀəlsə], [ˈgʁublə], [gʁublʌˈʁiˀ], [sbeguˈleˀʌ], [sbegulaˈɕoˀn]",
+    "ovn": "[ˈɒwˀn], [kɔmˈfuɐ̯ˀ]",
+    "pakke": "[ˈpɑgə]",
+    "papir": "[paˈpiɐ̯ˀ]",
+    "park": "[ˈpɑːg]",
+    "pasta": "[ˈpasda]",
+    "penge": "[ˈpεŋə], [kɔnˈtanˀd]",
+    "person": "[pæɐ̯ˈsoˀn]",
+    "pige": "[ˈpiːə]",
+    "pingvin": "[peŋˈviˀn]",
+    "pizza": "[ˈpidsa]",
+    "planlægge": "[ˈplæːnˌlεgə]",
+    "plaster": "[ˈplasdʌ]",
+    "pleje": "[ˈplɑjə]",
+    "pligt": "[ˈplegd], [fʌˈplegdəlsə]",
+    "politi": "[poliˈtiˀ]",
+    "posthus": "[ˈpʌsd-]",
+    "presse": "[ˈpʁasə]",
+    "pris": "[ˈpʁiˀs]",
+    "problem": "[pʁoˈbleˀm]",
+    "producere": "[pʁoduˈseˀʌ], [fɑbʁiˈkeˀʌ]",
+    "professor": "[pʁoˈfεsʌ], [pʁofəˈsoːʌ]",
+    "projekt": "[pʁoˈɕεgd]",
+    "præsentation": "[pʁεsəntaˈɕoˀn]",
+    "præsentere": "[pʁεsənˈteˀʌ], [entʁoduˈseˀʌ]",
+    "prøve": "[ˈpʁœːwə], [fʌˈsøˀjə]",
+    "pude": "[ˈpuːðə]",
+    "på": "[ˈpɔˀ]",
+    "påvirke": "[ˈpʌˌviɐ̯gə]",
+    "pære": "[ˈpεːʌ]",
+    "pølse": "[ˈpølsə]",
+    "rabat": "[ʁɑˈbad]",
+    "ramme": "[ˈʁɑmə]",
+    "rapport": "[ʁɑˈpɒːd]",
+    "reagere": "[ʁεaˈgeˀʌ]",
+    "redde": "[ˈʁεðə], [ˈɔnˌsεdə]",
+    "reducere": "[ʁεduˈseˀʌ]",
+    "registrere": "[ʁεgiˈsdʁεˀʌ]",
+    "regnbue": "[ˈʁɑjnˌbuːə]",
+    "regning": "[ˈʁɑjneŋ]",
+    "rejse": "[ˈʁɑjsə]",
+    "ren": "[ˈʁεˀn]",
+    "respektere": "[ʁεsbεgˈteˀʌ]",
+    "restaurant": "[ʁεsdoˈʁɑŋ]",
+    "resultat": "[ʁεsulˈtæˀd]",
+    "ret": "[ˈʁad]",
+    "rette": "[ˈʁadə]",
+    "ride": "[ˈʁiːðə], [ˈʁεðˀ], [ˈʁεːðəd], [ˈʁiðneŋ]",
+    "rig": "[ˈʁiˀ], [ˈkøːbə,døgdi], [ˈfadi]",
+    "ringe": "[ˈʁεŋə]",
+    "risikere": "[ʁisiˈkeˀʌ]",
+    "risiko": "[ˈʁisiko]",
+    "roman": "[ʁoˈmæˀn]",
+    "rose": "[ˈʁoːsə]",
+    "rotte": "[ˈʁʌdə], [ˈmuˀs]",
+    "rulle": "[ˈʁulə], [ˈtʁilə]",
+    "rund": "[ˈʁɔnˀ]",
+    "ryg": "[ˈʁœg], [ˈlεnˀ]",
+    "ryge": "[ˈʁyːə], [ˈʁʌjˀ], [ˈʁʌjəð]",
+    "rykke": "[ˈʁœgə], [beˈvεˀjə]",
+    "råbe": "[ˈʁɔːbə], [ˈʁɔːbʌ], [ˈʁʌbdə], [ˈʁʌbd]",
+    "række": "[ˈʁagə]",
+    "ræv": "[ˈʁεˀw]",
+    "røre": "[ˈʁɶːʌ], [beˈʁɶˀʌ], [ˈføːle], [ˈmæɐ̯gə]",
+    "salt": "[ˈsalˀd]",
+    "samme": "[ˈsɑmə]",
+    "sammenligne": "[ˈsɑmənˌliˀnə], [ˈfɒːˌhʌlˀ]",
+    "sand": "[ˈsanˀ], [ˈsanˌheðˀ]",
+    "sang": "[ˈsɑŋˀ]",
+    "savne": "[ˈsɑwnə]",
+    "se": "[ˈseˀ], [ˈkigə], [iˈɑgˌtæˀ], [beˈtʁɑgdə], [ˈanˌsguˀə], [ʌbsæɐ̯ˈveˀʌ], [ˈɒwʌˌvɔˀwə]",
+    "sejle": "[ˈsɑjlə]",
+    "sekund": "[seˈkɔnˀd]",
+    "selvfølgelig": "[sεlˈføljəli]",
+    "selvom": "[ˈsεlˀʌm]",
+    "sende": "[ˈsεnə]",
+    "seng": "[ˈsεŋˀ]",
+    "servere": "[sæɐ̯ˈveˀʌ]",
+    "sidde": "[ˈseðə], [ˈsεdə]",
+    "side": "[ˈsiːðə]",
+    "siden": "[ˈsiðən]",
+    "sidste": "[ˈsisdə]",
+    "sikre": "[ˈsegʁʌ]",
+    "simpel": "[ˈsemˀbəl]",
+    "situation": "[sidwaˈɕoˀn]",
+    "skab": "[ˈsgæˀb]",
+    "skade": "[ˈsgæːðə]",
+    "skaffe": "[ˈsgɑfə]",
+    "skam": "[ˈsgɑmˀ], [ˈsgɑmfulˀ]",
+    "skarp": "[ˈsgɑːb]",
+    "skat": "[ˈsgad]",
+    "ske": "[ˈsgeˀ]",
+    "skib": "[ˈsgiˀb]",
+    "skifte": "[ˈsgifdə]",
+    "skildpadde": "[ˈsgelˌpaðə]",
+    "skinne": "[ˈsgenə]",
+    "sko": "[ˈsgoˀ]",
+    "skole": "[ˈsgoːlə]",
+    "skov": "[ˈsgɒwˀ]",
+    "skrige": "[ˈsgʁiːə], [ˈsgʁɑjˀ]",
+    "skrive": "[ˈsgʁiːvə], [ˈsgʁiːvʌ], [ˈsgʁεwˀ], [ˈsgʁεːvəð]",
+    "skræmme": "[ˈsgʁamə]",
+    "skubbe": "[ˈsgɔbə]",
+    "skuffe": "[ˈsgɔfə], [ˈsvegdə], [ˈæɐ̯wʁʌ], [beˈdʁœˀvə], [ˈsmæɐ̯də], [fʌˈtʁyˀðə], [ˈɑŋˀʌ]",
+    "skuffelse": "[ˈsgɔfəlsə]",
+    "skuffet": "[ˈsgɔfə]",
+    "skulder": "[ˈsgulʌ]",
+    "skulle": "[ˈsgulə], [ˈsgu], [ˈsga], [ˈsgal], ['sguləð]",
+    "skulptur": "[sgulbˈtuɐ̯ˀ], [sgulbˈtøˀɐ̯], [ˈbeləðˌhɔgʌ]",
+    "sky": "[ˈsgyˀ]",
+    "skyde": "[ˈsgyːðə], [ˈsgøðˀ], [ˈsgud]",
+    "skål": "[ˈsgɔˀl]",
+    "skære": "[ˈsgεːʌ], [ˈsgɑˀ], [ˈsgɒːɒð], [ˈklebə]",
+    "skærm": "[ˈsgæɐ̯ˀm]",
+    "slags": "[ˈslɑgs]",
+    "slange": "[ˈslɑŋə]",
+    "slik": "[ˈsleg]",
+    "slips": "[ˈslebs]",
+    "slukke": "[ˈslɔgə]",
+    "slutte": "[ˈsludə]",
+    "slå": "[ˈslɔˀ], [ˈslɒˀ], [ˈsloˀ], ['sloəð]",
+    "smage": "[ˈsmæːjə]",
+    "smal": "[ˈsmalˀ], [ˈsnεwˀʌ], [ˈviðˀ], [ˈbʁεðˀ]",
+    "smerte": "[ˈsmæɐ̯də], [ˈɔnˀ]",
+    "smitte": "[ˈsmedə]",
+    "smuk": "[ˈsmɔg], [ˈflʌd]",
+    "smør": "[ˈsmɶɐ̯]",
+    "snakke": "[ˈsnɑgə], [ˈtæːlə], [ˈsiː], [fʌˈtεlˀə], [beˈʁadə], [kʌnsdaˈteˀʌ], [æɐ̯ˈklεˀʌ], [ˈuðˌbʁyˀðə], [ˈuðˌʁɔˀbə]",
+    "snart": "[ˈsnɑˀd], [ˈtiðli]",
+    "sne": "[ˈsneˀ], [ˈsluð], [ˈtø,sneˀ]",
+    "sofa": "[ˈsoːfa]",
+    "sol": "[ˈsoˀl]",
+    "sommer": "[ˈsʌmʌ]",
+    "sommerfugl": "[ˈsʌmʌˌfuˀl]",
+    "sorg": "[ˈsɒˀw]",
+    "sove": "[ˈsɒwə]",
+    "soveværelse": "[ˈsɒwə,væɐ̯ʌlsə]",
+    "spare": "[ˈsbæːɐ̯]",
+    "specifik": "[sbesiˈfig]",
+    "spille": "[ˈsbelə], [ˈlɑjə]",
+    "spise": "[ˈsbiːsə], [ˈεːðə], [fʌˈtεˀʌ]",
+    "sprede": "[ˈsbʁεːðə], ['uðbʁεˀðə]",
+    "sprog": "[ˈsbʁɔˀw]",
+    "spænding": "[ˈsbεneŋ], [ˈsdʁɶmˀ]",
+    "spørge": "[ˈsbɶɐ̯ʌ], [ˈbeːðə]",
+    "spørgsmål": "[ˈsbɶɐ̯sˌmɔˀl]",
+    "stamme": "[ˈsdɑmə]",
+    "standse": "[ˈsdansə]",
+    "station": "[sdaˈɕoˀn]",
+    "stege": "[ˈsdɑjə], [soˈteˀʌ], [ˈsdεgd], [fʁiˈtyːʌ,sdεgd]",
+    "stemme": "[ˈsdεmə]",
+    "stige": "[ˈsdiːə]",
+    "stikke": "[ˈsdegə]",
+    "stille": "[ˈsdɔˀ], [ˈsdɒˀ], [ˈsdoˀ], [ˈsdɔːəð]",
+    "stjæle": "[ˈsdjεːlə], [ˈsdjæˀl], [ˈsdjɔːləð]",
+    "stol": "[ˈsdoˀl]",
+    "stoppe": "[ˈsdʌbə], [ˈsdansə], [ˈsdansə], [ˈhʌlə]",
+    "stor": "[ˈsdoˀɐ̯], [ˈsdɶɐ̯ʌ], [ˈsdoˀɐ̯]",
+    "strand": "[ˈsdʁɑnˀ]",
+    "strække": "[ˈsdʁagə]",
+    "studere": "[sduˈdeˀʌ]",
+    "studerende": "[sduˈdeˀʌnə]",
+    "styre": "[ˈsdyːʌ], [ˈsdyɐ̯ˀ]",
+    "styrke": "[ˈsdyɐ̯gə]",
+    "stå": "[ˈsdɔˀ], [ˈsdɒˀ], [ˈsdoˀ], [ˈsdɔːəð]",
+    "stærk": "[ˈsdæɐ̯g]",
+    "støde": "[ˈsdøːðə], [koliˈdeˀʌ]",
+    "størrelse": "[ˈsdɶɐ̯ʌlsə]",
+    "støtte": "[ˈsdødə], [ˈsdødə], [ˈbɑgə], [ˈʌbˌbɑgneŋ]",
+    "sukkersyge": "[ˈsɔgʌˈsyːə], [diaˈbeːdəs]",
+    "sulten": "[ˈsuldən]",
+    "suppe": "[ˈsɔbə]",
+    "svag": "[ˈsvæˀj]",
+    "svar": "[ˈsvɑˀ], [beˈsvɑˀɑlsə]",
+    "svare": "[ˈsvɑːɑ], [beˈsvɑˀɑ]",
+    "svinekød": "[ˈsviːnə,køð]",
+    "svær": "[ˈsvεˀɐ̯], [ˈvansgəli]",
+    "svømme": "[ˈsvœmə]",
+    "sy": "[ˈsyˀ], [ˈsɔˀ]",
+    "sygeplejerske": "[ˈsyːəˌplɑjˀʌsgə]",
+    "synge": "[ˈsøŋə], [ˈsɑŋˀ], [ˈsɔŋəð]",
+    "synke": "[ˈsøŋgə]",
+    "system": "[syˈsdeˀm]",
+    "sår": "[ˈsɒˀ]",
+    "sæbe": "[ˈsεːbə]",
+    "sælge": "[ˈsεljə]",
+    "sæson": "[sεˈsʌŋ], [ˈɒːsˌtiðˀ]",
+    "sætning": "[ˈsεdneŋ]",
+    "sø": "[ˈsøˀ]",
+    "sød": "[ˈsøðˀ], [ˈʁɑˀ], [ˈnudəð], [ˈkεˀɐ̯]",
+    "søge": "[ˈleːðə], [ˈsøːjə]",
+    "søn": "[ˈsœn]",
+    "søster": "[ˈsøsdʌ]",
+    "tabe": "[ˈtæːbə]",
+    "tage": "[ˈtæˀ], [ˈtɑˀ], [ˈtoˀ], [ˈtæəð]",
+    "takke": "[ˈtɑgə]",
+    "tand": "[ˈtanˀ], [ˈtεnˀʌ], [ˈtanˌkøð], [ˈgɔmə]",
+    "tandbørste": "[ˈtan,bɶɐ̯sdə]",
+    "taske": "[ˈtasgə], [ˈpoːsə]",
+    "tastatur": "[tasdaˈtuɐ̯ˀ], [ˈkiːˌbɒːd]",
+    "tavle": "[ˈtɑwlə]",
+    "teater": "[teˈæˀdʌ]",
+    "tegne": "[ˈtɑjnə]",
+    "telefon": "[teləˈfoˀn]",
+    "terrasse": "[taˈʁɑsə]",
+    "tid": "[ˈtiðˀ]",
+    "tiger": "[ˈtiːʌ]",
+    "til": "[ˈtel]",
+    "tilbud": "[ˈtelˌbuð]",
+    "tilbyde": "[ˈtelˌbyˀðə]",
+    "time": "[ˈtiːmə]",
+    "ting": "[ˈteŋˀ]",
+    "tjene": "[ˈtjεːnə]",
+    "tog": "[ˈtɔˀw]",
+    "tom": "[ˈtʌmˀ]",
+    "tomat": "[toˈmæˀd]",
+    "torden": "[ˈtoɐ̯dən], [ˈlyˀn]",
+    "torv": "[ˈtɒˀw]",
+    "tradition": "[tʁɑdiˈɕoˀn], [tʁɑdiɕoˈnεlˀ]",
+    "trappe": "[ˈtʁɑbə], [ˈʌbˌgɑŋˀ]",
+    "trist": "[ˈtʁisd]",
+    "tro": "[ˈtʁofasd]",
+    "trykke": "[ˈtʁœgə], [ˈtasdə], [ˈslɔˀ]",
+    "træ": "[ˈtʁεˀ]",
+    "træde": "[ˈtʁεːðə], [ˈtʁʌdə]",
+    "træffe": "[ˈtʁafə]",
+    "trække": "[ˈtʁagə]",
+    "træt": "[ˈtʁad], [ˈdøðtʁad], [ˈuðˌmadə], [ˈsœwni], [ˈtʁadˌheðˀ]",
+    "trøje": "[ˈtʁʌjə], [ˈhεdə,tʁʌjə], [ˈswεdʌ], [ˈhεdə]",
+    "tung": "[ˈtɔŋˀ], [ˈlεd]",
+    "tunge": "[ˈtɔŋə]",
+    "tunnel": "[ˈtɔnˀəl]",
+    "turde": "[ˈtoːʌ], [ˈtɶɐ̯], [ˈtoːʌ], [ˈtuɐ̯də], [ˈvɔːvə]",
+    "turkis": "[tyɐ̯ˈkiˀs]",
+    "tvinge": "[ˈtveŋə]",
+    "tydelig": "[ˈtyːðəli], [ˈklɑˀ], [ˈʌbˌlɑgd], [en,lyˀsənə], [ˈɔːbənˌlyˀs]",
+    "tynd": "[ˈtønˀ], [ˈtyg]",
+    "type": "[ˈtyːbə], [ˈslɑgs], [ˈɑˀd], [ˈsɒːd], [ˈɑwˌɑˀd], [vɑiˈanˀd]",
+    "typisk": "[ˈtybisg]",
+    "tå": "[ˈtɔˀ], [ˈtεˀɐ̯]",
+    "tåle": "[ˈtɔːlə], [ˈuðˌhʌlˀə], [toləˈʁεˀʌ]",
+    "tålmodig": "[tʌlˈmoˀði], [tʌlˈmoˀði,heðˀ]",
+    "tælle": "[ˈtεlə], [ˈtaldə], [ˈtalˀd]",
+    "tænde": "[ˈtεnə], [ˈslɔgə]",
+    "tøj": "[ˈtʌj]",
+    "tømme": "[ˈtœmə]",
+    "tørklæde": "[ˈtɶɐ̯,klεːðə]",
+    "tørre": "[ˈtɶɐ̯ʌ]",
+    "tørstig": "[ˈtɶɐ̯sdi]",
+    "uddanne": "[ˈuðˌdanˀə]",
+    "uddannelse": "[ˈuðˌdanˀəlsə], [ˈuðˌdanˀə]",
+    "uden": "[ˈuðən]",
+    "udløse": "[ˈuðˌløˀsə], [ɑgtiˈveˀʌ], ['sεdə]",
+    "udnytte": "[ˈuð,nødə]",
+    "udsætte": "[ˈuðsεdə]",
+    "udtale": "[ˈuð,tæːlə]",
+    "udtrykke": "[ˈuðˌtʁœgə]",
+    "udvide": "[ˈuðˌviðˀə]",
+    "udvikle": "[ˈuðˌveglʌ]",
+    "uge": "[ˈuːə]",
+    "ugle": "[ˈuːlə]",
+    "ulv": "[ˈulˀv]",
+    "umulig": "[uˈmuˀli]",
+    "under": "[ˈɔnˀʌ]",
+    "undgå": "[ˈɔnˌgɔˀ]",
+    "ung": "[ˈɔŋˀ], [ˈøŋʁʌ], [ˈøŋˀsd]",
+    "ungdom": "[ˈɔŋˌdʌmˀ]",
+    "universitet": "[univæɐ̯siˈteˀd]",
+    "ur": "[ˈuɐ̯ˀ]",
+    "valg": "[ˈvalˀ]",
+    "valuta": "[vaˈluta], [obligaˈɕoˀn], [ˈɑgɕə], [væɐ̯ˈdi,paˈpiɐ̯ˀ]",
+    "vand": "[ˈvanˀ]",
+    "vare": "[ˈvɑːɑ]",
+    "variere": "[vɑiˈeˀʌ], [ˈvεgslə], [flugtuˈeˀʌ]",
+    "varm": "[ˈvɑˀm], [ˈluˀn], [ˈkʌlˀ], [ˈkøːli]",
+    "ved": "[ve]",
+    "vedtage": "[ˈveðˌtæˀ]",
+    "veje": "[ˈvɑjə], [ˈvεgd]",
+    "vejr": "[ˈvεˀɐ̯]",
+    "ven": "[ˈvεn], [vεnˈenə]",
+    "vente": "[ˈvεndə]",
+    "vide": "[ˈviːðə], [ˈviːðən], [ˈviːðənə], [ˈkεnə], [ˈkεnˌsgæˀb]",
+    "viden": "[ˈviːðən]",
+    "video": "[ˈviˀdjo]",
+    "vigtig": "[ˈvegdi], [ˈliːəˌgylˀdi]",
+    "ville": "[ˈvilə], [ˈve], [ˈvilə], [ˈviləð]",
+    "vinde": "[ˈvenə], [ˈsɑjʁʌ], [beˈsɑjˀʁʌ], [ˈɒwʌ,venə]",
+    "vindue": "[ˈvendu]",
+    "vinke": "[ˈveŋgə]",
+    "vinter": "[ˈvenˀdʌ]",
+    "virke": "[ˈviɐ̯gə], [fɔŋˈgeˀʌ]",
+    "vise": "[ˈviːsə]",
+    "vred": "[ˈvʁεð]",
+    "vulkan": "[vulˈkæˀn], [vulˈkæˀn,uðˌbʁuð], [vulˈkæˀnsg]",
+    "vurdere": "[vuɐ̯ˈdeˀʌ], [vuɐ̯ˈdeˀɐ̯eŋ], [beˈdœmˀə], [beˈdœmˀəlsə], [evaluˈeˀʌ], [evaluˈeˀɐ̯eŋ]",
+    "vågne": "[ˈvɔwnə], [ˈsdɔˀ], [ˈsdɒˀ], [ˈsdoˀ], [ˈsdɔːəð], [ˈvεgə]",
+    "væg": "[ˈvεˀg]",
+    "vække": "[ˈvεgə]",
+    "vælge": "[ˈvεljə]",
+    "vælte": "[ˈvεldə]",
+    "være": "[ˈvεːʌ], [ˈæɐ̯], [ˈvɑ], [ˈvεːʌð]",
+    "værsgo": "[ˈvæɐ̯ˈsgoˀ]",
+    "weekend": "[ˈviːˌgεnˀd]",
+    "yde": "[ˈyːðə]",
+    "yoghurt": "[ˈjoˌguɐ̯ˀd]",
+    "åben": "[ˈɔːbən]",
+    "åbne": "[ˈɔːbnə], [ˈlɔgə]",
+    "år": "[ˈɒˀ]",
+    "æble": "[ˈεːblə]",
+    "ærlig": "[ˈæɐ̯li], [ˈæɐ̯liˌheðˀ]",
+    "ø": "[ˈøˀ]",
+    "ødelægge": "[ˈøːðəˌlεgə], [desdʁuˈeˀʌ], [teˈendəðˌgɶˀʌ], [ˈuð,slεdə], [ˈuð,ʁɑ,deˀʌ]",
+    "øge": "[øˀjə], [fʌˈøˀjə], [ˈmensgə], [fʌˈmenˀsgə], [ˈuðˌviðˀə], [εgspanˈdeˀʌ], [ˈuð,bygə], ['enˌsgʁaŋˀgə], [fʌˈsnεwˀʁʌ], ['en,snεwˀʁʌ], [ˈhεːvə], [ˈsεdə], [fʌˈhʌjˀə], [ˈsεŋgə], [ˈsεdə], [ˈsdiːə], [ˈfalə], [ˈdæːlə]",
+    "øje": "[ˈʌjə]",
+    "øl": "[ˈøl]",
+    "ønske": "[ˈønsgə]",
+  },
+};
+
+</script>
+<script id="speech-lib">
+// danskLearn shared speech module — unified Danish TTS across all modules.
+//
+// Before this module existed, each src/*.html carried its own
+// pickDanishVoice / speak with a different voice preference list. This
+// produced inconsistent pronunciation quality across modules. Now every
+// module that needs Danish audio loads this file (via `<script src>` in
+// standalone mode, inlined once at the top of the merged index.html), and
+// calls window.DanskSpeech.speak() / .mountVoiceIndicator() / etc.
+//
+// Audio quality on the Web Speech API depends entirely on the OS-installed
+// Danish voice. We:
+//   1) detect what the user has and classify quality,
+//   2) show a one-time onboarding banner if they have no good voice,
+//   3) keep a small voice-indicator pill in each module's toolbar so they
+//      can come back to the install instructions later,
+//   4) (separately, via opts.audioUrl) allow callers to short-circuit TTS
+//      with a pre-recorded MP3 if one is bundled.
+
+(function () {
+  if (window.DanskSpeech) return;  // idempotent — merged index.html inlines this once but standalone <script src> in each module may try again on view load
+
+  // ── Voice selection ─────────────────────────────────────────────────
+  // Order matters: first match wins. Highest-quality voices first.
+  const PREFERRED_VOICES = [
+    'Microsoft Helle Online (Natural) - Danish (Denmark)',
+    'Google dansk',
+    'Microsoft Helle',
+    'Sara',
+    'Magnus',
+    'Naja',
+    'Mads',
+  ];
+
+  const synth = window.speechSynthesis;
+  let _voice = null;
+  let _quality = 'none';
+  let _voicesLoaded = false;
+  const _listeners = new Set();  // re-run when voices load
+
+  function classifyQuality(voice) {
+    if (!voice) return 'none';
+    const n = (voice.name || '');
+    if (/Helle Online \(Natural\)/i.test(n) || /Google dansk/i.test(n)) return 'natural';
+    if (/Microsoft Helle/i.test(n) || /^Sara$|^Magnus$|^Naja$|^Mads$/.test(n)) return 'good';
+    return 'basic';
+  }
+
+  function pickInternal() {
+    if (!synth || !synth.getVoices) return { voice: null, quality: 'none' };
+    const voices = synth.getVoices();
+    if (!voices.length) return { voice: null, quality: 'none' };
+    // 1) named preference order
+    for (const name of PREFERRED_VOICES) {
+      const v = voices.find(v => v.name === name || v.name.includes(name));
+      if (v) return { voice: v, quality: classifyQuality(v) };
+    }
+    // 2) fall back to any da-* voice
+    const v = voices.find(v => /^da([-_]|$)/i.test(v.lang));
+    return { voice: v || null, quality: v ? 'basic' : 'none' };
+  }
+
+  function refreshVoice() {
+    const r = pickInternal();
+    _voice = r.voice;
+    _quality = r.quality;
+    // Only mark voices "loaded" once we've actually seen the list populate.
+    // Chrome returns [] on first call; if we'd flagged loaded=true immediately
+    // we'd mount the onboarding banner under the false belief that quality
+    // is 'none', then never remove it after voiceschanged upgrades the answer.
+    if (synth && synth.getVoices && synth.getVoices().length > 0) {
+      _voicesLoaded = true;
+    }
+    _listeners.forEach(fn => { try { fn(); } catch (_) {} });
+  }
+
+  if (synth) {
+    refreshVoice();
+    // Chrome / Edge: voices may not be ready on first call.
+    if (synth.addEventListener) {
+      synth.addEventListener('voiceschanged', refreshVoice);
+    } else if ('onvoiceschanged' in synth) {
+      synth.onvoiceschanged = refreshVoice;
+    }
+    // Fallback — if `voiceschanged` never fires (some Firefox/Linux builds),
+    // treat the empty list as final after 1.5s so the onboarding banner can
+    // show "no Danish voice installed".
+    setTimeout(() => {
+      if (!_voicesLoaded) {
+        _voicesLoaded = true;
+        _listeners.forEach(fn => { try { fn(); } catch (_) {} });
+      }
+    }, 1500);
+  }
+
+  // ── Public: pick / speak / cancel ──────────────────────────────────
+  function pick() { return { voice: _voice, quality: _quality }; }
+
+  function speak(text, opts) {
+    opts = opts || {};
+    // Pre-recorded audio override — if the caller has a bundled MP3, use it.
+    if (opts.audioUrl) {
+      try {
+        const a = new Audio(opts.audioUrl);
+        a.addEventListener('ended', () => { if (opts.onend) opts.onend(); });
+        a.addEventListener('error', () => { if (opts.onerror) opts.onerror(new Error('audio load failed')); else speak(text, Object.assign({}, opts, { audioUrl: null })); });
+        if (opts.onstart) a.addEventListener('play', opts.onstart);
+        a.play().catch(() => { speak(text, Object.assign({}, opts, { audioUrl: null })); });
+        return a;
+      } catch (_) {
+        // fall through to TTS
+      }
+    }
+    if (!synth) {
+      if (opts.onerror) opts.onerror(new Error('no synth'));
+      return null;
+    }
+    try { synth.cancel(); } catch (_) {}
+    const u = new SpeechSynthesisUtterance(text);
+    if (_voice) u.voice = _voice;
+    u.lang = 'da-DK';
+    u.rate = (opts.rate != null) ? opts.rate : 0.9;
+    if (opts.pitch != null) u.pitch = opts.pitch;
+    if (opts.onstart) u.onstart = opts.onstart;
+    if (opts.onend)   u.onend   = opts.onend;
+    if (opts.onerror) u.onerror = opts.onerror;
+    synth.speak(u);
+    return u;
+  }
+
+  function cancel() {
+    if (synth) { try { synth.cancel(); } catch (_) {} }
+  }
+
+  // ── OS detection ───────────────────────────────────────────────────
+  function detectOS() {
+    const ua = (navigator.userAgent || '').toLowerCase();
+    const platform = (navigator.platform || '').toLowerCase();
+    if (/iphone|ipad|ipod/.test(ua) || /(iphone|ipad|ipod)/.test(platform)) return 'ios';
+    // iPadOS 13+ reports macIntel — disambiguate by touch points
+    if (platform === 'macintel' && navigator.maxTouchPoints > 1) return 'ios';
+    if (/android/.test(ua)) return 'android';
+    if (/mac/.test(platform)) return 'mac';
+    if (/win/.test(platform)) return 'win';
+    if (/linux/.test(platform)) return 'linux';
+    return 'unknown';
+  }
+
+  function installSteps(os) {
+    switch (os) {
+      case 'mac': return [
+        'Open System Settings → Accessibility → Spoken Content.',
+        'Click the info icon next to "System voice" and add a new voice.',
+        'Find Danish (Sara or Magnus, or premium "Sara/Magnus enhanced").',
+        'Wait for the download to finish, then reload this page.',
+      ];
+      case 'win': return [
+        'Open Settings → Time & language → Language & region.',
+        'Add Danish as a preferred language (you don\'t need to switch your display language).',
+        'Click Danish → Language options → install Speech.',
+        'Look for "Microsoft Helle Online (Natural)" — it sounds best.',
+        'Reload this page.',
+      ];
+      case 'ios': return [
+        'Open Settings → Accessibility → Spoken Content → Voices.',
+        'Tap Danish, then download a Danish voice.',
+        'Reload Safari and this page.',
+      ];
+      case 'android': return [
+        'Install or update Google Speech Services from the Play Store.',
+        'Open Settings → System → Languages → Text-to-speech output.',
+        'Pick "Google Speech Services" as the engine, then download Danish.',
+        'Reload Chrome and this page.',
+      ];
+      case 'linux': return [
+        'Linux browsers usually have no built-in Danish voice.',
+        'Install espeak-ng-data and configure your browser\'s speech-dispatcher to use it — quality is limited.',
+        'For best results on Linux, try the Edge or Chrome browser with a Microsoft account; some Edge builds include the Helle Online voice.',
+      ];
+      default: return [
+        'Your operating system needs a Danish text-to-speech voice installed for clear pronunciation.',
+        'Check your system\'s Accessibility or Language settings for a Danish voice download.',
+      ];
+    }
+  }
+
+  // ── Styles for banner + indicator + modal ──────────────────────────
+  function ensureStyle() {
+    if (document.getElementById('dansk-speech-style')) return;
+    const s = document.createElement('style');
+    s.id = 'dansk-speech-style';
+    s.textContent = `
+      .ds-banner {
+        position: relative;
+        background: #1a2030;
+        border-bottom: 1px solid #2a3347;
+        color: #e8edf5;
+        font-family: 'Inter', sans-serif;
+        font-size: 13px;
+        padding: 9px 16px 9px 12px;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        z-index: 95;
+      }
+      .ds-banner-icon { font-size: 16px; flex-shrink: 0; }
+      .ds-banner-text { flex: 1; line-height: 1.4; }
+      .ds-banner-text b { color: #ffd166; font-weight: 600; }
+      .ds-banner-text a { color: #7dd3fc; text-decoration: underline; cursor: pointer; }
+      .ds-banner-dismiss {
+        background: transparent; border: 1px solid #3a4359;
+        color: #8896ae; font-size: 12px; padding: 4px 10px;
+        border-radius: 12px; cursor: pointer; flex-shrink: 0;
+        font-family: 'Inter', sans-serif;
+      }
+      .ds-banner-dismiss:hover { border-color: #f87171; color: #f87171; }
+
+      .ds-voice-pill {
+        display: inline-flex; align-items: center; gap: 6px;
+        background: transparent;
+        border: 1px solid #2a3347;
+        border-radius: 14px;
+        padding: 3px 10px 3px 8px;
+        font-family: 'JetBrains Mono', monospace;
+        font-size: 11px;
+        color: #8896ae;
+        cursor: pointer;
+        transition: border-color 0.15s, color 0.15s;
+        white-space: nowrap;
+        max-width: 180px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+      .ds-voice-pill:hover { border-color: #4f8ef7; color: #e8edf5; }
+      .ds-voice-pill .ds-dot {
+        width: 7px; height: 7px; border-radius: 50%;
+        background: #4a5568; flex-shrink: 0;
+      }
+      .ds-voice-pill.q-natural .ds-dot { background: #4ade80; }
+      .ds-voice-pill.q-good    .ds-dot { background: #facc15; }
+      .ds-voice-pill.q-basic   .ds-dot { background: #fb923c; }
+      .ds-voice-pill.q-none    .ds-dot { background: #f87171; }
+
+      /* Kids mode overrides */
+      body.mode-kids .ds-voice-pill {
+        background: #fff;
+        border-color: #ffd9a8;
+        color: #a4533a;
+        font-family: 'Fredoka', sans-serif;
+        font-weight: 500;
+      }
+      body.mode-kids .ds-voice-pill:hover { border-color: #ff7a59; color: #ff7a59; }
+
+      .ds-modal-backdrop {
+        position: fixed; inset: 0; background: rgba(0,0,0,0.6);
+        backdrop-filter: blur(3px);
+        display: none; align-items: center; justify-content: center;
+        z-index: 9000; padding: 20px;
+      }
+      .ds-modal-backdrop.show { display: flex; }
+      .ds-modal {
+        background: #1c2333;
+        border: 1px solid #2a3347;
+        border-radius: 16px;
+        max-width: 520px; width: 100%;
+        box-shadow: 0 20px 60px rgba(0,0,0,0.5);
+        color: #e8edf5;
+        font-family: 'Inter', sans-serif;
+      }
+      .ds-modal-head {
+        padding: 16px 20px; border-bottom: 1px solid #2a3347;
+        display: flex; align-items: center; justify-content: space-between;
+      }
+      .ds-modal-title {
+        font-family: 'DM Serif Display', serif;
+        font-size: 18px;
+      }
+      .ds-modal-close {
+        background: transparent; border: none; color: #8896ae;
+        font-size: 22px; cursor: pointer; line-height: 1;
+        padding: 2px 6px;
+      }
+      .ds-modal-body { padding: 16px 20px; font-size: 13.5px; line-height: 1.6; }
+      .ds-modal-body p { margin: 0 0 10px; color: #8896ae; }
+      .ds-modal-body ol { padding-left: 22px; margin: 8px 0 14px; }
+      .ds-modal-body li { margin: 4px 0; }
+      .ds-modal-body strong { color: #7dd3fc; }
+      .ds-modal-foot { padding: 12px 20px 16px; display: flex; justify-content: flex-end; }
+      .ds-modal-foot button {
+        background: linear-gradient(135deg, #3b5fc0, #4f8ef7);
+        color: #fff; border: none; border-radius: 10px;
+        padding: 7px 16px; font-size: 13px; cursor: pointer;
+      }
+    `;
+    document.head.appendChild(s);
+  }
+
+  // ── Onboarding banner (one-time, dismissable) ───────────────────────
+  const BANNER_KEY = 'dansklearn:voice-banner-dismissed';
+
+  function mountOnboardingBanner() {
+    if (typeof document === 'undefined') return;
+    if (localStorage.getItem(BANNER_KEY) === '1') return;
+    // Defer until voices are known — quality may upgrade to 'good' after voiceschanged.
+    if (!_voicesLoaded) {
+      _listeners.add(mountOnboardingBanner);
+      return;
+    }
+    if (_quality === 'natural' || _quality === 'good') return;
+    ensureStyle();
+    if (document.getElementById('ds-banner')) return;  // already mounted
+    const bar = document.createElement('div');
+    bar.id = 'ds-banner';
+    bar.className = 'ds-banner';
+    const headline = _quality === 'none'
+      ? 'No Danish voice installed — audio will use your system default.'
+      : 'Danish audio uses a basic voice on your device.';
+    bar.innerHTML = `
+      <span class="ds-banner-icon">🔊</span>
+      <span class="ds-banner-text">
+        <b>${headline}</b> For clearer pronunciation, <a class="ds-banner-learn">install a Danish voice</a>.
+      </span>
+      <button class="ds-banner-dismiss" type="button" aria-label="Dismiss">Got it</button>
+    `;
+    document.body.insertBefore(bar, document.body.firstChild);
+    bar.querySelector('.ds-banner-learn').addEventListener('click', e => { e.preventDefault(); openModal(); });
+    bar.querySelector('.ds-banner-dismiss').addEventListener('click', () => {
+      try { localStorage.setItem(BANNER_KEY, '1'); } catch (_) {}
+      bar.remove();
+    });
+  }
+
+  // ── Voice-indicator pill ──────────────────────────────────────────
+  function mountVoiceIndicator(host) {
+    if (typeof document === 'undefined') return;
+    if (!host) return;
+    const el = (typeof host === 'string') ? document.querySelector(host) : host;
+    if (!el) return;
+    if (el.querySelector('.ds-voice-pill')) return;  // idempotent
+    ensureStyle();
+    const pill = document.createElement('button');
+    pill.type = 'button';
+    pill.className = 'ds-voice-pill q-' + (_quality || 'none');
+    pill.title = 'Click to learn how to install a better Danish voice';
+    pill.innerHTML = `<span class="ds-dot"></span><span class="ds-voice-label"></span>`;
+    function refresh() {
+      pill.className = 'ds-voice-pill q-' + (_quality || 'none');
+      const label = pill.querySelector('.ds-voice-label');
+      const name = _voice ? (_voice.name.length > 22 ? _voice.name.slice(0, 21) + '…' : _voice.name) : 'No Danish voice';
+      label.textContent = name;
+    }
+    refresh();
+    _listeners.add(refresh);
+    pill.addEventListener('click', openModal);
+    el.appendChild(pill);
+  }
+
+  // ── Modal (shared for banner-click and pill-click) ────────────────
+  function openModal() {
+    ensureStyle();
+    let backdrop = document.getElementById('ds-modal-backdrop');
+    if (!backdrop) {
+      backdrop = document.createElement('div');
+      backdrop.id = 'ds-modal-backdrop';
+      backdrop.className = 'ds-modal-backdrop';
+      backdrop.innerHTML = `
+        <div class="ds-modal" role="dialog" aria-labelledby="ds-modal-title">
+          <div class="ds-modal-head">
+            <div class="ds-modal-title" id="ds-modal-title">Improve Danish pronunciation</div>
+            <button class="ds-modal-close" type="button" aria-label="Close">×</button>
+          </div>
+          <div class="ds-modal-body" id="ds-modal-body"></div>
+          <div class="ds-modal-foot"><button type="button" class="ds-modal-ok">Close</button></div>
+        </div>
+      `;
+      document.body.appendChild(backdrop);
+      backdrop.querySelector('.ds-modal-close').addEventListener('click', closeModal);
+      backdrop.querySelector('.ds-modal-ok').addEventListener('click', closeModal);
+      backdrop.addEventListener('click', e => { if (e.target === backdrop) closeModal(); });
+    }
+    // Fresh body content every time (voice may have changed)
+    const os = detectOS();
+    const osLabels = { mac: 'macOS', win: 'Windows', ios: 'iOS', android: 'Android', linux: 'Linux', unknown: 'your device' };
+    const body = backdrop.querySelector('#ds-modal-body');
+    body.innerHTML = `
+      <p>Danish audio in danskLearn uses your device's text-to-speech engine. The currently selected voice is <strong>${_voice ? _voice.name : 'none'}</strong> (quality: <strong>${_quality}</strong>).</p>
+      <p>To improve pronunciation on <strong>${osLabels[os]}</strong>:</p>
+      <ol>${installSteps(os).map(s => `<li>${s}</li>`).join('')}</ol>
+      <p style="font-size:12px;opacity:0.7;">Detected device: ${os}. Pick the steps for whichever OS you're on if this looks wrong.</p>
+    `;
+    backdrop.classList.add('show');
+  }
+  function closeModal() {
+    const b = document.getElementById('ds-modal-backdrop');
+    if (b) b.classList.remove('show');
+  }
+
+  // ── IPA lookup (uses window.DanskIPA.BANK if available) ────────────
+  // Returns the IPA string for a Danish word/phrase, or '' if not found.
+  // Strips the verb infinitive marker "at " so callers can pass words
+  // either as "være" or "at være".
+  function lookupIpa(text) {
+    if (!text || !window.DanskIPA || !window.DanskIPA.BANK) return '';
+    const bank = window.DanskIPA.BANK;
+    const norm = String(text).toLowerCase().trim().replace(/^at\s+/i, '');
+    return bank[norm] || '';
+  }
+
+  // ── Public surface ────────────────────────────────────────────────
+  window.DanskSpeech = {
+    PREFERRED_VOICES,
+    pick,
+    speak,
+    cancel,
+    detectOS,
+    installSteps,
+    mountOnboardingBanner,
+    mountVoiceIndicator,
+    openModal,    // exposed so other UIs can deep-link to the install help
+    lookupIpa,    // optional IPA lookup; returns '' if no data
+  };
+})();
 
 </script>
 <script>
@@ -5124,12 +6393,14 @@ function renderCards(list) {
 
     if (mode === 'kids') {
       // Kid card: emoji-first, audio-first, no flip — tap pops + speaks
+      const kidIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front cat-${w.cat}">
             <button class="speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <div class="kid-emoji">${w.emoji}</div>
             <div class="kid-da">${w.da}</div>
+            <div class="kid-ipa">${kidIpa}</div>
             <div class="kid-en">${w.en}</div>
           </div>
         </div>`;
@@ -5143,17 +6414,20 @@ function renderCards(list) {
       const auxClass = (w.perf && w.perf.startsWith('er ')) ? 'aux-er' : '';
       // Strip leading "at " for speech — TTS pronounces the verb cleaner without the infinitive marker
       const spoken = w.da.replace(/^at\s+/, '');
+      const verbIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
+            <div class="ipa">${verbIpa}</div>
             <div class="word-type">verb</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
             <div class="danish-word" style="font-size:18px;">${w.da}</div>
+            <div class="ipa">${verbIpa}</div>
             <div class="verb-conj">
               <span class="verb-conj-label">pres</span><span class="verb-conj-form">${w.pres}</span>
               <span class="verb-conj-label">past</span><span class="verb-conj-form">${w.past}</span>
@@ -5167,12 +6441,14 @@ function renderCards(list) {
     } else {
       const ex = buildWordExample(w);
       const catIcon = (catMeta()[w.cat] || { icon: '📁' }).icon;
+      const wordIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
             <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
             <span class="card-num">#${data.indexOf(w)+1}</span>
             <div class="danish-word">${w.da}</div>
+            <div class="ipa">${wordIpa}</div>
             <div class="word-type">${w.type}</div>
             <div class="known-dot">✓</div>
           </div>
@@ -5290,37 +6566,26 @@ document.querySelectorAll('.topbar input[type="text"]').forEach(el => {
 // ════════════════════════════════════════════════════════════════════
 
 // ── SPEECH ────────────────────────────────────────────────────────
-// Picks first Danish voice once it's available; speaks short utterances.
-// MUST be called synchronously inside a click handler (iOS gesture rule).
-let _daVoice = null;
-function pickDanishVoice() {
-  if (!('speechSynthesis' in window)) return null;
-  const voices = speechSynthesis.getVoices();
-  // Prefer local (offline) voices first, then any da-* voice
-  const local = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da') && v.localService);
-  if (local) return local;
-  return voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) || null;
-}
-if ('speechSynthesis' in window) {
-  // Voices arrive asynchronously
-  _daVoice = pickDanishVoice();
-  speechSynthesis.addEventListener && speechSynthesis.addEventListener('voiceschanged', () => {
-    _daVoice = pickDanishVoice();
-  });
-}
+// Delegates to window.DanskSpeech (loaded from speech.js) when available;
+// falls back to a minimal local TTS path so the standalone source file
+// still works if speech.js isn't loaded.
 function speak(text) {
+  text = String(text).replace(/\bI\b/g, 'i');
+  if (window.DanskSpeech) {
+    // rate 0.85, pitch 1.05 — kid-learner pace (slightly slower, slightly higher)
+    return window.DanskSpeech.speak(text, { rate: 0.85, pitch: 1.05 });
+  }
+  // Fallback — only used when speech.js failed to load (e.g. file:// without server).
   if (!('speechSynthesis' in window)) return;
   try {
-    text = String(text).replace(/\bI\b/g, 'i');
-    speechSynthesis.cancel(); // Chrome stall fix
-    if (!_daVoice) _daVoice = pickDanishVoice();
+    speechSynthesis.cancel();
+    const voices = speechSynthesis.getVoices();
+    const v = voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) || null;
     const u = new SpeechSynthesisUtterance(text);
-    u.lang = 'da-DK';
-    u.rate = 0.85;  // slightly slower for kid learners
-    u.pitch = 1.05;
-    if (_daVoice) u.voice = _daVoice;
+    u.lang = 'da-DK'; u.rate = 0.85; u.pitch = 1.05;
+    if (v) u.voice = v;
     speechSynthesis.speak(u);
-  } catch (e) { /* silent — speech is enhancement, not core */ }
+  } catch (_) {}
 }
 
 // ── CHIME ─────────────────────────────────────────────────────────
@@ -5437,6 +6702,18 @@ buildAlphaStrip();
   if (el) el.value = sortMode;
 });
 applyFilters();
+
+// Mount the shared voice indicator + onboarding banner (no-ops if speech.js
+// didn't load or if the user already dismissed the banner).
+if (window.DanskSpeech) {
+  // Two indicator hosts: one in the desktop toolbar (.header-right inside .toolbar-main),
+  // one in the mobile header (also .header-right). Both render in standalone mode;
+  // in the merged build only one is visible at a time per media query.
+  document.querySelectorAll('.toolbar-main .header-right').forEach(h => {
+    window.DanskSpeech.mountVoiceIndicator(h);
+  });
+  window.DanskSpeech.mountOnboardingBanner();
+}
       // ─── END ord app code ───
       // Expose inline-onclick targets on window.
       if (typeof setMode === 'function') window.setMode = setMode;
@@ -5875,33 +7152,11 @@ async function openTranslation(idx) {
 }
 
 /* ─── Danish text-to-speech ─── */
-/* Preferred Danish voices in order. First match wins. Falls back to any da-DK voice. */
-const PREFERRED_DANISH_VOICES = [
-  'Google dansk',      // Chrome — usually highest quality
-  'Sara',              // macOS / iOS — female, native
-  'Magnus',            // macOS / iOS — male, native
-  'Microsoft Helle',   // Windows
-  'Microsoft Helle Online (Natural) - Danish (Denmark)',
-];
+/* Uses window.DanskSpeech (loaded from speech.js) for consistent voice
+   selection across modules. Falls back to a minimal local TTS if speech.js
+   didn't load. */
 const synth = window.speechSynthesis;
-let danishVoice = null;
 let speakingIdx = -1;
-
-function pickDanishVoice() {
-  if (!synth) return null;
-  const voices = synth.getVoices();
-  for (const name of PREFERRED_DANISH_VOICES) {
-    const match = voices.find(v => v.name === name);
-    if (match) return match;
-  }
-  return voices.find(v => v.lang === 'da-DK') ||
-         voices.find(v => v.lang && v.lang.toLowerCase().startsWith('da')) ||
-         null;
-}
-if (synth) {
-  danishVoice = pickDanishVoice();
-  synth.addEventListener?.('voiceschanged', () => { danishVoice = pickDanishVoice(); });
-}
 
 function setSpeakingButton(idx, on) {
   const btn = document.getElementById(`speak-${idx}`);
@@ -5914,25 +7169,33 @@ function toggleSpeak(idx) {
     return;
   }
   if (speakingIdx === idx) {
-    synth.cancel();
+    if (window.DanskSpeech) window.DanskSpeech.cancel();
+    else synth.cancel();
     return;
   }
-  if (synth.speaking || synth.pending) synth.cancel();
-
   const text = String(paragraphs[idx]).replace(/\bI\b/g, 'i');
   if (!text) return;
+  const opts = {
+    rate: 0.75,
+    onstart: () => { speakingIdx = idx; setSpeakingButton(idx, true); },
+    onend:   () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); },
+    onerror: () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); },
+  };
+  if (window.DanskSpeech) {
+    if (window.DanskSpeech.pick().quality === 'none') {
+      showToast('No Danish voice installed — using browser default', '');
+    }
+    window.DanskSpeech.speak(text, opts);
+    return;
+  }
+  // Fallback path — only when speech.js failed to load.
+  if (synth.speaking || synth.pending) synth.cancel();
   const utter = new SpeechSynthesisUtterance(text);
   utter.lang = 'da-DK';
-  if (danishVoice) utter.voice = danishVoice;
   utter.rate = 0.75;
-
-  utter.onstart = () => { speakingIdx = idx; setSpeakingButton(idx, true); };
-  utter.onend = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
-  utter.onerror = () => { if (speakingIdx === idx) speakingIdx = -1; setSpeakingButton(idx, false); };
-
-  if (!danishVoice) {
-    showToast('No Danish voice installed — using browser default', '');
-  }
+  utter.onstart = opts.onstart;
+  utter.onend = opts.onend;
+  utter.onerror = opts.onerror;
   synth.speak(utter);
 }
 
@@ -5972,6 +7235,12 @@ if (saved) {
   render();
 } else {
   loadParagraphs();
+}
+
+// Shared voice indicator + one-time onboarding banner.
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
 }
       // ─── END skriv app code ───
       
@@ -6317,6 +7586,13 @@ if (saved) {
 } else {
   loadParagraphs();
 }
+
+// Shared voice indicator + one-time onboarding banner (no TTS calls here,
+// but Overset shares the toolbar UI so the setting is reachable here too).
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
+}
       // ─── END overset app code ───
       
     }
@@ -6337,30 +7613,18 @@ const PROGRESS_KEY = 'dansktale:progress:v1';
 const META_KEY     = 'dansktale:meta:v1';
 
 // ─── Danish TTS ────────────────────────────────────────────────────
-const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+// Delegates to window.DanskSpeech for consistent voice selection across
+// modules; falls back to a minimal local path if speech.js didn't load.
 const synth = window.speechSynthesis;
-let danishVoice = null;
-function pickDanishVoice() {
-  if (!synth) return null;
-  const voices = synth.getVoices();
-  if (!voices.length) return null;
-  for (const name of PREFERRED_DANISH_VOICES) {
-    const v = voices.find(v => v.name === name || v.name.includes(name));
-    if (v) return v;
-  }
-  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
-}
-if (synth) {
-  danishVoice = pickDanishVoice();
-  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
-}
 function speak(text, opts) {
   opts = opts || {};
+  text = String(text).replace(/\bI\b/g, 'i');
+  if (window.DanskSpeech) return window.DanskSpeech.speak(text, opts);
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
-  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
-  if (danishVoice) u.voice = danishVoice;
+  const v = synth.getVoices().find(v => /^da([-_]|$)/i.test(v.lang));
+  if (v) u.voice = v;
   u.lang = 'da-DK';
   u.rate = opts.rate || 0.9;
   if (opts.onend) u.onend = opts.onend;
@@ -6531,11 +7795,13 @@ function renderCard() {
     return;
   }
   const p = queue[qIdx];
+  const ipa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(p.da)) || '';
   host.innerHTML =
     '<div class="review-card">' +
       '<span class="badge-cat">' + escapeHtml(p.cat) + '</span>' +
       '<span class="badge-progress">' + (qIdx + 1) + ' / ' + queue.length + '</span>' +
       '<div class="phrase-da">' + escapeHtml(p.da) + '</div>' +
+      (ipa ? '<div class="phrase-ipa">' + escapeHtml(ipa) + '</div>' : '') +
       '<div class="phrase-en">' + escapeHtml(p.en) + '</div>' +
       '<button class="play-btn" id="tale-play-btn" aria-label="Play Danish audio">▶</button>' +
       '<div class="rating-row">' +
@@ -6567,6 +7833,12 @@ function renderCard() {
 queue = buildQueue();
 qIdx = 0;
 renderCard();
+
+// Shared voice indicator + one-time onboarding banner.
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
+}
       // ─── END tale app code ───
       
     }
@@ -6587,30 +7859,17 @@ const PROGRESS_KEY = 'danskor:progress:v1';
 const SEEN_KEY     = 'danskor:seen-counts:v1';
 
 // ─── Danish TTS ────────────────────────────────────────────────────
-const PREFERRED_DANISH_VOICES = ['Google dansk', 'Sara', 'Magnus', 'Microsoft Helle', 'Naja', 'Mads'];
+// Delegates to window.DanskSpeech; falls back to minimal local TTS.
 const synth = window.speechSynthesis;
-let danishVoice = null;
-function pickDanishVoice() {
-  if (!synth) return null;
-  const voices = synth.getVoices();
-  if (!voices.length) return null;
-  for (const name of PREFERRED_DANISH_VOICES) {
-    const v = voices.find(v => v.name === name || v.name.includes(name));
-    if (v) return v;
-  }
-  return voices.find(v => /^da([-_]|$)/i.test(v.lang)) || null;
-}
-if (synth) {
-  danishVoice = pickDanishVoice();
-  if (synth.addEventListener) synth.addEventListener('voiceschanged', () => { danishVoice = pickDanishVoice(); });
-}
 function speak(text, opts) {
   opts = opts || {};
+  text = String(text).replace(/\bI\b/g, 'i');
+  if (window.DanskSpeech) return window.DanskSpeech.speak(text, opts);
   if (!synth) { if (opts.onerror) opts.onerror(new Error('no synth')); return null; }
   try { synth.cancel(); } catch (_) {}
-  text = String(text).replace(/\bI\b/g, 'i');
   const u = new SpeechSynthesisUtterance(text);
-  if (danishVoice) u.voice = danishVoice;
+  const v = synth.getVoices().find(v => /^da([-_]|$)/i.test(v.lang));
+  if (v) u.voice = v;
   u.lang = 'da-DK';
   u.rate = opts.rate || 0.9;
   if (opts.onend) u.onend = opts.onend;
@@ -6855,10 +8114,16 @@ function renderQuestion() {
       }
       answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
       saveProgress(progress); saveSeen(seenCounts);
+      // After the user answers, reveal the Danish word + IPA (it's safe now;
+      // before the answer this would have given away the spelling).
+      const ipa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(correct.da)) || '';
+      const reveal = '<div class="reveal-da">' + escapeHtml(correct.da)
+        + (ipa ? ' <span class="reveal-ipa">' + escapeHtml(ipa) + '</span>' : '')
+        + '</div>';
       const fb = isCorrect
         ? '<span class="feedback correct">Correct — well heard.</span>'
         : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';
-      nextRow.innerHTML = fb + ' <button class="next-btn" id="hor-next-btn" type="button">Next →</button>';
+      nextRow.innerHTML = reveal + fb + ' <button class="next-btn" id="hor-next-btn" type="button">Next →</button>';
       nextRow.querySelector('#hor-next-btn').addEventListener('click', () => {
         qIdx++;
         renderQuestion();
@@ -6873,6 +8138,12 @@ function renderQuestion() {
 queue = shuffleDeck(PHRASES);
 qIdx = 0;
 renderQuestion();
+
+// Shared voice indicator + one-time onboarding banner.
+if (window.DanskSpeech) {
+  window.DanskSpeech.mountVoiceIndicator('.header-right');
+  window.DanskSpeech.mountOnboardingBanner();
+}
       // ─── END hor app code ───
       
     }
