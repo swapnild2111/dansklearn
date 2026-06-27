@@ -2272,6 +2272,7 @@ INLINE_ONCLICK_EXPORTS = {
         "flipAll",
         "setSortMode",
         "selectCat",
+        "toggleDirection",
     ],
     "skriv": [],  # uses addEventListener exclusively
 }

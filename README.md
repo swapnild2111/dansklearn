@@ -63,11 +63,9 @@ A separate vocabulary deck of ~200 words paired with friendly emoji, big colourf
 
 `Tale` uses an Anki-lite algorithm. Phrases you find hard come back tomorrow. Phrases you've nailed don't reappear for a week. The deck schedules itself — you just rate each phrase honestly.
 
-### 🔊 Audio + IPA for every word
+### 🔊 Audio for every word
 
 Danish pronunciation matters. Every flashcard, every paragraph, every phrase has a play button. Audio uses your operating system's built-in Danish voice — danskLearn detects what you have and shows a small **voice indicator** in the toolbar (green = high-quality, amber = OK, red = no Danish voice installed). Click the indicator to see step-by-step instructions for installing a better Danish voice on your specific OS.
-
-Most cards also display the **IPA transcription** (`[ˈhunˀ]`, `[ˈkad]`, …) so you have a visual reference for tricky sounds — the glottal stop, the soft `d`, the unstressed schwa — even if your device's voice is rough.
 
 ### 📊 Live progress dashboard
 
@@ -87,7 +85,7 @@ The portal's toolbar shows a **small voice-quality pill** ("Voice: Sara" with a 
 - **Android**: Install/update Google Speech Services from the Play Store, then Settings → Languages → Text-to-speech → Google Speech Services → download Danish
 - **Linux**: Built-in support is limited; Edge or Chrome with a Microsoft account sometimes exposes the Helle Online voice
 
-After installing a Danish voice you may need to reload the page once. The portal also displays the **IPA transcription** under most words (e.g. `[ˈhunˀ]` for "hund") so you have a visual pronunciation reference regardless of audio quality.
+After installing a Danish voice you may need to reload the page once.
 
 ---
 

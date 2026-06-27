@@ -112,7 +112,6 @@
   .feedback.wrong   { color: var(--danger); }
   /* Post-answer reveal: shows the Danish word + IPA only AFTER the user picks. */
   .reveal-da { font-family: 'DM Serif Display', serif; font-size: 18px; color: var(--text); margin-bottom: 4px; width: 100%; text-align: center; }
-  .reveal-ipa { font-family: 'JetBrains Mono', monospace; font-size: 13px; color: var(--text-dim); letter-spacing: 0.2px; margin-left: 6px; }
 
   .session-done { background: var(--card); border: 1px solid var(--success); border-radius: var(--card-radius); padding: 36px 28px; text-align: center; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 12px; }
   .session-done h2 { font-family: 'DM Serif Display', serif; font-size: 24px; margin-bottom: 4px; }
@@ -448,12 +447,10 @@ function renderQuestion() {
       }
       answerBtns.forEach(x => { if (x !== b && !x.classList.contains('correct')) x.classList.add('faded'); x.disabled = true; });
       saveProgress(progress); saveSeen(seenCounts);
-      // After the user answers, reveal the Danish word + IPA (it's safe now;
+      // After the user answers, reveal the Danish word (it's safe now;
       // before the answer this would have given away the spelling).
-      const ipa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(correct.da)) || '';
-      const reveal = '<div class="reveal-da">' + escapeHtml(correct.da)
-        + (ipa ? ' <span class="reveal-ipa">' + escapeHtml(ipa) + '</span>' : '')
-        + '</div>';
+      // IPA dropped — phonetic symbols are obscure for most users.
+      const reveal = '<div class="reveal-da">' + escapeHtml(correct.da) + '</div>';
       const fb = isCorrect
         ? '<span class="feedback correct">Correct — well heard.</span>'
         : '<span class="feedback wrong">Right answer: ' + escapeHtml(correct.en) + '</span>';

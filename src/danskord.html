@@ -199,11 +199,6 @@
   .card-back { background: var(--card-back); transform: rotateY(180deg); border-color: #2a3d6a; justify-content: flex-start; padding: 28px 12px 12px; }
   .card-wrap.flipped .card-back { border-color: var(--accent); }
   .danish-word { font-family: 'DM Serif Display', serif; font-size: 26px; color: var(--text); text-align: center; line-height: 1.2; margin-bottom: 5px; }
-  /* IPA transcription — shown on the BACK of cards (next to the English
-     meaning, or aligned with each verb conjugation form). Visual fallback
-     when the OS's Danish TTS voice is rough. */
-  .ipa { font-family: 'JetBrains Mono', monospace; font-size: 12px; color: var(--text-dim); margin-top: 2px; margin-bottom: 6px; text-align: center; letter-spacing: 0.2px; }
-  .ipa:empty { display: none; }
   .word-type { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 1px; }
   .card-num { position: absolute; top: 9px; right: 11px; font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); }
   .card-cat-icon {
@@ -263,6 +258,18 @@
     padding: 0 6px;
     letter-spacing: 0.1px;
   }
+  /* When .english-word appears as the FRONT-of-card headline (en→da
+     direction), size it up so it visually matches the .danish-word
+     headline it replaces. */
+  .english-word-front {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    font-weight: 400;
+    color: var(--text);
+    margin-bottom: 5px;
+    margin-top: 0;
+    padding: 0 8px;
+  }
   /* Example block: subtle divider above, breathing room, clear da/en hierarchy. */
   .word-example {
     width: calc(100% - 16px);
@@ -294,10 +301,10 @@
   .card-wrap.known .known-dot { opacity: 1; }
 
   /* VERB MODE — taller cards with conjugation block on back */
-  /* Verbs mode: taller cards to fit Danish + IPA + 3 conjugation rows + English
-     meaning on the back without overflow. Some long English glosses ("to
-     become / stay") wrap to two lines so we keep generous headroom here. */
-  body.mode-verbs .card-wrap { height: 230px; }
+  /* Verbs mode: taller cards to fit Danish + 3 conjugation rows + English
+     meaning on the back. Some long English glosses ("to become / stay")
+     wrap to two lines so we keep enough headroom here. */
+  body.mode-verbs .card-wrap { height: 215px; }
   body.mode-verbs .grid-container { grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); }
   .verb-conj { display: grid; grid-template-columns: auto 1fr; column-gap: 10px; row-gap: 4px; font-size: 12px; width: 100%; padding: 0 4px; margin-top: 6px; }
   .verb-conj-label { font-family: 'JetBrains Mono', monospace; font-size: 10px; color: var(--text-dim); text-transform: uppercase; letter-spacing: 0.5px; text-align: right; align-self: center; }
@@ -310,6 +317,26 @@
 
   /* MODE TOGGLE */
   .mode-toggle { display: inline-flex; background: var(--bg); border: 1px solid var(--border); border-radius: 20px; padding: 2px; margin-right: 4px; }
+
+  /* DA ↔ EN direction toggle. Pill style; matches the mode-toggle visually
+     but stands apart enough to read as a distinct control. Hidden in Kids
+     mode (kids cards don't flip). */
+  .direction-toggle {
+    background: var(--bg);
+    border: 1px solid var(--border);
+    color: var(--text-muted);
+    padding: 5px 12px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.4px;
+    border-radius: 18px;
+    cursor: pointer;
+    transition: all 0.15s;
+    white-space: nowrap;
+  }
+  .direction-toggle:hover { border-color: var(--accent2); color: var(--accent2); }
+  .direction-toggle.reversed { background: rgba(125, 211, 252, 0.12); border-color: rgba(125, 211, 252, 0.4); color: var(--accent2); }
+  body.mode-kids .direction-toggle { display: none; }
   .mode-toggle button { background: transparent; border: none; color: var(--text-muted); padding: 5px 14px; font-family: 'Inter', sans-serif; font-size: 12px; cursor: pointer; border-radius: 18px; transition: all 0.18s; }
   .mode-toggle button:hover:not(.active) { color: var(--accent2); background: rgba(125, 211, 252, 0.08); }
   .mode-toggle button.active { background: var(--accent); color: #fff; }
@@ -543,6 +570,11 @@
         <button id="mode-verbs-btn" onclick="setMode('verbs')">Verbs</button>
         <button id="mode-kids-btn" onclick="setMode('kids')">🌟 Kids</button>
       </div>
+      <!-- Card direction: cycles DA→EN ↔ EN→DA. Hidden in Kids mode (no flip).
+           Letter cards always show the Danish letter on the front regardless. -->
+      <button class="btn direction-toggle" id="direction-btn" type="button" onclick="toggleDirection()" title="Switch which language is on the front of the card">
+        <span id="direction-label">DA → EN</span>
+      </button>
       <div class="streak-badge" id="streak-badge"><span>🔥</span><span id="streak-count">0</span></div>
       <div class="stat-pill">Total <b id="total-count">1000</b></div>
       <div class="stat-pill">Showing <b id="showing-count">1000</b></div>
@@ -1725,6 +1757,42 @@ const words = [
   {da:"fil",en:"file",type:"noun",cat:"Technology"},
   {da:"mappe",en:"folder",type:"noun",cat:"Technology"},
   {da:"opdatering",en:"update",type:"noun",cat:"Technology"},
+
+  // ── DANISH ALPHABET (29) ────────────────────────────────────────
+  // The Danish alphabet adds Æ, Ø, Å after Z. The `ex` field is the
+  // standard "X som i ..." (X as in ...) format used in Danish schools.
+  // Front-of-card audio will speak the full "som i" phrase (set via
+  // data-speak override in the render fn) so users hear the letter in
+  // context, not just an ambiguous single character.
+  {da:"A",en:"A — as in 'abe' (monkey)",type:"letter",cat:"Alphabet",exDa:"A som i abe.",exEn:"A as in 'monkey'."},
+  {da:"B",en:"B — as in 'bil' (car)",type:"letter",cat:"Alphabet",exDa:"B som i bil.",exEn:"B as in 'car'."},
+  {da:"C",en:"C — as in 'citron' (lemon)",type:"letter",cat:"Alphabet",exDa:"C som i citron.",exEn:"C as in 'lemon'."},
+  {da:"D",en:"D — as in 'dame' (lady)",type:"letter",cat:"Alphabet",exDa:"D som i dame.",exEn:"D as in 'lady'."},
+  {da:"E",en:"E — as in 'elefant' (elephant)",type:"letter",cat:"Alphabet",exDa:"E som i elefant.",exEn:"E as in 'elephant'."},
+  {da:"F",en:"F — as in 'fugl' (bird)",type:"letter",cat:"Alphabet",exDa:"F som i fugl.",exEn:"F as in 'bird'."},
+  {da:"G",en:"G — as in 'gris' (pig)",type:"letter",cat:"Alphabet",exDa:"G som i gris.",exEn:"G as in 'pig'."},
+  {da:"H",en:"H — as in 'hund' (dog)",type:"letter",cat:"Alphabet",exDa:"H som i hund.",exEn:"H as in 'dog'."},
+  {da:"I",en:"I — as in 'is' (ice cream)",type:"letter",cat:"Alphabet",exDa:"I som i is.",exEn:"I as in 'ice cream'."},
+  {da:"J",en:"J — as in 'jordbær' (strawberry)",type:"letter",cat:"Alphabet",exDa:"J som i jordbær.",exEn:"J as in 'strawberry'."},
+  {da:"K",en:"K — as in 'kat' (cat)",type:"letter",cat:"Alphabet",exDa:"K som i kat.",exEn:"K as in 'cat'."},
+  {da:"L",en:"L — as in 'lampe' (lamp)",type:"letter",cat:"Alphabet",exDa:"L som i lampe.",exEn:"L as in 'lamp'."},
+  {da:"M",en:"M — as in 'mus' (mouse)",type:"letter",cat:"Alphabet",exDa:"M som i mus.",exEn:"M as in 'mouse'."},
+  {da:"N",en:"N — as in 'næse' (nose)",type:"letter",cat:"Alphabet",exDa:"N som i næse.",exEn:"N as in 'nose'."},
+  {da:"O",en:"O — as in 'ost' (cheese)",type:"letter",cat:"Alphabet",exDa:"O som i ost.",exEn:"O as in 'cheese'."},
+  {da:"P",en:"P — as in 'pige' (girl)",type:"letter",cat:"Alphabet",exDa:"P som i pige.",exEn:"P as in 'girl'."},
+  {da:"Q",en:"Q — as in 'quiz' (quiz, rare in Danish)",type:"letter",cat:"Alphabet",exDa:"Q som i quiz.",exEn:"Q as in 'quiz'."},
+  {da:"R",en:"R — as in 'rose' (rose)",type:"letter",cat:"Alphabet",exDa:"R som i rose.",exEn:"R as in 'rose'."},
+  {da:"S",en:"S — as in 'sol' (sun)",type:"letter",cat:"Alphabet",exDa:"S som i sol.",exEn:"S as in 'sun'."},
+  {da:"T",en:"T — as in 'træ' (tree)",type:"letter",cat:"Alphabet",exDa:"T som i træ.",exEn:"T as in 'tree'."},
+  {da:"U",en:"U — as in 'ur' (clock)",type:"letter",cat:"Alphabet",exDa:"U som i ur.",exEn:"U as in 'clock'."},
+  {da:"V",en:"V — as in 'vand' (water)",type:"letter",cat:"Alphabet",exDa:"V som i vand.",exEn:"V as in 'water'."},
+  {da:"W",en:"W — as in 'weekend' (weekend, rare in Danish)",type:"letter",cat:"Alphabet",exDa:"W som i weekend.",exEn:"W as in 'weekend'."},
+  {da:"X",en:"X — as in 'xylofon' (xylophone, rare)",type:"letter",cat:"Alphabet",exDa:"X som i xylofon.",exEn:"X as in 'xylophone'."},
+  {da:"Y",en:"Y — as in 'yoga' (yoga)",type:"letter",cat:"Alphabet",exDa:"Y som i yoga.",exEn:"Y as in 'yoga'."},
+  {da:"Z",en:"Z — as in 'zebra' (zebra)",type:"letter",cat:"Alphabet",exDa:"Z som i zebra.",exEn:"Z as in 'zebra'."},
+  {da:"Æ",en:"Æ — as in 'æble' (apple)",type:"letter",cat:"Alphabet",exDa:"Æ som i æble.",exEn:"Æ as in 'apple'."},
+  {da:"Ø",en:"Ø — as in 'øje' (eye)",type:"letter",cat:"Alphabet",exDa:"Ø som i øje.",exEn:"Ø as in 'eye'."},
+  {da:"Å",en:"Å — as in 'år' (year)",type:"letter",cat:"Alphabet",exDa:"Å som i år.",exEn:"Å as in 'year'."},
 ];
 
 const verbs = [
@@ -2551,11 +2619,47 @@ const KIDS = [
   {da:"vær så god",en:"please / here you go",emoji:"🤲",cat:"Greetings"},
   {da:"hjælp",en:"help",emoji:"🆘",cat:"Greetings"},
   {da:"jeg elsker dig",en:"I love you",emoji:"💖",cat:"Greetings"},
+
+  // ── DANISH ALPHABET (29) ────────────────────────────────────────
+  // Each letter card shows the letter big with an example-word emoji.
+  // `daSpoken` makes TTS say the full "X som i ..." (X as in ...) phrase
+  // — that's how Danish letters are taught in schools, and it's far more
+  // natural for TTS than reading a single isolated character.
+  {da:"A",en:"A som i abe (monkey)",emoji:"🐵",cat:"Alphabet",daSpoken:"A som i abe."},
+  {da:"B",en:"B som i bil (car)",emoji:"🚗",cat:"Alphabet",daSpoken:"B som i bil."},
+  {da:"C",en:"C som i citron (lemon)",emoji:"🍋",cat:"Alphabet",daSpoken:"C som i citron."},
+  {da:"D",en:"D som i dame (lady)",emoji:"💃",cat:"Alphabet",daSpoken:"D som i dame."},
+  {da:"E",en:"E som i elefant (elephant)",emoji:"🐘",cat:"Alphabet",daSpoken:"E som i elefant."},
+  {da:"F",en:"F som i fugl (bird)",emoji:"🐦",cat:"Alphabet",daSpoken:"F som i fugl."},
+  {da:"G",en:"G som i gris (pig)",emoji:"🐷",cat:"Alphabet",daSpoken:"G som i gris."},
+  {da:"H",en:"H som i hund (dog)",emoji:"🐶",cat:"Alphabet",daSpoken:"H som i hund."},
+  {da:"I",en:"I som i is (ice cream)",emoji:"🍦",cat:"Alphabet",daSpoken:"I som i is."},
+  {da:"J",en:"J som i jordbær (strawberry)",emoji:"🍓",cat:"Alphabet",daSpoken:"J som i jordbær."},
+  {da:"K",en:"K som i kat (cat)",emoji:"🐱",cat:"Alphabet",daSpoken:"K som i kat."},
+  {da:"L",en:"L som i lampe (lamp)",emoji:"💡",cat:"Alphabet",daSpoken:"L som i lampe."},
+  {da:"M",en:"M som i mus (mouse)",emoji:"🐭",cat:"Alphabet",daSpoken:"M som i mus."},
+  {da:"N",en:"N som i næse (nose)",emoji:"👃",cat:"Alphabet",daSpoken:"N som i næse."},
+  {da:"O",en:"O som i ost (cheese)",emoji:"🧀",cat:"Alphabet",daSpoken:"O som i ost."},
+  {da:"P",en:"P som i pige (girl)",emoji:"👧",cat:"Alphabet",daSpoken:"P som i pige."},
+  {da:"Q",en:"Q som i quiz",emoji:"❓",cat:"Alphabet",daSpoken:"Q som i quiz."},
+  {da:"R",en:"R som i rose (rose)",emoji:"🌹",cat:"Alphabet",daSpoken:"R som i rose."},
+  {da:"S",en:"S som i sol (sun)",emoji:"☀️",cat:"Alphabet",daSpoken:"S som i sol."},
+  {da:"T",en:"T som i træ (tree)",emoji:"🌳",cat:"Alphabet",daSpoken:"T som i træ."},
+  {da:"U",en:"U som i ur (clock)",emoji:"🕐",cat:"Alphabet",daSpoken:"U som i ur."},
+  {da:"V",en:"V som i vand (water)",emoji:"💧",cat:"Alphabet",daSpoken:"V som i vand."},
+  {da:"W",en:"W som i weekend",emoji:"📅",cat:"Alphabet",daSpoken:"W som i weekend."},
+  {da:"X",en:"X som i xylofon",emoji:"🎵",cat:"Alphabet",daSpoken:"X som i xylofon."},
+  {da:"Y",en:"Y som i yoga",emoji:"🧘",cat:"Alphabet",daSpoken:"Y som i yoga."},
+  {da:"Z",en:"Z som i zebra",emoji:"🦓",cat:"Alphabet",daSpoken:"Z som i zebra."},
+  {da:"Æ",en:"Æ som i æble (apple)",emoji:"🍎",cat:"Alphabet",daSpoken:"Æ som i æble."},
+  {da:"Ø",en:"Ø som i øje (eye)",emoji:"👁️",cat:"Alphabet",daSpoken:"Ø som i øje."},
+  {da:"Å",en:"Å som i år (year)",emoji:"📆",cat:"Alphabet",daSpoken:"Å som i år."},
 ];
 
 
 const CAT_META_KIDS = {
   "All":       { icon:"🌟" },
+  "Alphabet":  { icon:"🔡" },
   "Animals":   { icon:"🐾" },
   "Food":      { icon:"🍎" },
   "Colours":   { icon:"🎨" },
@@ -2576,6 +2680,7 @@ const CAT_META_KIDS = {
 // ── CATEGORY META ──────────────────────────────────────────────────
 const CAT_META = {
   "All":             { icon:"🇩🇰" },
+  "Alphabet":        { icon:"🔡" },
   "Pronouns":        { icon:"👤" },
   "Common Verbs":      { icon:"⚡" },
   "Numbers":         { icon:"🔢" },
@@ -2633,6 +2738,11 @@ let onlyKnown  = false;
 let allFlipped = false;
 let sortMode   = localStorage.getItem('dk-sort') || 'default';
 let alphaRange = 'all';
+// Card direction: 'da-en' shows Danish on the front (default, original
+// behaviour); 'en-da' flips it so users see English first and have to
+// recall the Danish (harder, tests recall not recognition).
+// Letter cards always stay Danish-front regardless. Kids mode ignores it.
+let direction = localStorage.getItem('dk-direction') || 'da-en';
 
 // ── DATASET ACCESSORS ─────────────────────────────────────────────
 function dataset() {
@@ -2832,11 +2942,16 @@ function buildWordExample(w) {
 // read at small sizes on the dark theme.
 const SPEAKER_SVG = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M11 5L6 9H2v6h4l5 4V5z" fill="currentColor" fill-opacity="0.85"/><path d="M15.54 8.46a5 5 0 0 1 0 7.07"/><path d="M19.07 4.93a10 10 0 0 1 0 14.14"/></svg>';
 
-function bindAdultSpeaker(wrap, spoken) {
+// `defaultSpoken` is the text spoken when a button doesn't carry its own
+// `data-speak` attribute. Buttons with `data-speak="..."` (e.g. the back-
+// of-card speaker on Words cards, set to the example sentence) say that
+// instead — so the user hears the word on the front and the full example
+// when they flip and tap again.
+function bindAdultSpeaker(wrap, defaultSpoken) {
   wrap.querySelectorAll('.adult-speaker-btn').forEach(btn => {
     btn.addEventListener('click', e => {
       e.stopPropagation();
-      speak(spoken);
+      speak(btn.dataset.speak || defaultSpoken);
     });
   });
 }
@@ -2850,7 +2965,16 @@ function buildSidebar() {
   [...sidebar.querySelectorAll('.cat-item, .cat-divider')].forEach(n => n.remove());
   if (catSelect) catSelect.innerHTML = '';
   const data = dataset();
-  const cats = ['All', ...[...new Set(data.map(w => w.cat))]];
+  // Category order in the sidebar follows the order categories first appear
+  // in the dataset, BUT we hoist 'Alphabet' to the top (right after 'All')
+  // — alphabet learning is foundational; users expect it near the start.
+  const seen = [...new Set(data.map(w => w.cat))];
+  const alphabetIdx = seen.indexOf('Alphabet');
+  if (alphabetIdx > 0) {
+    seen.splice(alphabetIdx, 1);
+    seen.unshift('Alphabet');
+  }
+  const cats = ['All', ...seen];
   cats.forEach((cat, i) => {
     if (i === 1) {
       const div = document.createElement('div');
@@ -2949,13 +3073,18 @@ const _daCollator = new Intl.Collator('da-DK', { sensitivity: 'base' });
 
 function getSorted(list) {
   // 'default' = current category order, BUT in Words mode under "All" we
-  // pull "Common Verbs" to the front so beginners see the most useful
-  // verbs first. Preserves original order within each bucket otherwise.
+  // pull Alphabet first (the absolute basics), then Common Verbs (the most
+  // useful for any sentence), then the rest. Preserves original order
+  // within each bucket.
   if (sortMode === 'default') {
     if (mode === 'words' && activeCat === 'All') {
-      const verbs = [], rest = [];
-      for (const w of list) (w.cat === 'Common Verbs' ? verbs : rest).push(w);
-      return verbs.concat(rest);
+      const alphabet = [], verbs = [], rest = [];
+      for (const w of list) {
+        if (w.cat === 'Alphabet') alphabet.push(w);
+        else if (w.cat === 'Common Verbs') verbs.push(w);
+        else rest.push(w);
+      }
+      return alphabet.concat(verbs, rest);
     }
     return list;
   }
@@ -2994,6 +3123,33 @@ function setSortMode(m) {
   const mob  = document.getElementById('sort-select-mobile');
   if (desk && desk.value !== m) desk.value = m;
   if (mob  && mob.value  !== m) mob.value  = m;
+  applyFilters();
+}
+
+// Update the direction-toggle button to reflect current direction.
+function applyDirectionLabel() {
+  const btn = document.getElementById('direction-btn');
+  const label = document.getElementById('direction-label');
+  if (!btn || !label) return;
+  if (direction === 'en-da') {
+    label.textContent = 'EN → DA';
+    btn.classList.add('reversed');
+    btn.title = "English on the front — flip to reveal the Danish word. Click to switch back.";
+  } else {
+    label.textContent = 'DA → EN';
+    btn.classList.remove('reversed');
+    btn.title = "Danish on the front — flip to reveal the English meaning. Click to switch direction.";
+  }
+}
+
+// Toggle DA↔EN card direction. Re-renders so existing cards swap which
+// language is on the front. Reset any flipped state so the user starts
+// fresh in the new direction.
+function toggleDirection() {
+  direction = (direction === 'da-en') ? 'en-da' : 'da-en';
+  try { localStorage.setItem('dk-direction', direction); } catch (_) {}
+  allFlipped = false;
+  applyDirectionLabel();
   applyFilters();
 }
 
@@ -3049,6 +3205,15 @@ function renderCards(list) {
     if (mode === 'kids') {
       // Kid card: emoji-first, audio-first, no flip — tap pops + speaks.
       // No IPA — phonetic symbols are meaningless to 5–7 year olds.
+      // Speaker button:
+      //   • Alphabet cards → LOWERCASE letter. Sara reads "A" as "stort
+      //     bogstav A" (describes the glyph); reading "a" gives a clean
+      //     Danish "ah". The card still shows the uppercase letter — only
+      //     the TTS input is lowercased.
+      //   • Other kids cards → just w.da (the word).
+      // Card-body tap (kidTap) still uses the full "som i ..." phrase
+      // when available, so tapping the colourful card teaches in context.
+      const spokenKid = (w.cat === 'Alphabet') ? w.da.toLowerCase() : w.da;
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front cat-${w.cat}">
@@ -3061,30 +3226,36 @@ function renderCards(list) {
       // Speaker button replays without re-popping
       wrap.querySelector('.speaker-btn').addEventListener('click', e => {
         e.stopPropagation();
-        speak(w.da);
+        speak(spokenKid);
       });
       wrap.addEventListener('click', () => kidTap(wrap, w));
     } else if (mode === 'verbs') {
       const auxClass = (w.perf && w.perf.startsWith('er ')) ? 'aux-er' : '';
       // Strip leading "at " for speech — TTS pronounces the verb cleaner without the infinitive marker
       const spoken = w.da.replace(/^at\s+/, '');
-      // Show only the infinitive's IPA on the back. The bank's multi-IPA
-      // entries are sometimes inflections and sometimes synonyms — we can't
-      // tell apart, so we never assume positions 1/2/3 are pres/past/perf.
-      // The conjugation forms themselves are already visible as text.
-      const ipaInf = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
+      // (IPA dropped from card render — too obscure for most users; the
+      // audio play button is the actual pronunciation aid.)
+      // EN→DA mode hides the front speaker (clicking would speak the
+      // Danish word the user is supposed to recall) and shows English on
+      // the front, Danish on the back along with the conjugations.
+      const isReversed = (direction === 'en-da');
+      const frontHeadHtml = isReversed
+        ? `<div class="english-word english-word-front">${w.en}</div>`
+        : `<div class="danish-word">${w.da}</div>`;
+      const frontSpeakerHtml = isReversed
+        ? ''
+        : `<button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>`;
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
+            ${frontSpeakerHtml}
             <span class="card-num">#${data.indexOf(w)+1}</span>
-            <div class="danish-word">${w.da}</div>
+            ${frontHeadHtml}
             <div class="word-type">verb</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
             <div class="danish-word" style="font-size:18px;">${w.da}</div>
-            <div class="ipa">${ipaInf}</div>
             <div class="verb-conj">
               <span class="verb-conj-label">pres</span><span class="verb-conj-form">${w.pres}</span>
               <span class="verb-conj-label">past</span><span class="verb-conj-form">${w.past}</span>
@@ -3098,25 +3269,46 @@ function renderCards(list) {
     } else {
       const ex = buildWordExample(w);
       const catIcon = (catMeta()[w.cat] || { icon: '📁' }).icon;
-      // IPA lives on the BACK of the card so the front stays clean
-      // (Danish word + word-type only). The back pairs it with the
-      // English meaning so the user sees translation + pronunciation
-      // together when they flip.
-      const wordIpa = (window.DanskSpeech && window.DanskSpeech.lookupIpa(w.da)) || '';
+      // Letter cards always show Danish on front regardless of direction —
+      // a card with "A — as in 'abe'" on the front is confusing for
+      // alphabet learning. Everything else respects the direction.
+      const isReversed = (direction === 'en-da' && w.type !== 'letter');
+      // Front speaker:
+      //   • en→da (reverse direction) → hidden (clicking would speak the
+      //     Danish answer the user is supposed to recall).
+      //   • Letter cards → speak the LOWERCASE letter. Sara reads "A" (a
+      //     bare uppercase letter) as "stort bogstav A" (describes the
+      //     glyph); reading "a" gives a clean Danish "ah" — exactly what
+      //     a user expects from an alphabet card.
+      //   • Otherwise → no override; bindAdultSpeaker falls back to w.da.
+      // Back speaker (further down) always carries the "X som i ..."
+      // example sentence regardless.
+      const exAttr = String(ex.da).replace(/&/g, '&amp;').replace(/"/g, '&quot;');
+      const frontDataSpeak = (w.type === 'letter') ? ` data-speak="${w.da.toLowerCase()}"` : '';
+      const frontSpeakerHtml = isReversed
+        ? ''
+        : `<button class="adult-speaker-btn" type="button" aria-label="Play sound"${frontDataSpeak}>${SPEAKER_SVG}</button>`;
+      // Front headline = whichever side is "the question".
+      const frontHead = isReversed ? w.en : w.da;
+      const frontHeadCls = isReversed ? 'english-word english-word-front' : 'danish-word';
+      // Back headline = the answer. For en→da the answer is the Danish word
+      // (big serif); for da→en the answer is the English meaning.
+      const backHeadHtml = isReversed
+        ? `<div class="danish-word" style="font-size:24px;">${w.da}</div>`
+        : `<div class="english-word">${w.en}</div>`;
       wrap.innerHTML = `
         <div class="card-inner">
           <div class="card-face card-front">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
+            ${frontSpeakerHtml}
             <span class="card-num">#${data.indexOf(w)+1}</span>
-            <div class="danish-word">${w.da}</div>
+            <div class="${frontHeadCls}">${frontHead}</div>
             <div class="word-type">${w.type}</div>
             <div class="known-dot">✓</div>
           </div>
           <div class="card-face card-back">
-            <button class="adult-speaker-btn" type="button" aria-label="Play sound">${SPEAKER_SVG}</button>
+            <button class="adult-speaker-btn" type="button" aria-label="Play example sentence" data-speak="${exAttr}">${SPEAKER_SVG}</button>
             <span class="card-cat-icon" aria-hidden="true">${catIcon}</span>
-            <div class="english-word">${w.en}</div>
-            <div class="ipa">${wordIpa}</div>
+            ${backHeadHtml}
             <div class="word-example">
               <div class="example-da">${ex.da}</div>
               <div class="example-en">${ex.en}</div>
@@ -3151,7 +3343,8 @@ function kidTap(wrap, w) {
   // Always pop + speak + chime, regardless of flip state
   wrap.classList.add('popping');
   setTimeout(() => wrap.classList.remove('popping'), 200);
-  speak(w.da);
+  // Alphabet letters use the "som i ..." phrase for natural TTS.
+  speak(w.daSpoken || w.da);
   playChime();
   fireConfetti(wrap);
   if (!known.has(w.da)) {
@@ -3379,6 +3572,7 @@ function refreshStreakBadge(celebrate) {
 
 // init — restore mode from localStorage, then render
 applyModeClasses();
+applyDirectionLabel();
 refreshStreakBadge();
 buildSidebar();
 buildAlphaStrip();
